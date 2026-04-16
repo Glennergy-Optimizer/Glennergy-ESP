@@ -1,0 +1,118 @@
+[1/9] Performing build step for 'bootloader'
+[1/1] C:\WINDOWS\system32\cmd.exe /C "cd /D C:\Users\Lison\14_LVGL_BTN\build\bootloader\esp-idf\esptool_py && C:\Espressif\tools\python\v5.3.5\venv\Scripts\python.exe C:/esp/v5.3.5/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x0 C:/Users/Lison/14_LVGL_BTN/build/bootloader/bootloader.bin"
+Bootloader binary size 0x59f0 bytes. 0x2610 bytes (30%) free.
+[2/9] No install step for 'bootloader'
+[3/9] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/main.c.obj
+FAILED: esp-idf/main/CMakeFiles/__idf_main.dir/main.c.obj 
+C:\Espressif\tools\xtensa-esp-elf\esp-13.2.0_20250707\xtensa-esp-elf\bin\xtensa-esp32s3-elf-gcc.exe -DESP_PLATFORM -DIDF_VER=\"v5.3.5\" -DLV_ATTRIBUTE_FAST_MEM=IRAM_ATTR -DLV_CONF_INCLUDE_SIMPLE -DSOC_MMU_PAGE_SIZE=CONFIG_MMU_PAGE_SIZE -DSOC_XTAL_FREQ_MHZ=CONFIG_XTAL_FREQ -D_GLIBCXX_HAVE_POSIX_SEMAPHORE -D_GLIBCXX_USE_POSIX_SEMAPHORE -D_GNU_SOURCE -D_POSIX_READER_WRITER_LOCKS -IC:/esp/v5.3.5/esp-idf/components/esp_system/include -IC:/Users/Lison/14_LVGL_BTN/build/config -IC:/Users/Lison/14_LVGL_BTN/main -IC:/esp/v5.3.5/esp-idf/components/newlib/platform_include -IC:/esp/v5.3.5/esp-idf/components/freertos/config/include -IC:/esp/v5.3.5/esp-idf/components/freertos/config/include/freertos -IC:/esp/v5.3.5/esp-idf/components/freertos/config/xtensa/include -IC:/esp/v5.3.5/esp-idf/components/freertos/FreeRTOS-Kernel/include -IC:/esp/v5.3.5/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/include -IC:/esp/v5.3.5/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/include/freertos -IC:/esp/v5.3.5/esp-idf/components/freertos/esp_additions/include -IC:/esp/v5.3.5/esp-idf/components/esp_hw_support/include -IC:/esp/v5.3.5/esp-idf/components/esp_hw_support/include/soc -IC:/esp/v5.3.5/esp-idf/components/esp_hw_support/include/soc/esp32s3 -IC:/esp/v5.3.5/esp-idf/components/esp_hw_support/dma/include -IC:/esp/v5.3.5/esp-idf/components/esp_hw_support/ldo/include -IC:/esp/v5.3.5/esp-idf/components/esp_hw_support/port/esp32s3/. -IC:/esp/v5.3.5/esp-idf/components/esp_hw_support/port/esp32s3/include -IC:/esp/v5.3.5/esp-idf/components/heap/include -IC:/esp/v5.3.5/esp-idf/components/log/include -IC:/esp/v5.3.5/esp-idf/components/soc/include -IC:/esp/v5.3.5/esp-idf/components/soc/esp32s3 -IC:/esp/v5.3.5/esp-idf/components/soc/esp32s3/include -IC:/esp/v5.3.5/esp-idf/components/hal/platform_port/include -IC:/esp/v5.3.5/esp-idf/components/hal/esp32s3/include -IC:/esp/v5.3.5/esp-idf/components/hal/include -IC:/esp/v5.3.5/esp-idf/components/esp_rom/include -IC:/esp/v5.3.5/esp-idf/components/esp_rom/include/esp32s3 -IC:/esp/v5.3.5/esp-idf/components/esp_rom/esp32s3 -IC:/esp/v5.3.5/esp-idf/components/esp_common/include -IC:/esp/v5.3.5/esp-idf/components/esp_system/port/soc -IC:/esp/v5.3.5/esp-idf/components/esp_system/port/include/private -IC:/esp/v5.3.5/esp-idf/components/xtensa/esp32s3/include -IC:/esp/v5.3.5/esp-idf/components/xtensa/include -IC:/esp/v5.3.5/esp-idf/components/xtensa/deprecated_include -IC:/esp/v5.3.5/esp-idf/components/lwip/include -IC:/esp/v5.3.5/esp-idf/components/lwip/include/apps -IC:/esp/v5.3.5/esp-idf/components/lwip/include/apps/sntp -IC:/esp/v5.3.5/esp-idf/components/lwip/lwip/src/include -IC:/esp/v5.3.5/esp-idf/components/lwip/port/include -IC:/esp/v5.3.5/esp-idf/components/lwip/port/freertos/include -IC:/esp/v5.3.5/esp-idf/components/lwip/port/esp32xx/include -IC:/esp/v5.3.5/esp-idf/components/lwip/port/esp32xx/include/arch -IC:/esp/v5.3.5/esp-idf/components/lwip/port/esp32xx/include/sys -IC:/esp/v5.3.5/esp-idf/components/esp_lcd/include -IC:/esp/v5.3.5/esp-idf/components/esp_lcd/interface -IC:/esp/v5.3.5/esp-idf/components/esp_lcd/rgb/include -IC:/esp/v5.3.5/esp-idf/components/driver/deprecated -IC:/esp/v5.3.5/esp-idf/components/driver/i2c/include -IC:/esp/v5.3.5/esp-idf/components/driver/touch_sensor/include -IC:/esp/v5.3.5/esp-idf/components/driver/twai/include -IC:/esp/v5.3.5/esp-idf/components/driver/touch_sensor/esp32s3/include -IC:/esp/v5.3.5/esp-idf/components/esp_pm/include -IC:/esp/v5.3.5/esp-idf/components/esp_ringbuf/include -IC:/esp/v5.3.5/esp-idf/components/esp_driver_gpio/include -IC:/esp/v5.3.5/esp-idf/components/esp_driver_pcnt/include -IC:/esp/v5.3.5/esp-idf/components/esp_driver_gptimer/include -IC:/esp/v5.3.5/esp-idf/components/esp_driver_spi/include -IC:/esp/v5.3.5/esp-idf/components/esp_driver_mcpwm/include -IC:/esp/v5.3.5/esp-idf/components/esp_driver_ana_cmpr/include -IC:/esp/v5.3.5/esp-idf/components/esp_driver_i2s/include -IC:/esp/v5.3.5/esp-idf/components/esp_driver_sdmmc/include -IC:/esp/v5.3.5/esp-idf/components/sdmmc/include -IC:/esp/v5.3.5/esp-idf/components/esp_driver_sdspi/include -IC:/esp/v5.3.5/esp-idf/components/esp_driver_sdio/include -IC:/esp/v5.3.5/esp-idf/components/esp_driver_dac/include -IC:/esp/v5.3.5/esp-idf/components/esp_driver_rmt/include -IC:/esp/v5.3.5/esp-idf/components/esp_driver_tsens/include -IC:/esp/v5.3.5/esp-idf/components/esp_driver_sdm/include -IC:/esp/v5.3.5/esp-idf/components/esp_driver_i2c/include -IC:/esp/v5.3.5/esp-idf/components/esp_driver_uart/include -IC:/esp/v5.3.5/esp-idf/components/vfs/include -IC:/esp/v5.3.5/esp-idf/components/esp_driver_ledc/include -IC:/esp/v5.3.5/esp-idf/components/esp_driver_parlio/include -IC:/esp/v5.3.5/esp-idf/components/esp_driver_usb_serial_jtag/include -IC:/esp/v5.3.5/esp-idf/components/nvs_flash/include -IC:/esp/v5.3.5/esp-idf/components/spi_flash/include -IC:/esp/v5.3.5/esp-idf/components/esp_partition/include -IC:/esp/v5.3.5/esp-idf/components/esp_event/include -IC:/esp/v5.3.5/esp-idf/components/esp_wifi/include -IC:/esp/v5.3.5/esp-idf/components/esp_wifi/include/local -IC:/esp/v5.3.5/esp-idf/components/esp_wifi/wifi_apps/include -IC:/esp/v5.3.5/esp-idf/components/esp_wifi/wifi_apps/nan_app/include -IC:/esp/v5.3.5/esp-idf/components/esp_phy/include -IC:/esp/v5.3.5/esp-idf/components/esp_phy/esp32s3/include -IC:/esp/v5.3.5/esp-idf/components/esp_netif/include -IC:/Users/Lison/14_LVGL_BTN/components/can -IC:/Users/Lison/14_LVGL_BTN/components/i2c -IC:/Users/Lison/14_LVGL_BTN/components/gpio -IC:/Users/Lison/14_LVGL_BTN/components/io_extension -IC:/Users/Lison/14_LVGL_BTN/components/rgb_lcd_port -IC:/Users/Lison/14_LVGL_BTN/components/lvgl_port -IC:/Users/Lison/14_LVGL_BTN/components/touch -IC:/Users/Lison/14_LVGL_BTN/components/lvgl_port/lvgl__lvgl -IC:/Users/Lison/14_LVGL_BTN/components/lvgl_port/lvgl__lvgl/src -IC:/Users/Lison/14_LVGL_BTN/components/lvgl_port/lvgl__lvgl/examples -IC:/Users/Lison/14_LVGL_BTN/components/lvgl_port/lvgl__lvgl/demos -IC:/esp/v5.3.5/esp-idf/components/esp_timer/include -mlongcalls  -fno-builtin-memcpy -fno-builtin-memset -fno-builtin-bzero -fno-builtin-stpcpy -fno-builtin-strncpy -fdiagnostics-color=always -Wno-attributes -ffunction-sections -fdata-sections -Wall -Werror=all -Wno-error=unused-function -Wno-error=unused-variable -Wno-error=unused-but-set-variable -Wno-error=deprecated-declarations -Wextra -Wno-unused-parameter -Wno-sign-compare -Wno-enum-conversion -gdwarf-4 -ggdb -mdisable-hardware-atomics -O2 -fmacro-prefix-map=C:/Users/Lison/14_LVGL_BTN=. -fmacro-prefix-map=C:/esp/v5.3.5/esp-idf=/IDF -fstrict-volatile-bitfields -fno-jump-tables -fno-tree-switch-conversion -std=gnu17 -Wno-old-style-declaration -MD -MT esp-idf/main/CMakeFiles/__idf_main.dir/main.c.obj -MF esp-idf\main\CMakeFiles\__idf_main.dir\main.c.obj.d -o esp-idf/main/CMakeFiles/__idf_main.dir/main.c.obj -c C:/Users/Lison/14_LVGL_BTN/main/main.c
+In file included from C:/Users/Lison/14_LVGL_BTN/ui/screens/ui_Screen1.h:9,
+                 from C:/Users/Lison/14_LVGL_BTN/ui/ui.h:21,
+                 from C:/Users/Lison/14_LVGL_BTN/main/main.c:19:
+C:/Users/Lison/14_LVGL_BTN/main/WiFi.h:17:1: warning: no semicolon at end of struct or union
+   17 | } WiFi;
+      | ^
+In file included from C:/Users/Lison/14_LVGL_BTN/components/rgb_lcd_port/rgb_lcd_port.h:20,
+                 from C:/Users/Lison/14_LVGL_BTN/main/main.c:15:
+C:/Users/Lison/14_LVGL_BTN/main/main.c: In function 'app_main':
+C:/esp/v5.3.5/esp-idf/components/log/include/esp_log.h:290:27: error: format '%s' expects argument of type 'char *', but argument 6 has type 'wifi_ap_record_t' [-Werror=format=]
+  290 | #define LOG_COLOR(COLOR)  "\033[0;" COLOR "m"
+      |                           ^~~~~~~~~
+C:/esp/v5.3.5/esp-idf/components/log/include/esp_log.h:293:27: note: in expansion of macro 'LOG_COLOR'
+  293 | #define LOG_COLOR_E       LOG_COLOR(LOG_COLOR_RED)
+      |                           ^~~~~~~~~
+C:/esp/v5.3.5/esp-idf/components/log/include/esp_log.h:307:37: note: in expansion of macro 'LOG_COLOR_E'
+  307 | #define LOG_FORMAT(letter, format)  LOG_COLOR_ ## letter #letter " (%" PRIu32 ") %s: " format LOG_RESET_COLOR "\n"
+      |                                     ^~~~~~~~~~
+C:/esp/v5.3.5/esp-idf/components/log/include/esp_log.h:435:86: note: in expansion of macro 'LOG_FORMAT'
+  435 |         if (level==ESP_LOG_ERROR )          { esp_log_write(ESP_LOG_ERROR,      tag, LOG_FORMAT(E, format), esp_log_timestamp(), tag, ##__VA_ARGS__); } \
+      |                                                                                      ^~~~~~~~~~
+C:/esp/v5.3.5/esp-idf/components/log/include/esp_log.h:463:41: note: in expansion of macro 'ESP_LOG_LEVEL'
+  463 |         if ( LOG_LOCAL_LEVEL >= level ) ESP_LOG_LEVEL(level, tag, format, ##__VA_ARGS__); \
+      |                                         ^~~~~~~~~~~~~
+C:/esp/v5.3.5/esp-idf/components/log/include/esp_log.h:367:38: note: in expansion of macro 'ESP_LOG_LEVEL_LOCAL'
+  367 | #define ESP_LOGI( tag, format, ... ) ESP_LOG_LEVEL_LOCAL(ESP_LOG_INFO,    tag, format, ##__VA_ARGS__)
+      |                                      ^~~~~~~~~~~~~~~~~~~
+C:/Users/Lison/14_LVGL_BTN/main/main.c:54:5: note: in expansion of macro 'ESP_LOGI'
+   54 |     ESP_LOGI(TAG, "SSID FROM SCAN IN UI: %s", wifi.ap_info[0]);
+      |     ^~~~~~~~
+C:/esp/v5.3.5/esp-idf/components/log/include/esp_log.h:290:27: error: format '%s' expects argument of type 'char *', but argument 6 has type 'wifi_ap_record_t' [-Werror=format=]
+  290 | #define LOG_COLOR(COLOR)  "\033[0;" COLOR "m"
+      |                           ^~~~~~~~~
+C:/esp/v5.3.5/esp-idf/components/log/include/esp_log.h:294:27: note: in expansion of macro 'LOG_COLOR'
+  294 | #define LOG_COLOR_W       LOG_COLOR(LOG_COLOR_BROWN)
+      |                           ^~~~~~~~~
+C:/esp/v5.3.5/esp-idf/components/log/include/esp_log.h:307:37: note: in expansion of macro 'LOG_COLOR_W'
+  307 | #define LOG_FORMAT(letter, format)  LOG_COLOR_ ## letter #letter " (%" PRIu32 ") %s: " format LOG_RESET_COLOR "\n"
+      |                                     ^~~~~~~~~~
+C:/esp/v5.3.5/esp-idf/components/log/include/esp_log.h:436:86: note: in expansion of macro 'LOG_FORMAT'
+  436 |         else if (level==ESP_LOG_WARN )      { esp_log_write(ESP_LOG_WARN,       tag, LOG_FORMAT(W, format), esp_log_timestamp(), tag, ##__VA_ARGS__); } \
+      |                                                                                      ^~~~~~~~~~
+C:/esp/v5.3.5/esp-idf/components/log/include/esp_log.h:463:41: note: in expansion of macro 'ESP_LOG_LEVEL'
+  463 |         if ( LOG_LOCAL_LEVEL >= level ) ESP_LOG_LEVEL(level, tag, format, ##__VA_ARGS__); \
+      |                                         ^~~~~~~~~~~~~
+C:/esp/v5.3.5/esp-idf/components/log/include/esp_log.h:367:38: note: in expansion of macro 'ESP_LOG_LEVEL_LOCAL'
+  367 | #define ESP_LOGI( tag, format, ... ) ESP_LOG_LEVEL_LOCAL(ESP_LOG_INFO,    tag, format, ##__VA_ARGS__)
+      |                                      ^~~~~~~~~~~~~~~~~~~
+C:/Users/Lison/14_LVGL_BTN/main/main.c:54:5: note: in expansion of macro 'ESP_LOGI'
+   54 |     ESP_LOGI(TAG, "SSID FROM SCAN IN UI: %s", wifi.ap_info[0]);
+      |     ^~~~~~~~
+C:/Users/Lison/14_LVGL_BTN/main/main.c:54:1: error: format '%s' expects argument of type 'char *', but argument 6 has type 'wifi_ap_record_t' [-Werror=format=]
+   54 |     ESP_LOGI(TAG, "SSID FROM SCAN IN UI: %s", wifi.ap_info[0]);
+      | ^   ~~~~~~~
+C:/esp/v5.3.5/esp-idf/components/log/include/esp_log.h:307:59: note: in definition of macro 'LOG_FORMAT'
+  307 | #define LOG_FORMAT(letter, format)  LOG_COLOR_ ## letter #letter " (%" PRIu32 ") %s: " format LOG_RESET_COLOR "\n"
+      |                                                           ^~~~~~
+C:/esp/v5.3.5/esp-idf/components/log/include/esp_log.h:463:41: note: in expansion of macro 'ESP_LOG_LEVEL'
+  463 |         if ( LOG_LOCAL_LEVEL >= level ) ESP_LOG_LEVEL(level, tag, format, ##__VA_ARGS__); \
+      |                                         ^~~~~~~~~~~~~
+C:/esp/v5.3.5/esp-idf/components/log/include/esp_log.h:367:38: note: in expansion of macro 'ESP_LOG_LEVEL_LOCAL'
+  367 | #define ESP_LOGI( tag, format, ... ) ESP_LOG_LEVEL_LOCAL(ESP_LOG_INFO,    tag, format, ##__VA_ARGS__)
+      |                                      ^~~~~~~~~~~~~~~~~~~
+C:/Users/Lison/14_LVGL_BTN/main/main.c:54:5: note: in expansion of macro 'ESP_LOGI'
+   54 |     ESP_LOGI(TAG, "SSID FROM SCAN IN UI: %s", wifi.ap_info[0]);
+      |     ^~~~~~~~
+C:/Users/Lison/14_LVGL_BTN/main/main.c:54:1: error: format '%s' expects argument of type 'char *', but argument 6 has type 'wifi_ap_record_t' [-Werror=format=]
+   54 |     ESP_LOGI(TAG, "SSID FROM SCAN IN UI: %s", wifi.ap_info[0]);
+      | ^   ~~~~~~~
+C:/esp/v5.3.5/esp-idf/components/log/include/esp_log.h:307:59: note: in definition of macro 'LOG_FORMAT'
+  307 | #define LOG_FORMAT(letter, format)  LOG_COLOR_ ## letter #letter " (%" PRIu32 ") %s: " format LOG_RESET_COLOR "\n"
+      |                                                           ^~~~~~
+C:/esp/v5.3.5/esp-idf/components/log/include/esp_log.h:463:41: note: in expansion of macro 'ESP_LOG_LEVEL'
+  463 |         if ( LOG_LOCAL_LEVEL >= level ) ESP_LOG_LEVEL(level, tag, format, ##__VA_ARGS__); \
+      |                                         ^~~~~~~~~~~~~
+C:/esp/v5.3.5/esp-idf/components/log/include/esp_log.h:367:38: note: in expansion of macro 'ESP_LOG_LEVEL_LOCAL'
+  367 | #define ESP_LOGI( tag, format, ... ) ESP_LOG_LEVEL_LOCAL(ESP_LOG_INFO,    tag, format, ##__VA_ARGS__)
+      |                                      ^~~~~~~~~~~~~~~~~~~
+C:/Users/Lison/14_LVGL_BTN/main/main.c:54:5: note: in expansion of macro 'ESP_LOGI'
+   54 |     ESP_LOGI(TAG, "SSID FROM SCAN IN UI: %s", wifi.ap_info[0]);
+      |     ^~~~~~~~
+C:/esp/v5.3.5/esp-idf/components/log/include/esp_log.h:290:27: error: format '%s' expects argument of type 'char *', but argument 6 has type 'wifi_ap_record_t' [-Werror=format=]
+  290 | #define LOG_COLOR(COLOR)  "\033[0;" COLOR "m"
+      |                           ^~~~~~~~~
+C:/esp/v5.3.5/esp-idf/components/log/include/esp_log.h:295:27: note: in expansion of macro 'LOG_COLOR'
+  295 | #define LOG_COLOR_I       LOG_COLOR(LOG_COLOR_GREEN)
+      |                           ^~~~~~~~~
+C:/esp/v5.3.5/esp-idf/components/log/include/esp_log.h:307:37: note: in expansion of macro 'LOG_COLOR_I'
+  307 | #define LOG_FORMAT(letter, format)  LOG_COLOR_ ## letter #letter " (%" PRIu32 ") %s: " format LOG_RESET_COLOR "\n"
+      |                                     ^~~~~~~~~~
+C:/esp/v5.3.5/esp-idf/components/log/include/esp_log.h:439:86: note: in expansion of macro 'LOG_FORMAT'
+  439 |         else                                { esp_log_write(ESP_LOG_INFO,       tag, LOG_FORMAT(I, format), esp_log_timestamp(), tag, ##__VA_ARGS__); } \
+      |                                                                                      ^~~~~~~~~~
+C:/esp/v5.3.5/esp-idf/components/log/include/esp_log.h:463:41: note: in expansion of macro 'ESP_LOG_LEVEL'
+  463 |         if ( LOG_LOCAL_LEVEL >= level ) ESP_LOG_LEVEL(level, tag, format, ##__VA_ARGS__); \
+      |                                         ^~~~~~~~~~~~~
+C:/esp/v5.3.5/esp-idf/components/log/include/esp_log.h:367:38: note: in expansion of macro 'ESP_LOG_LEVEL_LOCAL'
+  367 | #define ESP_LOGI( tag, format, ... ) ESP_LOG_LEVEL_LOCAL(ESP_LOG_INFO,    tag, format, ##__VA_ARGS__)
+      |                                      ^~~~~~~~~~~~~~~~~~~
+C:/Users/Lison/14_LVGL_BTN/main/main.c:54:5: note: in expansion of macro 'ESP_LOGI'
+   54 |     ESP_LOGI(TAG, "SSID FROM SCAN IN UI: %s", wifi.ap_info[0]);
+      |     ^~~~~~~~
+C:/Users/Lison/14_LVGL_BTN/main/main.c:34:35: warning: unused variable 'tp_handle' [-Wunused-variable]
+   34 |     static esp_lcd_touch_handle_t tp_handle = NULL;
+      |                                   ^~~~~~~~~
+C:/Users/Lison/14_LVGL_BTN/main/main.c:33:35: warning: unused variable 'panel_handle' [-Wunused-variable]
+   33 |     static esp_lcd_panel_handle_t panel_handle = NULL; // Declare a handle for the LCD panel
+      |                                   ^~~~~~~~~~~~
+cc1.exe: some warnings being treated as errors
+[4/9] Completed 'bootloader'
+ninja: build stopped: subcommand failed.

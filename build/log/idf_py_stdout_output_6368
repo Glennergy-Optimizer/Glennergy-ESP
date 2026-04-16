@@ -1,0 +1,30 @@
+[1/9] Performing build step for 'bootloader'
+[1/1] C:\WINDOWS\system32\cmd.exe /C "cd /D C:\Users\Lison\14_LVGL_BTN\build\bootloader\esp-idf\esptool_py && C:\Espressif\tools\python\v5.3.5\venv\Scripts\python.exe C:/esp/v5.3.5/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x0 C:/Users/Lison/14_LVGL_BTN/build/bootloader/bootloader.bin"
+Bootloader binary size 0x59f0 bytes. 0x2610 bytes (30%) free.
+[2/9] No install step for 'bootloader'
+[3/9] Completed 'bootloader'
+[4/9] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/__/ui/screens/ui_Screen1.c.obj
+In file included from C:/Users/Lison/14_LVGL_BTN/ui/screens/ui_Screen1.h:9,
+                 from C:/Users/Lison/14_LVGL_BTN/ui/ui.h:21,
+                 from C:/Users/Lison/14_LVGL_BTN/ui/screens/ui_Screen1.c:6:
+C:/Users/Lison/14_LVGL_BTN/main/WiFi.h:17:1: warning: no semicolon at end of struct or union
+   17 | } WiFi;
+      | ^
+C:/Users/Lison/14_LVGL_BTN/ui/screens/ui_Screen1.c: In function 'kb_event_cb':
+C:/Users/Lison/14_LVGL_BTN/ui/screens/ui_Screen1.c:42:37: warning: passing argument 2 of 'WiFi_Connect' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+   42 |         WiFi_Connect(selected_ssid, pass);
+      |                                     ^~~~
+C:/Users/Lison/14_LVGL_BTN/main/WiFi.h:23:42: note: expected 'char *' but argument is of type 'const char *'
+   23 | esp_err_t WiFi_Connect(char *ssid, char *password);
+      |                                    ~~~~~~^~~~~~~~
+[5/9] Linking C static library esp-idf\main\libmain.a
+[6/9] Generating ld/sections.ld
+[7/9] Linking CXX executable 14_LVGL_BTN.elf
+[8/9] Generating binary image from built executable
+esptool.py v4.11.0
+Creating esp32s3 image...
+Merged 2 ELF sections
+Successfully created esp32s3 image.
+Generated C:/Users/Lison/14_LVGL_BTN/build/14_LVGL_BTN.bin
+[9/9] C:\WINDOWS\system32\cmd.exe /C "cd /D C:\Users\Lison\14_LVGL_BTN\build\esp-idf\esptool_py && C:\Espressif\tools\python\v5.3.5\venv\Scripts\python.exe C:/esp/v5.3.5/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 partition --type app C:/Users/Lison/14_LVGL_BTN/build/partition_table/partition-table.bin C:/Users/Lison/14_LVGL_BTN/build/14_LVGL_BTN.bin"
+14_LVGL_BTN.bin binary size 0x5828f0 bytes. Smallest app partition is 0x800000 bytes. 0x27d710 bytes (31%) free.

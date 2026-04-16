@@ -1,0 +1,24 @@
+[0;33m--- Warning: GDB cannot open serial ports accessed as COMx[0m
+[0;33m--- Using \\.\COM5 instead...[0m
+[0;33m--- esp-idf-monitor 1.9.0 on \\.\COM5 115200[0m
+[0;33m--- Quit: Ctrl+] | Menu: Ctrl+T | Help: Ctrl+T followed by Ctrl+H[0m
+[0m--- 0x40041a76: [0;33mets_delay_us[0m[0m in [0;32mROM[0m
+[1;31m--- Error: ClearCommError failed (PermissionError(13, 'Enheten känner inte igen kommandot.', None, 22))[0m
+[0;33m--- Waiting for the device to reconnect[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m[0m
+[0m--- 0x40375f42: [0;33mpanic_abort[0m[0m at [0;32mC:/esp/v5.3.5/esp-idf/components/esp_system/panic.c[0m[0m:[1;31m486[0m
+[0m--- 0x4037e931: [0;33mesp_system_abort[0m[0m at [0;32mC:/esp/v5.3.5/esp-idf/components/esp_system/port/esp_system_chip.c[0m[0m:[1;31m87[0m
+[0m--- 0x40386289: [0;33m__assert_func[0m[0m at [0;32mC:/esp/v5.3.5/esp-idf/components/newlib/assert.c[0m[0m:[1;31m80[0m
+[0m--- 0x4200b70f: [0;33mlvgl_port_lock[0m[0m at [0;32mC:/Users/Lison/14_LVGL_BTN/components/lvgl_port/lvgl_port.c[0m[0m:[1;31m540[0m
+[0m--- (inlined by) [0;33mlvgl_port_lock[0m[0m at [0;32mC:/Users/Lison/14_LVGL_BTN/components/lvgl_port/lvgl_port.c[0m[0m:[1;31m538[0m
+[0m--- 0x4200b6e5: [0;33mapp_main[0m[0m at [0;32mC:/Users/Lison/14_LVGL_BTN/main/main.c[0m[0m:[1;31m55[0m
+[0m--- 0x4209ca87: [0;33mmain_task[0m[0m at [0;32mC:/esp/v5.3.5/esp-idf/components/freertos/app_startup.c[0m[0m:[1;31m208[0m
+[0m--- 0x40375ea0: [0;33mesp_restart_noos[0m[0m at [0;32mC:/esp/v5.3.5/esp-idf/components/esp_system/port/soc/esp32s3/system_internal.c[0m[0m:[1;31m162[0m
+[0m--- 0x40375f42: [0;33mpanic_abort[0m[0m at [0;32mC:/esp/v5.3.5/esp-idf/components/esp_system/panic.c[0m[0m:[1;31m486[0m
+[0m--- 0x4037e931: [0;33mesp_system_abort[0m[0m at [0;32mC:/esp/v5.3.5/esp-idf/components/esp_system/port/esp_system_chip.c[0m[0m:[1;31m87[0m
+[0m--- 0x40386289: [0;33m__assert_func[0m[0m at [0;32mC:/esp/v5.3.5/esp-idf/components/newlib/assert.c[0m[0m:[1;31m80[0m
+[0m--- 0x4200b70f: [0;33mlvgl_port_lock[0m[0m at [0;32mC:/Users/Lison/14_LVGL_BTN/components/lvgl_port/lvgl_port.c[0m[0m:[1;31m540[0m
+[0m--- (inlined by) [0;33mlvgl_port_lock[0m[0m at [0;32mC:/Users/Lison/14_LVGL_BTN/components/lvgl_port/lvgl_port.c[0m[0m:[1;31m538[0m
+[0m--- 0x4200b6e5: [0;33mapp_main[0m[0m at [0;32mC:/Users/Lison/14_LVGL_BTN/main/main.c[0m[0m:[1;31m55[0m
+[0m--- 0x4209ca87: [0;33mmain_task[0m[0m at [0;32mC:/esp/v5.3.5/esp-idf/components/freertos/app_startup.c[0m[0m:[1;31m208[0m
+[0m--- 0x40375ea0: [0;33mesp_restart_noos[0m[0m at [0;32mC:/esp/v5.3.5/esp-idf/components/esp_system/port/soc/esp32s3/system_internal.c[0m[0m:[1;31m162[0m
+[0m

@@ -1,0 +1,58 @@
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x15 (USB_UART_CHIP_RESET),boot:0x23 (DOWNLOAD(USB/UART0))
+Saved PC:0x40041a76
+waiting for download
+[0;32mI (868) esp_image: segment 1: paddr=004be244 vaddr=3fca0500 size=01dd4h (  7636) load[0m
+[0;32mI (870) esp_image: segment 2: paddr=004c0020 vaddr=42000020 size=b19e4h (727524) map[0m
+[0;32mI (986) esp_image: segment 3: paddr=00571a0c vaddr=3fca22d4 size=03990h ( 14736) load[0m
+[0;32mI (990) esp_image: segment 4: paddr=005753a4 vaddr=40374000 size=1c420h (115744) load[0m
+[0;32mI (1026) boot: Loaded app from partition at offset 0x10000[0m
+[0;32mI (1026) boot: Disabling RNG early entropy source...[0m
+[0;32mI (1038) octal_psram: vendor id    : 0x0d (AP)[0m
+[0;32mI (1038) octal_psram: dev id       : 0x02 (generation 3)[0m
+[0;32mI (1039) octal_psram: density      : 0x03 (64 Mbit)[0m
+[0;32mI (1044) octal_psram: good-die     : 0x01 (Pass)[0m
+[0;32mI (1049) octal_psram: Latency      : 0x01 (Fixed)[0m
+[0;32mI (1054) octal_psram: VCC          : 0x01 (3V)[0m
+[0;32mI (1059) octal_psram: SRF          : 0x01 (Fast Refresh)[0m
+[0;32mI (1065) octal_psram: BurstType    : 0x01 (Hybrid Wrap)[0m
+[0;32mI (1071) octal_psram: BurstLen     : 0x01 (32 Byte)[0m
+[0;32mI (1077) octal_psram: Readlatency  : 0x02 (10 cycles@Fixed)[0m
+[0;32mI (1083) octal_psram: DriveStrength: 0x00 (1/1)[0m
+[0;32mI (1089) MSPI Timing: PSRAM timing tuning index: 5[0m
+[0;32mI (1094) esp_psram: Found 8MB PSRAM device[0m
+[0;32mI (1098) esp_psram: Speed: 80MHz[0m
+[0;32mI (1375) mmu_psram: Read only data copied and mapped to SPIRAM[0m
+[0;32mI (1426) mmu_psram: Instructions copied and mapped to SPIRAM[0m
+[0;32mI (1426) cpu_start: Multicore app[0m
+[0;32mI (1518) esp_psram: SPI SRAM memory test OK[0m
+[0;32mI (1526) cpu_start: Pro cpu start user code[0m
+[0;32mI (1526) cpu_start: cpu freq: 240000000 Hz[0m
+[0;32mI (1527) app_init: Application information:[0m
+[0;32mI (1530) app_init: Project name:     14_LVGL_BTN[0m
+[0;32mI (1535) app_init: App version:      1[0m
+[0;32mI (1539) app_init: Compile time:     Apr 15 2026 17:20:52[0m
+[0;32mI (1545) app_init: ELF file SHA256:  121ad23a0...[0m
+[0;32mI (1551) app_init: ESP-IDF:          v5.3.5[0m
+[0;32mI (1556) efuse_init: Min chip rev:     v0.0[0m
+[0;32mI (1560) efuse_init: Max chip rev:     v0.99 [0m
+[0;32mI (1566) efuse_init: Chip rev:         v0.2[0m
+[0;32mI (1570) heap_init: Initializing. RAM available for dynamic allocation:[0m
+[0;32mI (1578) heap_init: At 3FCA9F78 len 0003F798 (253 KiB): RAM[0m
+[0;32mI (1584) heap_init: At 3FCE9710 len 00005724 (21 KiB): RAM[0m
+[0;32mI (1590) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM[0m
+[0;32mI (1596) heap_init: At 600FE000 len 00001FE8 (7 KiB): RTCRAM[0m
+[0;32mI (1603) esp_psram: Adding pool of 2624K of PSRAM memory to heap allocator[0m
+[0;32mI (1610) esp_psram: Adding pool of 7K of PSRAM memory gap generated due to end address alignment of drom to the heap allocator[0m
+[0;32mI (1623) spi_flash: detected chip: generic[0m
+[0;32mI (1627) spi_flash: flash io: qio[0m
+[0;32mI (1631) sleep: Configure to isolate all GPIO pins in sleep state[0m
+[0;32mI (1638) sleep: Enable automatic switching of GPIO sleep configuration[0m
+[0;32mI (1645) main_task: Started on CPU0[0m
+[0;32mI (1649) esp_psram: Reserving pool of 32K of internal memory for DMA/internal allocations[0m
+[0;32mI (1658) main_task: Calling app_main()[0m
+[0;33mW (1662) i2c.master: Please check pull-up resistances whether be connected properly. Otherwise unexpected behavior would happen. For more detailed information, please read docs[0m
+[0;32mI (1679) gpio: GPIO[8]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 0| Pulldown: 0| Intr:0 [0m
+[0;32mI (1688) gpio: GPIO[9]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 0| Pulldown: 0| Intr:0 [0m
+[0;32mI (1698) gpio: GPIO[4]| InputEn: 1| OutputEn: 1| OpenDrain: 0| Pullup: 1| Pulldown: 0| Intr:0 [0m

@@ -1,0 +1,57 @@
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x15 (USB_UART_CHIP_RESET),boot:0x22 (DOWNLOAD(USB/UART0))
+Saved PC:0x40041a7c
+waiting for download
+[0;32mI (765) esp_psram: Reserving pool of 32K of internal memory for DMA/internal allocations[0m
+[0;32mI (770) main_task: Calling app_main()[0m
+[0;32mI (774) main: Display LVGL demos[0m
+[0;32mI (784) pp: pp rom version: e7ae62f[0m
+[0;32mI (784) net80211: net80211 rom version: e7ae62f[0m
+[0;32mI (788) wifi:wifi driver task: 3fcb5cf0, prio:23, stack:6656, core=0[0m
+[0;32mI (797) wifi:wifi firmware version: 18db208[0m
+[0;32mI (797) wifi:wifi certification version: v7.0[0m
+[0;32mI (801) wifi:config NVS flash: enabled[0m
+[0;32mI (805) wifi:config nano formating: disabled[0m
+[0;32mI (809) wifi:Init data frame dynamic rx buffer num: 32[0m
+[0;32mI (814) wifi:Init static rx mgmt buffer num: 5[0m
+[0;32mI (818) wifi:Init management short buffer num: 32[0m
+[0;32mI (822) wifi:Init dynamic tx buffer num: 32[0m
+[0;32mI (826) wifi:Init static tx FG buffer num: 2[0m
+[0;32mI (830) wifi:Init static rx buffer size: 1600[0m
+[0;32mI (834) wifi:Init static rx buffer num: 10[0m
+[0;32mI (838) wifi:Init dynamic rx buffer num: 32[0m
+[0;32mI (842) wifi_init: rx ba win: 6[0m
+[0;32mI (846) wifi_init: accept mbox: 6[0m
+[0;32mI (850) wifi_init: tcpip mbox: 32[0m
+[0;32mI (854) wifi_init: udp mbox: 6[0m
+[0;32mI (857) wifi_init: tcp mbox: 6[0m
+[0;32mI (861) wifi_init: tcp tx win: 5760[0m
+[0;32mI (865) wifi_init: tcp rx win: 5760[0m
+[0;32mI (870) wifi_init: tcp mss: 1440[0m
+[0;32mI (873) wifi_init: WiFi IRAM OP enabled[0m
+[0;32mI (878) wifi_init: WiFi RX IRAM OP enabled[0m
+[0;32mI (883) wifi:Set ps type: 0, coexist: 0[0m
+
+[0;32mI (887) phy_init: phy_version 711,97bcf0a2,Aug 25 2025,19:04:10[0m
+[0;32mI (925) wifi:mode : sta (90:70:69:0a:20:fc)[0m
+[0;32mI (925) wifi:enable tsf[0m
+[0;32mI (925) WiFi: Handling Wi-Fi event, event code 0x2b[0m
+[0;32mI (926) WiFi: Wi-Fi event not handled[0m
+[0;32mI (930) WiFi: Handling Wi-Fi event, event code 0x2[0m
+[0;32mI (935) WiFi: Wi-Fi started, connecting to AP...[0m
+[0;32mI (3434) WiFi: Handling Wi-Fi event, event code 0x1[0m
+[0;32mI (3434) WiFi: Wi-Fi scan done[0m
+[0;32mI (3630) WiFi: TEST TEST TEST!!! 5[0m
+[0;32mI (3630) WiFi: Hittade: NETGEAR49 (RSSI: -70)[0m
+[0;32mI (3630) WiFi: Hittade: #Telia-47EDA0 (RSSI: -79)[0m
+[0;32mI (3633) WiFi: Hittade: Rådh (RSSI: -80)[0m
+[0;32mI (3638) WiFi: Hittade: 4G-Gateway-8A940F (RSSI: -82)[0m
+[0;32mI (3644) WiFi: Hittade: NETGEAR94 (RSSI: -86)[0m
+[0;32mI (3649) WiFi: Handling Wi-Fi event, event code 0x3[0m
+[0;32mI (3654) WiFi: Wi-Fi stopped[0m
+[0;32mI (3658) wifi:flush txq[0m
+[0;32mI (3660) wifi:stop sw txq[0m
+[0;32mI (3662) wifi:lmac stop hw txq[0m
+[0;32mI (3667) wifi:Deinit lldesc rx mblock:10[0m
+[0;32mI (3670) main_task: Returned from app_main()[0m

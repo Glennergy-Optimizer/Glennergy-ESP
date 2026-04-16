@@ -1,0 +1,45 @@
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x15 (USB_UART_CHIP_RESET),boot:0x23 (DOWNLOAD(USB/UART0))
+Saved PC:0x40041a76
+waiting for download
+[0;32mI (800) wifi:config NVS flash: enabled[0m
+[0;32mI (804) wifi:config nano formating: disabled[0m
+[0;32mI (808) wifi:Init data frame dynamic rx buffer num: 32[0m
+[0;32mI (813) wifi:Init static rx mgmt buffer num: 5[0m
+[0;32mI (817) wifi:Init management short buffer num: 32[0m
+[0;32mI (821) wifi:Init dynamic tx buffer num: 32[0m
+[0;32mI (825) wifi:Init static tx FG buffer num: 2[0m
+[0;32mI (829) wifi:Init static rx buffer size: 1600[0m
+[0;32mI (833) wifi:Init static rx buffer num: 10[0m
+[0;32mI (837) wifi:Init dynamic rx buffer num: 32[0m
+[0;32mI (841) wifi_init: rx ba win: 6[0m
+[0;32mI (845) wifi_init: accept mbox: 6[0m
+[0;32mI (849) wifi_init: tcpip mbox: 32[0m
+[0;32mI (853) wifi_init: udp mbox: 6[0m
+[0;32mI (856) wifi_init: tcp mbox: 6[0m
+[0;32mI (860) wifi_init: tcp tx win: 5760[0m
+[0;32mI (864) wifi_init: tcp rx win: 5760[0m
+[0;32mI (869) wifi_init: tcp mss: 1440[0m
+[0;32mI (872) wifi_init: WiFi IRAM OP enabled[0m
+[0;32mI (877) wifi_init: WiFi RX IRAM OP enabled[0m
+[0;32mI (882) wifi:Set ps type: 0, coexist: 0[0m
+
+[0;32mI (886) phy_init: phy_version 711,97bcf0a2,Aug 25 2025,19:04:10[0m
+[0;32mI (924) wifi:mode : sta (90:70:69:0a:20:fc)[0m
+[0;32mI (924) wifi:enable tsf[0m
+[0;32mI (924) WiFi: Handling Wi-Fi event, event code 0x2b[0m
+[0;32mI (925) WiFi: Wi-Fi event not handled[0m
+[0;32mI (929) WiFi: Handling Wi-Fi event, event code 0x2[0m
+[0;32mI (934) WiFi: Wi-Fi started, connecting to AP...[0m
+[0;32mI (1129) WiFi: TEST TEST TEST!!! 0[0m
+[0;32mI (1129) main: SSID FROM SCAN IN UI: <����[0m
+[0;32mI (1129) WiFi: Handling Wi-Fi event, event code 0x1[0m
+[0;32mI (1132) WiFi: Wi-Fi scan done[0m
+[0;32mI (1136) WiFi: Handling Wi-Fi event, event code 0x3[0m
+[0;32mI (1141) WiFi: Wi-Fi stopped[0m
+[0;32mI (1145) wifi:flush txq[0m
+[0;32mI (1147) wifi:stop sw txq[0m
+[0;32mI (1149) wifi:lmac stop hw txq[0m
+[0;32mI (1154) wifi:Deinit lldesc rx mblock:10[0m
+[0;32mI (1157) main_task: Returned from app_main()[0m
