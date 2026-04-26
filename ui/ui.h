@@ -14,6 +14,7 @@ extern "C" {
 
 #include "ui_helpers.h"
 #include "ui_events.h"
+#include "lvgl_port.h"
 
 
 ///////////////////// SCREENS ////////////////////
@@ -31,7 +32,7 @@ extern lv_obj_t * ui____initial_actions0;
 LV_IMG_DECLARE(ui_img_1286710220);    // assets/8e9fc233-7db3-4144-9197-476dcfcd7fda.png
 
 // UI INIT
-void ui_init(WiFi* _WiFi);
+void ui_init();
 void ui_destroy(void);
 
 #ifdef __cplusplus

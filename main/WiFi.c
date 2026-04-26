@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "freertos/event_groups.h"
+#include "freertos/task.h"
 
 #define TAG "WiFi"
 
@@ -21,6 +22,12 @@ static esp_event_handler_instance_t ip_event;
 static esp_event_handler_instance_t wifi_event;
 
 static EventGroupHandle_t wifi_event_group = NULL;
+
+QueueHandle_t wifi_queue = NULL;
+
+QueueHandle_t event_queue = NULL;
+
+esp_err_t WiFi_Connect(wifi_data *w_info);
 
 static void ip_event_cb(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data)
 {
@@ -52,6 +59,8 @@ static void wifi_event_cb(void *arg, esp_event_base_t event_base, int32_t event_
 {
     ESP_LOGI(TAG, "Handling Wi-Fi event, event code 0x%" PRIx32, event_id);
 
+    wifi_status status;
+
     switch (event_id)
     {
     case (WIFI_EVENT_WIFI_READY):
@@ -59,6 +68,8 @@ static void wifi_event_cb(void *arg, esp_event_base_t event_base, int32_t event_
         break;
     case (WIFI_EVENT_SCAN_DONE):
         ESP_LOGI(TAG, "Wi-Fi scan done");
+        status = WIFI_STATUS_SCAN_DONE;
+        xQueueSend(event_queue, &status, portMAX_DELAY);
         break;
     case (WIFI_EVENT_STA_START):
         ESP_LOGI(TAG, "Wi-Fi started, connecting to AP...");
@@ -69,9 +80,12 @@ static void wifi_event_cb(void *arg, esp_event_base_t event_base, int32_t event_
         break;
     case (WIFI_EVENT_STA_CONNECTED):
         ESP_LOGI(TAG, "Wi-Fi connected");
+        status = WIFI_STATUS_CONNECTED;
+        xQueueSend(event_queue, &status, portMAX_DELAY);
         break;
     case (WIFI_EVENT_STA_DISCONNECTED):
         ESP_LOGI(TAG, "Wi-Fi disconnected");
+
         break;
     case (WIFI_EVENT_STA_AUTHMODE_CHANGE):
         ESP_LOGI(TAG, "Wi-Fi authmode changed");
@@ -82,11 +96,9 @@ static void wifi_event_cb(void *arg, esp_event_base_t event_base, int32_t event_
     }
 }
 
-esp_err_t WiFi_Initialize(WiFi *_WiFi)
+esp_err_t WiFi_Initialize(wifi_data *w_data)
 {
     esp_err_t ret_value = nvs_flash_init();
-
-    _WiFi->number = 0;
 
     if (ret_value == ESP_ERR_NVS_NO_FREE_PAGES || ret_value == ESP_ERR_NVS_NEW_VERSION_FOUND)
     {
@@ -110,13 +122,6 @@ esp_err_t WiFi_Initialize(WiFi *_WiFi)
         return ret_value;
     }
 
-    ret_value = esp_wifi_set_default_wifi_sta_handlers();
-    if (ret_value != ESP_OK)
-    {
-        ESP_LOGE(TAG, "Failed to set default handlers");
-        return ret_value;
-    }
-
     netif = esp_netif_create_default_wifi_sta();
     if (netif == NULL)
     {
@@ -124,35 +129,32 @@ esp_err_t WiFi_Initialize(WiFi *_WiFi)
         return ESP_FAIL;
     }
 
+    event_queue = xQueueCreate(1, sizeof(wifi_status));
+
+    if (event_queue == NULL)
+    {
+        ESP_LOGI(TAG, "Failed to create queue!");
+    }
+
+    wifi_queue = xQueueCreate(1, sizeof(wifi_data));
+
+    if (wifi_queue == NULL)
+    {
+        ESP_LOGI(TAG, "Failed to create queue!");
+    }
+
     // Wi-Fi stack configuration parameters
     wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
     ESP_ERROR_CHECK(esp_wifi_init(&cfg));
 
-    ESP_ERROR_CHECK(esp_event_handler_instance_register(WIFI_EVENT,
-                                                        ESP_EVENT_ANY_ID,
-                                                        &wifi_event_cb,
-                                                        NULL,
-                                                        &wifi_event));
-    ESP_ERROR_CHECK(esp_event_handler_instance_register(IP_EVENT,
-                                                        ESP_EVENT_ANY_ID,
-                                                        &ip_event_cb,
-                                                        NULL,
-                                                        &ip_event));
-    return ret_value;
+    ESP_ERROR_CHECK(esp_event_handler_instance_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &wifi_event_cb, NULL, &wifi_event));
+
+    ESP_ERROR_CHECK(esp_event_handler_instance_register(IP_EVENT, ESP_EVENT_ANY_ID, &ip_event_cb, NULL, &ip_event));
+    return ESP_OK;
 }
 
-esp_err_t WiFi_Scan(WiFi *_Wifi)
+esp_err_t WiFi_Scan(wifi_data *w_data)
 {
-    wifi_config_t wifi_config = {
-        .sta = {
-            // this sets the weakest authmode accepted in fast scan mode (default)
-            .threshold.authmode = WIFI_AUTH_MODE,
-        },
-    };
-
-    ESP_ERROR_CHECK(esp_wifi_set_ps(WIFI_PS_NONE));
-    ESP_ERROR_CHECK(esp_wifi_set_storage(WIFI_STORAGE_RAM));
-
     ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
     // ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));
 
@@ -174,35 +176,82 @@ esp_err_t WiFi_Scan(WiFi *_Wifi)
     if (number > max_number)
         number = max_number;
 
-    esp_err_t res = esp_wifi_scan_get_ap_records(&number, _Wifi->ap_info);
+    esp_err_t res = esp_wifi_scan_get_ap_records(&number, w_data->ap_info);
     if (res != ESP_OK)
     {
         ESP_LOGE(TAG, "Failed to scan wifi");
         return res;
     }
 
-    ESP_LOGI(TAG, "TEST TEST TEST!!! %d", number);
+    w_data->number = number;
 
-    _Wifi->number = number;
-
-    for (int i = 0; i < _Wifi->number; i++)
+    for (int i = 0; i < w_data->number; i++)
     {
-        ESP_LOGI(TAG, "Hittade: %s (RSSI: %d)", _Wifi->ap_info[i].ssid, _Wifi->ap_info[i].rssi);
+        ESP_LOGI(TAG, "Hittade: %s (RSSI: %d)", w_data->ap_info[i].ssid, w_data->ap_info[i].rssi);
     }
 
     return ESP_OK;
 }
 
-esp_err_t WiFi_Connect(char *ssid, char *password)
+void WiFi_Work(void *arg)
+{
+    wifi_status status;
+    wifi_data w_data;
+
+    while (1)
+    {
+
+        if (xQueueReceive(wifi_queue, &w_data, portMAX_DELAY))
+        {
+            switch (w_data.cmd)
+            {
+            case WIFI_CMD_SCAN:
+                WiFi_Scan(&w_data);
+                if (xQueueReceive(event_queue, &status, portMAX_DELAY))
+                {
+                    if (status == WIFI_STATUS_SCAN_DONE)
+                    {
+                        w_data.status = status;
+                        xQueueSend(wifi_queue, &w_data, portMAX_DELAY);
+                    }
+                }
+                break;
+            case WIFI_CMD_CONNECT:
+                WiFi_Connect(&w_data);
+                if (xQueueReceive(event_queue, &status, portMAX_DELAY))
+                {
+                    if (status == WIFI_STATUS_CONNECTED)
+                    {
+                        w_data.status = status;
+                        xQueueSend(wifi_queue, &w_data, portMAX_DELAY);
+                    }
+                }
+                break;
+            case WIFI_CMD_DISCONNECT:
+                break;
+            }
+            // ESP_LOGI(TAG, "WiFi Work: %d", wifi->number);
+            // xQueueSend(wifi_queue, wifi, portMAX_DELAY);
+        }
+        vTaskDelay(pdMS_TO_TICKS(10));
+    }
+}
+
+esp_err_t WiFi_Connect(wifi_data *w_data)
 {
     wifi_config_t wifi_config = {0};
 
-    strcpy((char *)wifi_config.sta.ssid, ssid);
-    strcpy((char *)wifi_config.sta.password, password);
+    strcpy((char *)wifi_config.sta.ssid, w_data->wifi_info.ssid);
+    strcpy((char *)wifi_config.sta.password, w_data->wifi_info.password);
 
     esp_wifi_set_config(WIFI_IF_STA, &wifi_config);
     esp_err_t err = esp_wifi_connect();
-    
+
+    if (err != ESP_OK)
+    {
+        return ESP_FAIL;
+    }
+
     return ESP_OK;
 }
 

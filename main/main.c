@@ -20,23 +20,25 @@
 #include "freertos/task.h"
 #include "WiFi.h"
 
-
 #define WIFI_PASS "rockyunit953"
 #define WIFI_SSID "NETGEAR49"
 
 static const char *TAG = "main";
 
-
 // Main application function
 void app_main()
 {
+    
     static esp_lcd_panel_handle_t panel_handle = NULL; // Declare a handle for the LCD panel
     static esp_lcd_touch_handle_t tp_handle = NULL;
     // Initialize the GT911 touch screen controller
     tp_handle = touch_gt911_init();
 
+    vTaskDelay(pdMS_TO_TICKS(2000));
+
     // Initialize the Waveshare ESP32-S3 RGB LCD hardware
     panel_handle = waveshare_esp32_s3_rgb_lcd_init();
+
 
     // Turn on the LCD backlight
     wavesahre_rgb_lcd_bl_on();
@@ -45,11 +47,9 @@ void app_main()
 
     ESP_LOGI(TAG, "Display LVGL demos");
 
-    WiFi wifi;
+    wifi_data wifi;
 
     WiFi_Initialize(&wifi);
-
-    WiFi_Scan(&wifi);
 
     ESP_LOGI(TAG, "SSID FROM SCAN IN UI: %s", wifi.ap_info[0].ssid);
     // Lock the mutex due to the LVGL APIs are not thread-safe
@@ -60,8 +60,13 @@ void app_main()
 
         // Release the mutex
         lvgl_port_unlock();
+
+
     }
 
+    xTaskCreate(WiFi_Work, "WIFI_Work", 4096, NULL, 5, NULL);
 
-    ESP_ERROR_CHECK(WiFi_Dispose());
+    xTaskCreate(ui_update_task, "UI_Update", 4096, NULL, 5, NULL);
+
+    //ESP_ERROR_CHECK(WiFi_Dispose());
 }

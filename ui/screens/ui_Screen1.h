@@ -13,8 +13,9 @@ extern "C" {
 #endif
 
 // SCREEN: ui_Screen1
-extern void ui_Screen1_screen_init(WiFi* _WiFi);
+extern void ui_Screen1_screen_init();
 extern void ui_Screen1_screen_destroy(void);
+extern void ui_update_task(void *arg);
 extern lv_obj_t * ui_Screen1;
 extern lv_obj_t * ui_WiFi;
 extern lv_obj_t * ui_Label1;
