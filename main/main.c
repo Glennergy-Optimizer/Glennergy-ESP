@@ -19,6 +19,8 @@
 #include "../ui/ui.h"
 #include "freertos/task.h"
 #include "WiFi.h"
+#include "HTTP.h"
+#include "jansson.h"
 
 #define WIFI_PASS "rockyunit953"
 #define WIFI_SSID "NETGEAR49"
@@ -45,23 +47,14 @@ void app_main()
 
     ESP_ERROR_CHECK(lvgl_port_init(panel_handle, tp_handle)); // Initialize LVGL with the panel and touch handles
 
-    ESP_LOGI(TAG, "Display LVGL demos");
+    WiFi_Initialize();
 
-    wifi_data wifi;
-
-    WiFi_Initialize(&wifi);
-
-    ESP_LOGI(TAG, "SSID FROM SCAN IN UI: %s", wifi.ap_info[0].ssid);
     // Lock the mutex due to the LVGL APIs are not thread-safe
     if (lvgl_port_lock(-1))
     {
-
-        ui_init(&wifi);
-
+        ui_init();
         // Release the mutex
         lvgl_port_unlock();
-
-
     }
 
     xTaskCreate(WiFi_Work, "WIFI_Work", 4096, NULL, 5, NULL);

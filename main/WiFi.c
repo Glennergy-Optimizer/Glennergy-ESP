@@ -28,6 +28,8 @@ QueueHandle_t wifi_queue = NULL;
 QueueHandle_t event_queue = NULL;
 
 esp_err_t WiFi_Connect(wifi_data *w_info);
+esp_err_t WiFi_Dispose(void);
+esp_err_t WiFi_Disconnect(void);
 
 static void ip_event_cb(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data)
 {
@@ -65,6 +67,7 @@ static void wifi_event_cb(void *arg, esp_event_base_t event_base, int32_t event_
     {
     case (WIFI_EVENT_WIFI_READY):
         ESP_LOGI(TAG, "Wi-Fi ready");
+        xQueueSend(event_queue, &status, portMAX_DELAY);
         break;
     case (WIFI_EVENT_SCAN_DONE):
         ESP_LOGI(TAG, "Wi-Fi scan done");
@@ -85,7 +88,8 @@ static void wifi_event_cb(void *arg, esp_event_base_t event_base, int32_t event_
         break;
     case (WIFI_EVENT_STA_DISCONNECTED):
         ESP_LOGI(TAG, "Wi-Fi disconnected");
-
+        status = WIFI_STATUS_DISCONNECTED;
+        xQueueSend(event_queue, &status, portMAX_DELAY);
         break;
     case (WIFI_EVENT_STA_AUTHMODE_CHANGE):
         ESP_LOGI(TAG, "Wi-Fi authmode changed");
@@ -96,7 +100,24 @@ static void wifi_event_cb(void *arg, esp_event_base_t event_base, int32_t event_
     }
 }
 
-esp_err_t WiFi_Initialize(wifi_data *w_data)
+void WiFi_CreateQueues()
+{
+    event_queue = xQueueCreate(1, sizeof(wifi_status));
+
+    if (event_queue == NULL)
+    {
+        ESP_LOGI(TAG, "Failed to create queue!");
+    }
+
+    wifi_queue = xQueueCreate(1, sizeof(wifi_data));
+
+    if (wifi_queue == NULL)
+    {
+        ESP_LOGI(TAG, "Failed to create queue!");
+    }
+}
+
+esp_err_t WiFi_Initialize()
 {
     esp_err_t ret_value = nvs_flash_init();
 
@@ -129,19 +150,7 @@ esp_err_t WiFi_Initialize(wifi_data *w_data)
         return ESP_FAIL;
     }
 
-    event_queue = xQueueCreate(1, sizeof(wifi_status));
-
-    if (event_queue == NULL)
-    {
-        ESP_LOGI(TAG, "Failed to create queue!");
-    }
-
-    wifi_queue = xQueueCreate(1, sizeof(wifi_data));
-
-    if (wifi_queue == NULL)
-    {
-        ESP_LOGI(TAG, "Failed to create queue!");
-    }
+    WiFi_CreateQueues();
 
     // Wi-Fi stack configuration parameters
     wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
@@ -228,6 +237,18 @@ void WiFi_Work(void *arg)
                 }
                 break;
             case WIFI_CMD_DISCONNECT:
+                WiFi_Disconnect();
+                if (xQueueReceive(event_queue, &status, portMAX_DELAY))
+                {
+                    if (status == WIFI_STATUS_DISCONNECTED)
+                    {
+                        w_data.status = status;
+                        xQueueSend(wifi_queue, &w_data, portMAX_DELAY);
+                    }
+                }
+                break;
+
+            default:
                 break;
             }
             // ESP_LOGI(TAG, "WiFi Work: %d", wifi->number);

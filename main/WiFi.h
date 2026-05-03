@@ -16,13 +16,16 @@ extern QueueHandle_t wifi_queue;
 
 typedef enum
 {
+    WIFI_CMD_START,
     WIFI_CMD_SCAN,
     WIFI_CMD_CONNECT,
     WIFI_CMD_DISCONNECT,
+    WIFI_CMD_STOP,
 } wifi_cmd_t;
 
 typedef enum
 {
+    WIFI_STATUS_INITIALIZED,
     WIFI_STATUS_CONNECTED,
     WIFI_STATUS_SCAN_DONE,
     WIFI_STATUS_DISCONNECTED,
@@ -43,7 +46,9 @@ typedef struct
     wifi_info wifi_info;
 } wifi_data;
 
-esp_err_t WiFi_Initialize(wifi_data *w_data);
+esp_err_t WiFi_Initialize();
+
+void WiFi_CreateQueues();
 
 esp_err_t WiFi_Scan(wifi_data *w_data);
 
