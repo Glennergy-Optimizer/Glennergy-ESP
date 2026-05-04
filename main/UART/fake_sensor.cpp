@@ -1,8 +1,9 @@
 #include <iostream>
 #include "fake_sensor.hpp"
+#include "Queues.h"
 #include "esp_log.h"
 
-const char* TAG = "Sensor";
+static const char* TAG = "Sensor";
 
 static int counter = 0;
 static int temp_direction = 1;

@@ -3,7 +3,6 @@
 #include <cstdio>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include <string>
 #include "uart_diag_shell.hpp"
 #include <vector>
 #include <sstream>

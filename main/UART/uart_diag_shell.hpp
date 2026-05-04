@@ -1,6 +1,9 @@
 #ifndef UART_DIAG_SHELL_HPP
 #define UART_DIAG_SHELL_HPP
 
+#include <string>
+#include "fake_sensor.h"
+
 void handle_input(std::string input);
 
 typedef enum {
@@ -41,11 +44,7 @@ typedef struct {
 
 // Senaste BME280-readings
 // float eller double?
-typedef struct {
-    double temperature;
-    double pressure;
-    double humidity;
-} sensor_data_t;
+
 
 
 // App config, med runtime values som tex internal på fetch, dvs hur ofta kunden sätter att klienten ska uppdatera sin data från server.
