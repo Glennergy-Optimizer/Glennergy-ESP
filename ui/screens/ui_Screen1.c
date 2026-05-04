@@ -107,7 +107,7 @@ void ui_update_task(void *arg)
     sensor_data_t sensor_data;
     while (1)
     {
-        if (xQueueReceive(wifi_queue, &wifi, portMAX_DELAY) == pdPASS)
+        if (wifi_queue != NULL && xQueueReceive(wifi_queue, &wifi, 0) == pdPASS)
         {
             if (wifi.status == WIFI_STATUS_SCAN_DONE)
             {
@@ -130,12 +130,17 @@ void ui_update_task(void *arg)
             }
         }
 
-        if(xQueueReceive(Sensor_Queue, &sensor_data, portMAX_DELAY) == pdPASS)
+        if (Sensor_Queue != NULL && xQueueReceive(Sensor_Queue, &sensor_data, 0) == pdPASS)
         {
             char temp[50];
             snprintf(temp, sizeof(temp), "%2.f", sensor_data.temperature);
-            lv_label_set_text(ui_Label3, temp);
+            if (lvgl_port_lock(-1))
+            {
+                lv_label_set_text(ui_Label3, temp);
+                lvgl_port_unlock();
+            }
         }
+        vTaskDelay(pdMS_TO_TICKS(10));
     }
 }
 

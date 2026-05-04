@@ -7,7 +7,8 @@
 #define UI_SCREEN1_H
 
 #include "../../main/WiFi.h"
-#include "../../main/UART/fake_sensor.hpp"
+#include "../../main/UART/Queues.h"
+#include "../../main/UART/fake_sensor.h"
 
 #ifdef __cplusplus
 extern "C" {
