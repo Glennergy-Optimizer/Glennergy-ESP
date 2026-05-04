@@ -106,14 +106,14 @@ void WiFi_CreateQueues()
 
     if (event_queue == NULL)
     {
-        ESP_LOGI(TAG, "Failed to create queue!");
+        ESP_LOGI(TAG, "Failed to create event queue!");
     }
 
     wifi_queue = xQueueCreate(1, sizeof(wifi_data));
 
     if (wifi_queue == NULL)
     {
-        ESP_LOGI(TAG, "Failed to create queue!");
+        ESP_LOGI(TAG, "Failed to create wifi queue!");
     }
 }
 

@@ -21,6 +21,7 @@
 #include "WiFi.h"
 #include "HTTP.h"
 #include "jansson.h"
+#include "UART/UART.hpp"
 
 #define WIFI_PASS "rockyunit953"
 #define WIFI_SSID "NETGEAR49"
@@ -60,6 +61,8 @@ void app_main()
     xTaskCreate(WiFi_Work, "WIFI_Work", 4096, NULL, 5, NULL);
 
     xTaskCreate(ui_update_task, "UI_Update", 4096, NULL, 5, NULL);
+
+    xTaskCreate(UART_Init, "UART", 4096, NULL, 4, NULL);
 
     //ESP_ERROR_CHECK(WiFi_Dispose());
 }

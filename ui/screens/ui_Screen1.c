@@ -104,6 +104,7 @@ void wifi_dropdown_cb(lv_event_t *event)
 void ui_update_task(void *arg)
 {
     wifi_data wifi;
+    sensor_data_t sensor_data;
     while (1)
     {
         if (xQueueReceive(wifi_queue, &wifi, portMAX_DELAY) == pdPASS)
@@ -127,6 +128,13 @@ void ui_update_task(void *arg)
                 lv_label_set_text(ui_Label7, "Connected");
                 lv_obj_set_style_text_color(ui_Label7, lv_color_hex(0x66FF00), LV_PART_MAIN | LV_STATE_DEFAULT);
             }
+        }
+
+        if(xQueueReceive(Sensor_Queue, &sensor_data, portMAX_DELAY) == pdPASS)
+        {
+            char temp[50];
+            snprintf(temp, sizeof(temp), "%2.f", sensor_data.temperature);
+            lv_label_set_text(ui_Label3, temp);
         }
     }
 }
