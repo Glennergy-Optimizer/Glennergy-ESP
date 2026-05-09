@@ -4,8 +4,6 @@
 #include <string>
 #include "fake_sensor.h"
 
-void handle_input(std::string input);
-
 typedef enum {
     RECOMMENDATION_BUY = 1,
     RECOMMENDATION_SELL = 2,

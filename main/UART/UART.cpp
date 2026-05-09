@@ -16,6 +16,16 @@ static app_state_t app;
 
 static const char* TAG = "UART";
 
+// Helper function - std::tolower can work to handle inputs while being case-insensitive, but may not work well when dealing with negative char values.
+// This helper function is future proof
+std::string to_lower_copy(std::string str)
+{
+    for (char& c : str){
+        c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
+    }
+    return str;
+}
+
 extern "C" void UART_Init(void)
 {
     ESP_LOGI(TAG, "UART diagnostics start, cpp mode.");
@@ -77,9 +87,8 @@ extern "C" void UART_Init(void)
                 if (c == '\n' || c == '\r')
                 {
                     line[line_pos] = '\0';
-                    ESP_LOGI(TAG, "Commplete msg: %s", line);
-                    //handle_input(line);
-                    handle_input(line, &app);
+                    ESP_LOGI(TAG, "Complete msg: %s", line);
+                    handle_input(to_lower_copy(line), &app);
                     /*if (strcmp(line, "help") == 0) {
                         handle_help(false);
                     } else if (strcmp(line, "help immersive") == 0) {

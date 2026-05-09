@@ -66,7 +66,8 @@ void handle_input(const std::string& input, app_state_t* state)
     ESP_LOGI(TAG, "msg len: %d\n", msg_len);
     std::vector<std::string> tokens = split(input, ' ');
     if (tokens.size() == 0) {
-        std::out << "No or incorrect input. Try again. " << std::endl;
+        std::cout << "No or incorrect input. Try again. " << std::endl;
+        return;
     }
     const std::string& cmd = tokens[0];
     
