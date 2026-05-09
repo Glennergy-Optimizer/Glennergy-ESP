@@ -65,6 +65,9 @@ void handle_input(const std::string& input, app_state_t* state)
     int msg_len = input.length();
     ESP_LOGI(TAG, "msg len: %d\n", msg_len);
     std::vector<std::string> tokens = split(input, ' ');
+    if (tokens.size() == 0) {
+        std::out << "No or incorrect input. Try again. " << std::endl;
+    }
     const std::string& cmd = tokens[0];
     
     if (tokens.size() == 2 && cmd == "help" && tokens[1] == "immersive") {
