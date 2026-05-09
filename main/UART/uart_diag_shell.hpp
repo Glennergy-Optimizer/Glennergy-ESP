@@ -57,7 +57,7 @@ typedef struct {
     bool wifi_connected;
     bool leop_connected;
     bool sensor_ok;
-    uint32_t uptime_seconds;
+    uint32_t update_counter;
 } system_status_t;
 
 

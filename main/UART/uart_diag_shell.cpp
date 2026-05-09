@@ -7,6 +7,8 @@
 #include <vector>
 #include <sstream>
 #include <cstdlib>
+#include "esp_timer.h"
+#include "esp_heap_caps.h"
 
 static const char* TAG = "UART_DIAG_SHELL.CPP";
 
@@ -126,7 +128,7 @@ void handle_status(app_state_t* state)
     std::cout << "Wifi: " << connected_text(state->system_status.wifi_connected) << std::endl;
     std::cout << "LEOP: : " << connected_text(state->system_status.leop_connected) << std::endl;
     std::cout << "Sensor: " << ok_text(state->system_status.sensor_ok) << std::endl;
-    std::cout << "Uptime: " << state->system_status.uptime_seconds << std::endl;
+    std::cout << "Update counter: " << state->system_status.update_counter << std::endl;
 
 
     // //app_state_t app_status = state;
@@ -221,7 +223,23 @@ void handle_leop(app_state_t* app)
 // Mer fokus på detaljer om varför något är ok eller inte?
 void handle_diag()
 {
-    std::cout << "Diagnostics - to be implemented." << std::endl;
+    // Mirkoseconds since boot, then converted to seconds and divide by matching type (unsigned long long)
+    uint64_t uptime_seconds = esp_timer_get_time() / 1000000ULL;
+
+    // current normal heap available
+    size_t free_heap = heap_caps_get_free_size(MALLOC_CAP_DEFAULT);
+    // returns the lowest heap has ever gotten since we started the program
+    size_t min_free_heap = heap_caps_get_minimum_free_size(MALLOC_CAP_DEFAULT);
+
+    UBaseType_t task_count = uxTaskGetNumberOfTasks();
+
+    std::cout << "Diagnostics: " << std::endl;
+    std::cout << "Uptime: " << uptime_seconds << " seconds." << std::endl;
+    std::cout << "Free Heap: " << free_heap << " bytes. " << std::endl;
+    std::cout << "Minimum free heap: " << min_free_heap << " bytes." << std::endl;
+    std::cout << "Task count: " << task_count << std::endl;
+
+    //std::cout << "Diagnostics - to be implemented." << std::endl;
 }
 
 
@@ -250,7 +268,7 @@ void handle_help(bool wait_for_enter)
     std::cout << "LEOP - Shows latest data recieved from the LEOP-server." << std::endl;
     std::cout << "SENSOR - Shows current BME280-readings." << std::endl;
     std::cout << "CONFIG<param> <value> - Change config values." << std::endl;
-    std::cout << "DIAG - shows system diagnostics(Task-statistics, stack-usage etc.) (not yet implemented.)" << std::endl;
+    std::cout << "DIAG - shows system diagnostics(Task-statistics, heap-usage etc.)" << std::endl;
     std::cout << "HELP - This command =)" << std::endl;
 }
 
