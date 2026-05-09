@@ -26,6 +26,20 @@ std::string to_lower_copy(std::string str)
     return str;
 }
 
+std::string trim_copy(const std::string& str)
+{
+    const char* whitespace = " \t\r\n";
+    // Searches from beginning of the first none-whitespace character index
+    size_t start = str.find_first_not_of(whitespace);
+    if (start == std::string::npos) {
+        return "";
+    }
+
+    // Same, but reversed - Seacrhing from end of string to find the first non-white space index
+    size_t end = str.find_last_not_of(whitespace);
+    return str.substr(start, end - start + 1);
+}
+
 extern "C" void UART_Init(void)
 {
     ESP_LOGI(TAG, "UART diagnostics start, cpp mode.");
@@ -88,7 +102,9 @@ extern "C" void UART_Init(void)
                 {
                     line[line_pos] = '\0';
                     ESP_LOGI(TAG, "Complete msg: %s", line);
-                    handle_input(to_lower_copy(line), &app);
+                    // trim and lowercase input.
+
+                    handle_input(to_lower_copy(trim_copy(line)), &app);
                     /*if (strcmp(line, "help") == 0) {
                         handle_help(false);
                     } else if (strcmp(line, "help immersive") == 0) {
