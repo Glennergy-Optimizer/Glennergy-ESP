@@ -36,6 +36,23 @@ std::vector<std::string> split(const std::string& str, char delimiter) {
     return result;
 }
 
+// todo - maybe change to enum instead of simple format helpers?
+const char* connected_text(bool value)
+{
+    return value ? "Connected" : "Disconnected";
+}
+
+const char* enabled_text(bool value)
+{
+    return value ? "Enabled" : "Disabled";
+}
+
+const char* ok_text(bool value)
+{
+    return value ? "OK" : "Not OK";
+}
+
+
 // Takes in a std::string,
 // .c_str() converts to C-style char*,
 // so std::strtol:
@@ -106,9 +123,9 @@ void handle_input(const std::string& input, app_state_t* state)
 // Status - Mer face-value till user, tex "är wifi ok"
 void handle_status(app_state_t* state)
 {
-    std::cout << "Wifi: " << state->system_status.wifi_connected << std::endl;
-    std::cout << "LEOP connection: " << state->system_status.leop_connected << std::endl;
-    std::cout << "Sensor: " << state->system_status.sensor_ok << std::endl;
+    std::cout << "Wifi: " << connected_text(state->system_status.wifi_connected) << std::endl;
+    std::cout << "LEOP: : " << connected_text(state->system_status.leop_connected) << std::endl;
+    std::cout << "Sensor: " << ok_text(state->system_status.sensor_ok) << std::endl;
     std::cout << "Uptime: " << state->system_status.uptime_seconds << std::endl;
 
 
@@ -132,7 +149,7 @@ void handle_sensor(app_state_t* state)
 
 void print_config(app_state_t* state) {
     std::cout << "fetch_interval_minutes: " << state->config_data.fetch_interval_minutes << std::endl;
-    std::cout << "test_mode: " << state->config_data.test_mode << std::endl;
+    std::cout << "test_mode: " << enabled_text(state->config_data.test_mode) << std::endl;
 }
 
 void handle_config(std::vector<std::string> tokens, app_state_t* state)
