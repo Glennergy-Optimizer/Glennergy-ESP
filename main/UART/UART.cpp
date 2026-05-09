@@ -89,7 +89,7 @@ extern "C" void UART_Init(void)
 
         if (prompt_needed) {
             //std::cout << "UART_DIAGNOSTICS_INTERFACE, cpp mode> " << std::endl;
-            printf("UART_DIGNOASTICS_INTERFACE> ");
+            printf("UART_DIAGNOSTICS_INTERFACE> ");
             fflush(stdout);
             prompt_needed = false;
         }
