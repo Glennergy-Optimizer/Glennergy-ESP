@@ -7,10 +7,14 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stdio.h>
-#include "fake_leop.hpp"
+//#include "fake_leop.hpp"
 //#include "fake_sensor.hpp"
-#include "fake_system_status.hpp"
-#include "fake_config.hpp"
+//#include "fake_system_status.hpp"
+//#include "fake_config.hpp"
+// TODO - Should be extracted away from UART.
+#include "../leop/fake_leop.hpp"
+#include "../fake/fake_system_status.hpp"
+#include "../fake/fake_config.hpp"
 #include "esp_timer.h"
 #include "../app_types.h"
 

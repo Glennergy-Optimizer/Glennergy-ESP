@@ -1,9 +1,10 @@
 #include <iostream>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "../UART/fake_sensor.hpp"
+#include "fake_sensor.hpp"
 #include "sensor.h"
 #include "esp_log.h"
+#include "../app_queues.h"
 
 static const char* TAG = "Sensor.cpp";
 // Reminder, static so only this file can see it

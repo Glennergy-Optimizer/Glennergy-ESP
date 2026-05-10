@@ -6,6 +6,7 @@
 void fake_leop_fill(leop_data_t* leop);
 
 
+
 void fake_leop_fill(leop_data_t* leop) {
     leop->id = 1;
     leop->entry_count = 3;
@@ -20,4 +21,8 @@ void fake_leop_fill(leop_data_t* leop) {
     }
     */
 
-} 
+}
+
+void fake_leop_update(leop_data_t* leop) {
+    
+}
