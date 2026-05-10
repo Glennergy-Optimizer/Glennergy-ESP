@@ -14,7 +14,7 @@
 #include "esp_timer.h"
 #include "../app_types.h"
 
-static app_state_t app;
+//static app_state_t app;
 
 static const char* TAG = "UART";
 
@@ -42,7 +42,7 @@ std::string trim_copy(const std::string& str)
     return str.substr(start, end - start + 1);
 }
 
-extern "C" void UART_Init(void)
+extern "C" void UART_Init(app_state_t* app)
 {
     ESP_LOGI(TAG, "UART diagnostics start, cpp mode.");
     ESP_LOGI(TAG, "Type HELP for commands.");
@@ -61,7 +61,7 @@ extern "C" void UART_Init(void)
     // app.sensor_data.humidity = 4;
     // app.sensor_data.pressure = 80;
     // Nu med fake producer
-    fake_sensor_fill(&app.sensor_data);
+    //fake_sensor_fill(&app.sensor_data);
 
 
     // app.system_status.wifi_connected = false;
@@ -69,16 +69,16 @@ extern "C" void UART_Init(void)
     // app.system_status.uptime_seconds = 123;
     // app.system_status.sensor_ok = true;
     // Nu med fake producer
-    fake_system_status_fill(&app.system_status);
+    fake_system_status_fill(&app->system_status);
 
 
     // app.config_data.test_mode = false;
     // app.config_data.fetch_interval_minutes = 30;
     // Nu med fake producer
-    fake_config_data(&app.config_data);
+    fake_config_data(&app->config_data);
 
 
-    fake_leop_fill(&app.leop_data);
+    fake_leop_fill(&app->leop_data);
 
 
     static uint32_t last_fake_update = 0;
@@ -91,8 +91,8 @@ extern "C" void UART_Init(void)
         // Our loops may run several times a second, but we can trottle it to only update our fake data once every new second
         if (now_seconds != last_fake_update) {
             last_fake_update = now_seconds;
-            fake_system_status_update(&app.system_status);
-            fake_sensor_update(&app.sensor_data);
+            fake_system_status_update(&app->system_status);
+            //fake_sensor_update(&app.sensor_data);
         }
 
 
@@ -113,7 +113,7 @@ extern "C" void UART_Init(void)
                     ESP_LOGI(TAG, "Complete msg: %s", line);
                     // trim and lowercase input.
 
-                    handle_input(to_lower_copy(trim_copy(line)), &app);
+                    handle_input(to_lower_copy(trim_copy(line)), app);
                     /*if (strcmp(line, "help") == 0) {
                         handle_help(false);
                     } else if (strcmp(line, "help immersive") == 0) {
