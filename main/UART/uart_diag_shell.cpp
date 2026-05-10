@@ -9,6 +9,8 @@
 #include <cstdlib>
 #include "esp_timer.h"
 #include "esp_heap_caps.h"
+#include "../app_types.h"
+
 
 static const char* TAG = "UART_DIAG_SHELL.CPP";
 

@@ -1,7 +1,8 @@
 #ifndef FAKE_SYSTEM_STATUS_HPP
 #define FAKE_SYSTEM_STATUS_HPP
 
-#include "uart_diag_shell.hpp"
+//#include "uart_diag_shell.hpp"
+#include "../app_types.h"
 
 void fake_system_status_fill(system_status_t* system);
 

@@ -8,8 +8,7 @@
 
 #include "../../main/WiFi.h"
 #include "../../main/UART/Queues.h"
-#include "../../main/UART/fake_sensor.h"
-
+#include "../app_types.h"
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -1,6 +1,7 @@
 #include <iostream>
-#include "uart_diag_shell.hpp"
 #include "fake_system_status.hpp"
+#include "../app_types.h"
+
 
 static int counter = 0;
 

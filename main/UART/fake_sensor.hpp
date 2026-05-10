@@ -1,7 +1,7 @@
 #ifndef FAKE_SENSOR_HPP
 #define FAKE_SENSOR_HPP
 
-#include "fake_sensor.h"
+#include "../app_types.h"
 
 
 

@@ -1,5 +1,7 @@
 #include <iostream>
 #include "fake_leop.hpp"
+#include "../app_types.h"
+
 
 void fake_leop_fill(leop_data_t* leop);
 

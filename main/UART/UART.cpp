@@ -12,6 +12,7 @@
 #include "fake_system_status.hpp"
 #include "fake_config.hpp"
 #include "esp_timer.h"
+#include "../app_types.h"
 
 static app_state_t app;
 

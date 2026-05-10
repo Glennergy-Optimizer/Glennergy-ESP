@@ -3,6 +3,8 @@
 #include "Queues.h"
 #include "esp_log.h"
 #include "esp_timer.h"
+#include "../app_types.h"
+
 
 static const char* TAG = "Sensor";
 
