@@ -30,7 +30,7 @@ void fake_sensor_fill(sensor_data_t* sensor) {
 void fake_sensor_update(sensor_data_t* sensor) {
     counter += 1;
     sensor->temperature = sensor->temperature + 0.01 * temp_direction;
-    sensor->humidity = sensor->humidity + 0.05 * temp_direction;
+    sensor->humidity = sensor->humidity + 0.05 * humidity_direction;
     sensor->valid = true;
     sensor->last_update_seconds = esp_timer_get_time() / 1000000ULL;
 
