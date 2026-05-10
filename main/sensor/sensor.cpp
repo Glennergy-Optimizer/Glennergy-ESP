@@ -3,19 +3,34 @@
 #include "freertos/task.h"
 #include "../UART/fake_sensor.hpp"
 #include "sensor.h"
+#include "esp_log.h"
 
+static const char* TAG = "Sensor.cpp";
 // Reminder, static so only this file can see it
 static bool fake_mode = true;
 
-void Sensor_Init(sensor_data_t* sensor);
 
+
+QueueHandle_t Sensor_Queue = NULL;
 
 
 void Sensor_Init(app_state_t* app)
 {
+    // Do it matter if we have fake or true when initializing?
     if (fake_mode == true)
     {
         fake_sensor_fill(&app->sensor_data);
+    }
+    else {
+        // case of true data
+
+    }
+
+    Sensor_Queue = xQueueCreate(1, sizeof(sensor_data_t));
+
+    if (Sensor_Queue == NULL)
+    {
+        ESP_LOGI(TAG, "Failed to create sensor queue!");
     }
 
 }
@@ -27,8 +42,15 @@ bool Sensor_Read(sensor_data_t* sensor)
     if (fake_mode == true)
     {
         fake_sensor_update(sensor);
+        xQueueSend(Sensor_Queue, sensor, portMAX_DELAY);
         return true;
     }
+    else {
+        // real sensor data
+        return true;
+    }
+
+    
 
     return false;
 }

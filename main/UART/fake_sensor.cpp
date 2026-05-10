@@ -12,7 +12,7 @@ static int counter = 0;
 static int temp_direction = 1;
 static int humidity_direction = 1;
 
-QueueHandle_t Sensor_Queue = NULL;
+// QueueHandle_t Sensor_Queue = NULL;
 
 void fake_sensor_fill(sensor_data_t* sensor) {
     sensor->temperature = 5;
@@ -21,12 +21,12 @@ void fake_sensor_fill(sensor_data_t* sensor) {
     sensor->valid = false;    
     sensor->last_update_seconds = 0;
 
-    Sensor_Queue = xQueueCreate(1, sizeof(sensor_data_t));
+    // Sensor_Queue = xQueueCreate(1, sizeof(sensor_data_t));
     
-    if (Sensor_Queue == NULL)
-    {
-        ESP_LOGI(TAG, "Failed to create sensor queue!");
-    }
+    // if (Sensor_Queue == NULL)
+    // {
+    //     ESP_LOGI(TAG, "Failed to create sensor queue!");
+    // }
 }
 
 void fake_sensor_update(sensor_data_t* sensor) {
@@ -52,5 +52,5 @@ void fake_sensor_update(sensor_data_t* sensor) {
         humidity_direction = 1;
     }
 
-    xQueueSend(Sensor_Queue, sensor, portMAX_DELAY);
+    // xQueueSend(Sensor_Queue, sensor, portMAX_DELAY);
 }

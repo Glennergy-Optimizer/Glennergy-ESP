@@ -8,7 +8,7 @@
 #include <string.h>
 #include <stdio.h>
 #include "fake_leop.hpp"
-#include "fake_sensor.hpp"
+//#include "fake_sensor.hpp"
 #include "fake_system_status.hpp"
 #include "fake_config.hpp"
 #include "esp_timer.h"
