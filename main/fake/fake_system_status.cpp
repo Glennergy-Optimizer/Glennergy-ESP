@@ -1,6 +1,4 @@
-#include <iostream>
 #include "fake_system_status.hpp"
-#include "../app_types.h"
 
 
 static int counter = 0;

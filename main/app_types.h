@@ -1,6 +1,9 @@
 #ifndef APP_TYPES_H
 #define APP_TYPES_H
 
+#include <stdbool.h>
+#include <stdint.h>
+
 typedef enum {
     RECOMMENDATION_BUY = 1,
     RECOMMENDATION_SELL = 2,

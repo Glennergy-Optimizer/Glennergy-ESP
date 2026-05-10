@@ -131,16 +131,6 @@ void handle_status(app_state_t* state)
     std::cout << "LEOP: " << connected_text(state->system_status.leop_connected) << std::endl;
     std::cout << "Sensor: " << ok_text(state->system_status.sensor_ok) << std::endl;
     std::cout << "Update counter: " << state->system_status.update_counter << std::endl;
-
-
-    // //app_state_t app_status = state;
-    // std::cout << "Status of app state: " << std::endl;
-    // std::cout << "LEOP - TODO" << std::endl;
-    // std::cout << "Sensor: " << std::endl;
-    // std::cout << "    Temperature - " << state->sensor_data.temperature << std::endl;
-    // std::cout << "    Pressure    - " << state->sensor_data.pressure << std::endl;
-    // std::cout << "    Humidity    - " << state->sensor_data.humidity << std::endl;
-    // std::cout << "End of status. Not fully implemented yet." << std::endl;
 }
 
 void handle_sensor(app_state_t* state)
@@ -208,8 +198,6 @@ void handle_config(std::vector<std::string> tokens, app_state_t* state)
 }
 
 
-
-
 void handle_leop(app_state_t* app)
 {
     leop_data_t& leop = app->leop_data;
@@ -246,8 +234,6 @@ void handle_diag()
     std::cout << "Free Heap: " << free_heap << " bytes. " << std::endl;
     std::cout << "Minimum free heap: " << min_free_heap << " bytes." << std::endl;
     std::cout << "Task count: " << task_count << std::endl;
-
-    //std::cout << "Diagnostics - to be implemented." << std::endl;
 }
 
 

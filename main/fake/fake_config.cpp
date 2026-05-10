@@ -1,6 +1,4 @@
-#include <iostream>
 #include "fake_config.hpp"
-#include "../app_types.h"
 
 
 void fake_config_data(config_data_t* config) {
