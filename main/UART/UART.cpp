@@ -11,6 +11,7 @@
 #include "fake_sensor.hpp"
 #include "fake_system_status.hpp"
 #include "fake_config.hpp"
+#include "esp_timer.h"
 
 static app_state_t app;
 
@@ -79,12 +80,19 @@ extern "C" void UART_Init(void)
     fake_leop_fill(&app.leop_data);
 
 
-
+    static uint32_t last_fake_update = 0;
+    
     while (1)
     {
+        uint32_t now_seconds = esp_timer_get_time() / 1000000ULL;
+        
         // Continously update our fake data to better mimic runtime behavior
-        fake_system_status_update(&app.system_status);
-        fake_sensor_update(&app.sensor_data);
+        // Our loops may run several times a second, but we can trottle it to only update our fake data once every new second
+        if (now_seconds != last_fake_update) {
+            last_fake_update = now_seconds;
+            fake_system_status_update(&app.system_status);
+            fake_sensor_update(&app.sensor_data);
+        }
 
 
         if (prompt_needed) {

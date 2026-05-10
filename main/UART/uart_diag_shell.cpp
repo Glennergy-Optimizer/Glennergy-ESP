@@ -143,6 +143,12 @@ void handle_status(app_state_t* state)
 
 void handle_sensor(app_state_t* state)
 {
+    if (!state->sensor_data.valid) {
+        std::cout << "Sensor: No valid data yet." << std::endl;
+        return;
+    }
+
+    std::cout << "Last updated time: " << state->sensor_data.last_update_seconds << std::endl;
     std::cout << "Temperature - " << state->sensor_data.temperature << std::endl;
     std::cout << "Pressure    - " << state->sensor_data.pressure << std::endl;
     std::cout << "Humidity    - " << state->sensor_data.humidity << std::endl;

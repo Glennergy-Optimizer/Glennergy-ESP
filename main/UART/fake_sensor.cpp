@@ -2,6 +2,7 @@
 #include "fake_sensor.hpp"
 #include "Queues.h"
 #include "esp_log.h"
+#include "esp_timer.h"
 
 static const char* TAG = "Sensor";
 
@@ -15,6 +16,9 @@ void fake_sensor_fill(sensor_data_t* sensor) {
     sensor->temperature = 5;
     sensor->humidity = 4;
     sensor->pressure = 80;
+    sensor->valid = false;    
+    sensor->last_update_seconds = 0;
+
     Sensor_Queue = xQueueCreate(1, sizeof(sensor_data_t));
     
     if (Sensor_Queue == NULL)
@@ -27,6 +31,9 @@ void fake_sensor_update(sensor_data_t* sensor) {
     counter += 1;
     sensor->temperature = sensor->temperature + 0.01 * temp_direction;
     sensor->humidity = sensor->humidity + 0.05 * temp_direction;
+    sensor->valid = true;
+    sensor->last_update_seconds = esp_timer_get_time() / 1000000ULL;
+
 
     // Mock a drifting temperature between 1 and 8 degrees.
     if (sensor-> temperature >= 8) {
