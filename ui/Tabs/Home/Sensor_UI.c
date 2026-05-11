@@ -1,8 +1,8 @@
 #include "Sensor_UI.h"
 #include "lvgl_port.h"
 #include "../../screens/ui_Screen1.h"
-#include "../../../main/UART/Queues.h"
-#include "../../../main/UART/fake_sensor.h"
+#include "../../../main/app_queues.h"
+#include "../../../main/sensor/sensor.h"
 
 static Sensor_UI sensor_ui = {
     .arc_humidity_dyn = NULL,

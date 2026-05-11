@@ -14,4 +14,9 @@ typedef struct
     ParsedData parsed_data;
 } DataParser;
 
+int DataParser_Initialize(DataParser* data_parser);
+
+void DataParser_Parse(DataParser* data_parser);
+
+void DataParser_Dispose(DataParser* data_parser);
 #endif

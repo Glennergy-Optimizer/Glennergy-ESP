@@ -1,10 +1,11 @@
 #ifndef HTTP_H
 #define HTTP_H
 
+
+#include <stddef.h>
 #include "esp_err.h"
 
-#include "freertos/queue.h"
-#include <stdint.h>
+
 
 typedef struct
 {
@@ -12,7 +13,6 @@ typedef struct
     size_t length;
 } HTTPResponse;
 
-extern QueueHandle_t http_queue;
 
 void HTTPClient_GET(const char *url, HTTPResponse* http_response);
 

@@ -1,27 +1,14 @@
 #include "HTTP.h"
+#include <stdlib.h>
+//#include <string.h>
+
 
 #include "freertos/FreeRTOS.h"
 #include "esp_http_client.h"
 #include "esp_log.h"
-#include <malloc.h>
-#include <string.h>
+
 
 static const char *TAG = "HTTPClient";
-
-static QueueHandle_t http_queue = NULL;
-
-esp_err_t HTTPClient_Initialize()
-{
-    http_queue = xQueueCreate(1, sizeof(HTTPResponse));
-
-    if (http_queue == NULL)
-    {
-        ESP_LOGE(TAG, "Failed to create http queue");
-        return ESP_FAIL;
-    }
-
-    return ESP_OK;
-}
 
 esp_err_t HTTPClient_EventHandler(esp_http_client_event_handle_t event)
 {
