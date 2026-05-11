@@ -6,34 +6,30 @@
 #ifndef UI_SCREEN1_H
 #define UI_SCREEN1_H
 
-#include "../../main/WiFi.h"
-#include "../../main/UART/Queues.h"
-#include "../../main/UART/fake_sensor.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 // SCREEN: ui_Screen1
-extern void ui_Screen1_screen_init();
+void ui_update_task(void);
+extern void ui_Screen1_screen_init(void);
 extern void ui_Screen1_screen_destroy(void);
-extern void ui_update_task(void *arg);
 extern lv_obj_t * ui_Screen1;
-extern lv_obj_t * ui_WiFi;
-extern lv_obj_t * ui_Label1;
-extern lv_obj_t * ui_TabView1;
-extern lv_obj_t * ui_TabPage1;
-extern lv_obj_t * ui_Label3;
-extern lv_obj_t * ui_Label5;
-extern lv_obj_t * ui_Label4;
-extern lv_obj_t * ui_Arc3;
-extern lv_obj_t * ui_Arc2;
-extern lv_obj_t * ui_Arc1;
-extern lv_obj_t * ui_TabPage2;
-extern lv_obj_t * ui_Chart1;
-extern lv_obj_t * ui_TabPage3;
-extern lv_obj_t * ui_Chart2;
-extern lv_obj_t * ui_Image2;
+extern lv_obj_t * ui_Glennergy_Label;
+extern lv_obj_t * ui_Tab_Main;
+extern lv_obj_t * ui_TabPage_Home;
+extern lv_obj_t * ui_TabPage_Electricity;
+extern lv_obj_t * ui_Chart_Electricity;
+extern lv_obj_t * ui_TabPage_Weather;
+extern lv_obj_t * ui_Chart_Weather;
+extern lv_obj_t * ui_TabPage_Settings;
+extern lv_obj_t * ui_Group_Settings; 
+extern lv_obj_t * ui_TabPage_WiFi;
+extern lv_obj_t * ui_Label2;
+extern lv_obj_t * ui_Label8;
+extern lv_obj_t * ui_Bar1;
+extern lv_obj_t * ui_Label9;
+extern lv_obj_t * ui_Label10;
 // CUSTOM VARIABLES
 extern lv_obj_t * uic_WiFi;
 

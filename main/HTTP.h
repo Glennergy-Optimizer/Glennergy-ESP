@@ -3,17 +3,17 @@
 
 #include "esp_err.h"
 
+#include "freertos/queue.h"
+#include <stdint.h>
 
+typedef struct
+{
+    char* data;
+    size_t length;
+} HTTPResponse;
 
-void HTTPClient_GET(const char* url);
+extern QueueHandle_t http_queue;
 
-
-
-
-
-
-
-
-
+void HTTPClient_GET(const char *url, HTTPResponse* http_response);
 
 #endif

@@ -12,7 +12,9 @@
 #include "freertos/queue.h"
 #include <stdbool.h>
 
-extern QueueHandle_t wifi_queue;
+extern QueueHandle_t wifi_cmd_queue;
+
+extern QueueHandle_t wifi_result_queue;
 
 typedef enum
 {
