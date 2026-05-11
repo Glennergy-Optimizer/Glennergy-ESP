@@ -6,6 +6,9 @@
 #ifndef UI_SCREEN1_H
 #define UI_SCREEN1_H
 
+#include "../../main/WiFi.h"
+#include "../../main/app_queues.h"
+#include "../app_types.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
