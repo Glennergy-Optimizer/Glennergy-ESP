@@ -20,9 +20,8 @@
 #include "freertos/task.h"
 #include "WiFi.h"
 #include "HTTP.h"
-#include "jansson.h"
 #include "UART/UART.hpp"
-#include "sensor/sensor.h"    
+#include "sensor/sensor.h"
 
 
 #define WIFI_PASS "rockyunit953"
@@ -30,14 +29,13 @@
 
 static app_state_t app;
 
-
 static const char *TAG = "main";
 
 // Main application function
 void app_main()
 {
-    //Sensor_Init(&app.sensor_data);
-    
+    // Sensor_Init(&app.sensor_data);
+
     static esp_lcd_panel_handle_t panel_handle = NULL; // Declare a handle for the LCD panel
     static esp_lcd_touch_handle_t tp_handle = NULL;
     // Initialize the GT911 touch screen controller
@@ -47,7 +45,6 @@ void app_main()
 
     // Initialize the Waveshare ESP32-S3 RGB LCD hardware
     panel_handle = waveshare_esp32_s3_rgb_lcd_init();
-
 
     // Turn on the LCD backlight
     wavesahre_rgb_lcd_bl_on();
@@ -66,10 +63,10 @@ void app_main()
 
     xTaskCreate(WiFi_Work, "WIFI_Work", 4096, NULL, 5, NULL);
 
-    xTaskCreate(ui_update_task, "UI_Update", 4096, NULL, 5, NULL);
+    xTaskCreate(ui_update_task, "UI_Update", 12288, NULL, 5, NULL);
 
     xTaskCreate(UART_Init, "UART", 4096, &app, 4, NULL);
 
     xTaskCreate(Sensor_Work, "Sensor", 4096, &app, 4, NULL);
-    //ESP_ERROR_CHECK(WiFi_Dispose());
+    // ESP_ERROR_CHECK(WiFi_Dispose());
 }

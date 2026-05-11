@@ -3,8 +3,9 @@
 #include "../../main/WiFi.h"
 #include "../../screens/ui_Screen1.h"
 #include "lvgl_port.h"
+#include "../../../main/LEOP/Recommendation.h"
 
-static const char* TAG = "WiFi_UI";
+static const char *TAG = "WiFi_UI";
 
 static WiFi_UI wifi_ui = {
     .network_dropdown_dyn = NULL,
@@ -148,8 +149,14 @@ void WiFi_UI_Update(void)
             ESP_LOGI(TAG, "Connection finished!");
             lv_label_set_text(wifi_ui.status_label_dyn, "Connected");
             lv_obj_set_style_text_color(wifi_ui.status_label_dyn, lv_color_hex(0x66FF00), LV_PART_MAIN | LV_STATE_DEFAULT);
+
+
+            vTaskDelay(pdMS_TO_TICKS(10000));
+            RecommendationList r_list;
+            Recommendation_Initialize(&r_list);
+            Recommendation_Fetch("http://10.0.0.3:8080/id=2", &r_list);
         }
-        //xQueueSend(wifi_queue, &w_data, portMAX_DELAY);
+        // xQueueSend(wifi_queue, &w_data, portMAX_DELAY);
     }
 }
 
