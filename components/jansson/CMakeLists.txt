@@ -10,6 +10,7 @@ idf_component_register(
         "strconv.c"
         "value.c"
         "utf.c"
+        "hashtable_seed.c"
     INCLUDE_DIRS "includes"
 )
 

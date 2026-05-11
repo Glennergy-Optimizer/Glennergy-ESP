@@ -23,6 +23,8 @@ static esp_event_handler_instance_t wifi_event;
 
 static EventGroupHandle_t wifi_event_group = NULL;
 
+static wifi_state w_state = {0};
+
 QueueHandle_t wifi_cmd_queue = NULL;
 
 QueueHandle_t wifi_result_queue = NULL;
@@ -240,6 +242,7 @@ void WiFi_Work(void *arg)
                 {
                     if (status == WIFI_STATUS_CONNECTED)
                     {
+                        w_state.is_connected = true;
                         w_data.status = status;
                         xQueueSend(wifi_result_queue, &w_data, 0);
                     }
@@ -284,6 +287,11 @@ esp_err_t WiFi_Connect(wifi_data *w_data)
     }
 
     return ESP_OK;
+}
+
+bool WiFi_IsConnected()
+{
+    return w_state.is_connected;
 }
 
 esp_err_t WiFi_Disconnect(void)

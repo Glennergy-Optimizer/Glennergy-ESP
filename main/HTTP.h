@@ -16,4 +16,6 @@ typedef struct
 
 void HTTPClient_GET(const char *url, HTTPResponse* http_response);
 
+void HTTPClient_Dispose(HTTPResponse *http_response);
+
 #endif
