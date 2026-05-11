@@ -135,6 +135,9 @@ void handle_status(app_state_t* state)
 
 void handle_sensor(app_state_t* state)
 {
+    std::cout << "Debug valid: " << state->sensor_data.valid << std::endl;
+    std::cout << "Temperature raw: " << state->sensor_data.temperature << std::endl;
+
     if (!state->sensor_data.valid) {
         std::cout << "Sensor: No valid data yet." << std::endl;
         return;

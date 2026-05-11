@@ -132,12 +132,29 @@ void ui_update_task(void *arg)
 
         if (Sensor_Queue != NULL && xQueueReceive(Sensor_Queue, &sensor_data, 0) == pdPASS)
         {
-            char temp[50];
-            snprintf(temp, sizeof(temp), "%2.f", sensor_data.temperature);
-            if (lvgl_port_lock(-1))
-            {
-                lv_label_set_text(ui_Label3, temp);
-                lvgl_port_unlock();
+            // char temp[50];
+            // snprintf(temp, sizeof(temp), "%2.f", sensor_data.temperature);
+            // if (lvgl_port_lock(-1))
+            // {
+            //     lv_label_set_text(ui_Label3, temp);
+            //     lvgl_port_unlock();
+            // }
+            // Todo - If data invalid, show oldest valid data, but include current status and the timestamp of that data?
+            if (sensor_data.valid) {
+                char temp[50];
+                snprintf(temp, sizeof(temp), "%2.f", sensor_data.temperature);
+                if (lvgl_port_lock(-1))
+                {
+                    lv_label_set_text(ui_Label3, temp);
+                    lvgl_port_unlock();
+                }
+            }
+            else {
+                if (lvgl_port_lock(-1))
+                {
+                    lv_label_set_text(ui_Label3, "--(invalid)");
+                    lvgl_port_unlock();
+                }
             }
         }
         vTaskDelay(pdMS_TO_TICKS(10));
@@ -205,7 +222,7 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_x(ui_Label3, -321);
     lv_obj_set_y(ui_Label3, -79);
     lv_obj_set_align(ui_Label3, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_Label3, "23.7°");
+    lv_label_set_text(ui_Label3, "98.76°");
     lv_obj_set_style_text_font(ui_Label3, &lv_font_montserrat_16, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_Label5 = lv_label_create(ui_TabPage1);
