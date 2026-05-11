@@ -22,15 +22,21 @@
 #include "HTTP.h"
 #include "jansson.h"
 #include "UART/UART.hpp"
+#include "sensor/sensor.h"    
+
 
 #define WIFI_PASS "rockyunit953"
 #define WIFI_SSID "NETGEAR49"
+
+static app_state_t app;
+
 
 static const char *TAG = "main";
 
 // Main application function
 void app_main()
 {
+    //Sensor_Init(&app.sensor_data);
     
     static esp_lcd_panel_handle_t panel_handle = NULL; // Declare a handle for the LCD panel
     static esp_lcd_touch_handle_t tp_handle = NULL;
@@ -62,7 +68,8 @@ void app_main()
 
     xTaskCreate(ui_update_task, "UI_Update", 4096, NULL, 5, NULL);
 
-    xTaskCreate(UART_Init, "UART", 4096, NULL, 4, NULL);
+    xTaskCreate(UART_Init, "UART", 4096, &app, 4, NULL);
 
+    xTaskCreate(Sensor_Work, "Sensor", 4096, &app, 4, NULL);
     //ESP_ERROR_CHECK(WiFi_Dispose());
 }

@@ -7,6 +7,10 @@
 #include <vector>
 #include <sstream>
 #include <cstdlib>
+#include "esp_timer.h"
+#include "esp_heap_caps.h"
+#include "../app_types.h"
+
 
 static const char* TAG = "UART_DIAG_SHELL.CPP";
 
@@ -35,6 +39,23 @@ std::vector<std::string> split(const std::string& str, char delimiter) {
     }
     return result;
 }
+
+// todo - maybe change to enum instead of simple format helpers?
+const char* connected_text(bool value)
+{
+    return value ? "Connected" : "Disconnected";
+}
+
+const char* enabled_text(bool value)
+{
+    return value ? "Enabled" : "Disabled";
+}
+
+const char* ok_text(bool value)
+{
+    return value ? "OK" : "Not OK";
+}
+
 
 // Takes in a std::string,
 // .c_str() converts to C-style char*,
@@ -65,6 +86,10 @@ void handle_input(const std::string& input, app_state_t* state)
     int msg_len = input.length();
     ESP_LOGI(TAG, "msg len: %d\n", msg_len);
     std::vector<std::string> tokens = split(input, ' ');
+    if (tokens.size() == 0) {
+        std::cout << "No or incorrect input. Try again. " << std::endl;
+        return;
+    }
     const std::string& cmd = tokens[0];
     
     if (tokens.size() == 2 && cmd == "help" && tokens[1] == "immersive") {
@@ -102,24 +127,20 @@ void handle_input(const std::string& input, app_state_t* state)
 // Status - Mer face-value till user, tex "är wifi ok"
 void handle_status(app_state_t* state)
 {
-    std::cout << "Wifi: " << state->system_status.wifi_connected << std::endl;
-    std::cout << "LEOP connection: " << state->system_status.leop_connected << std::endl;
-    std::cout << "Sensor: " << state->system_status.sensor_ok << std::endl;
-    std::cout << "Uptime: " << state->system_status.uptime_seconds << std::endl;
-
-
-    // //app_state_t app_status = state;
-    // std::cout << "Status of app state: " << std::endl;
-    // std::cout << "LEOP - TODO" << std::endl;
-    // std::cout << "Sensor: " << std::endl;
-    // std::cout << "    Temperature - " << state->sensor_data.temperature << std::endl;
-    // std::cout << "    Pressure    - " << state->sensor_data.pressure << std::endl;
-    // std::cout << "    Humidity    - " << state->sensor_data.humidity << std::endl;
-    // std::cout << "End of status. Not fully implemented yet." << std::endl;
+    std::cout << "Wifi: " << connected_text(state->system_status.wifi_connected) << std::endl;
+    std::cout << "LEOP: " << connected_text(state->system_status.leop_connected) << std::endl;
+    std::cout << "Sensor: " << ok_text(state->system_status.sensor_ok) << std::endl;
+    std::cout << "Update counter: " << state->system_status.update_counter << std::endl;
 }
 
 void handle_sensor(app_state_t* state)
 {
+    if (!state->sensor_data.valid) {
+        std::cout << "Sensor: No valid data yet." << std::endl;
+        return;
+    }
+
+    std::cout << "Last updated time: " << state->sensor_data.last_update_seconds << std::endl;
     std::cout << "Temperature - " << state->sensor_data.temperature << std::endl;
     std::cout << "Pressure    - " << state->sensor_data.pressure << std::endl;
     std::cout << "Humidity    - " << state->sensor_data.humidity << std::endl;
@@ -128,7 +149,7 @@ void handle_sensor(app_state_t* state)
 
 void print_config(app_state_t* state) {
     std::cout << "fetch_interval_minutes: " << state->config_data.fetch_interval_minutes << std::endl;
-    std::cout << "test_mode: " << state->config_data.test_mode << std::endl;
+    std::cout << "test_mode: " << enabled_text(state->config_data.test_mode) << std::endl;
 }
 
 void handle_config(std::vector<std::string> tokens, app_state_t* state)
@@ -141,7 +162,7 @@ void handle_config(std::vector<std::string> tokens, app_state_t* state)
     const std::string& key = tokens[1];
     const std::string& value = tokens[2];
     if (key == "fetch_interval_minutes") {
-        //TODO - set a minimum and maximum value? 15min, 24h?
+        // production TODO - set a minimum and maximum value? 15min, 24h?
         int int_value;
         // Use helper function to see if we can parse something as int
         if (parse_int(value, int_value))
@@ -177,8 +198,6 @@ void handle_config(std::vector<std::string> tokens, app_state_t* state)
 }
 
 
-
-
 void handle_leop(app_state_t* app)
 {
     leop_data_t& leop = app->leop_data;
@@ -200,7 +219,21 @@ void handle_leop(app_state_t* app)
 // Mer fokus på detaljer om varför något är ok eller inte?
 void handle_diag()
 {
-    std::cout << "Diagnostics - to be implemented." << std::endl;
+    // Mirkoseconds since boot, then converted to seconds and divide by matching type (unsigned long long)
+    uint64_t uptime_seconds = esp_timer_get_time() / 1000000ULL;
+
+    // current normal heap available
+    size_t free_heap = heap_caps_get_free_size(MALLOC_CAP_DEFAULT);
+    // returns the lowest heap has ever gotten since we started the program
+    size_t min_free_heap = heap_caps_get_minimum_free_size(MALLOC_CAP_DEFAULT);
+
+    UBaseType_t task_count = uxTaskGetNumberOfTasks();
+
+    std::cout << "Diagnostics: " << std::endl;
+    std::cout << "Uptime: " << uptime_seconds << " seconds." << std::endl;
+    std::cout << "Free Heap: " << free_heap << " bytes. " << std::endl;
+    std::cout << "Minimum free heap: " << min_free_heap << " bytes." << std::endl;
+    std::cout << "Task count: " << task_count << std::endl;
 }
 
 
@@ -212,24 +245,24 @@ void handle_help(bool wait_for_enter)
         print_and_wait_for_enter("So, you're looking for a little bit of help, huh?");
         print_and_wait_for_enter("Well, people rarely come here having their shit together. You're no different, from what I can tell.");
         print_and_wait_for_enter("I'll let you know beforehand, those who come seeking advice, but tries to slither away when it comes to collecting payment, they usually end up...worse. Worse than when they came to find me.");
-        print_and_wait_for_enter("Now let me tell you the three pieces of advice I've learned while soaring from these filthy streets to now becomming..a king, of sorts.");
+        print_and_wait_for_enter("Now let me tell you the three pieces of advice I've learned while soaring from these filthy streets to now becoming..a king, of sorts.");
         print_and_wait_for_enter("#1. Invest in index funds. Small incremental steps and stacking interest will eventually help you living, not just surviving, when you are older.");
         print_and_wait_for_enter("#2. Don't neglect your family, friends or partner. Relationships are what makes life worth living after all.");
-        print_and_wait_for_enter("#3. If someone who claims to be a prince contacts you and wants your financial help in securing his inheritage, turn around and don't look back. You'll loose everything you have. Been there, done that.");
+        print_and_wait_for_enter("#3. If someone who claims to be a prince contacts you and wants your financial help in securing his inheritage, turn around and don't look back. You'll lose everything you have. Been there, done that.");
         print_and_wait_for_enter(".");
         print_and_wait_for_enter("..");
         print_and_wait_for_enter("...");
         print_and_wait_for_enter("What? You're looking for some other sort of help?");
-        print_and_wait_for_enter("Well, I do know a little bit of this, a little bit of that...though I doubt it'll be helpfull for you.");
+        print_and_wait_for_enter("Well, I do know a little bit of this, a little bit of that...though I doubt it'll be helpful for you.");
         print_and_wait_for_enter("Last week I helper a grandma collect 8 blue cranberries, and she did give me a note from her late husband, saying it was the only thing she should repay the honorary action with.");
         print_and_wait_for_enter("(He gives you the note)");
     }
     std::cout << "Here are the most common commands when attempting to use the UART-diagnostics interface when working with ESP32S3 units:" << std::endl;
     std::cout << "STATUS - Shows system health(WiFi, LEOP-connection, sensor, uptime)" << std::endl;
-    std::cout << "LEOP - Shows latest data recieved from the LEOP-server." << std::endl;
+    std::cout << "LEOP - Shows latest data received from the LEOP-server." << std::endl;
     std::cout << "SENSOR - Shows current BME280-readings." << std::endl;
-    std::cout << "CONFIG<param> <value> - Change config values." << std::endl;
-    std::cout << "DIAG - shows system diagnostics(Task-statistics, stack-usage etc.) (not yet implemented.)" << std::endl;
+    std::cout << "CONFIG <param> <value> - Change config values." << std::endl;
+    std::cout << "DIAG - shows system diagnostics(Task-statistics, heap-usage etc.)" << std::endl;
     std::cout << "HELP - This command =)" << std::endl;
 }
 
