@@ -23,7 +23,11 @@ static esp_event_handler_instance_t wifi_event;
 
 static EventGroupHandle_t wifi_event_group = NULL;
 
-QueueHandle_t wifi_queue = NULL;
+static wifi_state w_state = {0};
+
+QueueHandle_t wifi_cmd_queue = NULL;
+
+QueueHandle_t wifi_result_queue = NULL;
 
 QueueHandle_t event_queue = NULL;
 
@@ -109,11 +113,18 @@ void WiFi_CreateQueues()
         ESP_LOGI(TAG, "Failed to create event queue!");
     }
 
-    wifi_queue = xQueueCreate(1, sizeof(wifi_data));
+    wifi_cmd_queue = xQueueCreate(1, sizeof(wifi_data));
 
-    if (wifi_queue == NULL)
+    if (wifi_cmd_queue == NULL)
     {
-        ESP_LOGI(TAG, "Failed to create wifi queue!");
+        ESP_LOGI(TAG, "Failed to create wifi cmd queue!");
+    }
+
+    wifi_result_queue = xQueueCreate(1, sizeof(wifi_data));
+
+    if (wifi_result_queue == NULL)
+    {
+        ESP_LOGI(TAG, "Failed to create wifi cmd queue!");
     }
 }
 
@@ -210,45 +221,47 @@ void WiFi_Work(void *arg)
     while (1)
     {
 
-        if (xQueueReceive(wifi_queue, &w_data, portMAX_DELAY))
+        if (xQueueReceive(wifi_cmd_queue, &w_data, pdMS_TO_TICKS(5000)) == pdPASS)
         {
             switch (w_data.cmd)
             {
             case WIFI_CMD_SCAN:
                 WiFi_Scan(&w_data);
-                if (xQueueReceive(event_queue, &status, portMAX_DELAY))
+                if (xQueueReceive(event_queue, &status, pdMS_TO_TICKS(5000)))
                 {
                     if (status == WIFI_STATUS_SCAN_DONE)
                     {
                         w_data.status = status;
-                        xQueueSend(wifi_queue, &w_data, portMAX_DELAY);
+                        xQueueSend(wifi_result_queue, &w_data, 0);
                     }
                 }
                 break;
             case WIFI_CMD_CONNECT:
                 WiFi_Connect(&w_data);
-                if (xQueueReceive(event_queue, &status, portMAX_DELAY))
+                if (xQueueReceive(event_queue, &status, pdMS_TO_TICKS(5000)))
                 {
                     if (status == WIFI_STATUS_CONNECTED)
                     {
+                        w_state.is_connected = true;
                         w_data.status = status;
-                        xQueueSend(wifi_queue, &w_data, portMAX_DELAY);
+                        xQueueSend(wifi_result_queue, &w_data, 0);
                     }
                 }
                 break;
             case WIFI_CMD_DISCONNECT:
                 WiFi_Disconnect();
-                if (xQueueReceive(event_queue, &status, portMAX_DELAY))
+                if (xQueueReceive(event_queue, &status, pdMS_TO_TICKS(5000)))
                 {
                     if (status == WIFI_STATUS_DISCONNECTED)
                     {
                         w_data.status = status;
-                        xQueueSend(wifi_queue, &w_data, portMAX_DELAY);
+                        xQueueSend(wifi_result_queue, &w_data, 0);
                     }
                 }
                 break;
 
             default:
+                // xQueueSend(wifi_queue, &w_data, portMAX_DELAY);
                 break;
             }
             // ESP_LOGI(TAG, "WiFi Work: %d", wifi->number);
@@ -274,6 +287,11 @@ esp_err_t WiFi_Connect(wifi_data *w_data)
     }
 
     return ESP_OK;
+}
+
+bool WiFi_IsConnected()
+{
+    return w_state.is_connected;
 }
 
 esp_err_t WiFi_Disconnect(void)

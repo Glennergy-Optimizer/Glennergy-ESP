@@ -12,7 +12,9 @@
 #include "freertos/queue.h"
 #include <stdbool.h>
 
-extern QueueHandle_t wifi_queue;
+extern QueueHandle_t wifi_cmd_queue;
+
+extern QueueHandle_t wifi_result_queue;
 
 typedef enum
 {
@@ -31,6 +33,13 @@ typedef enum
     WIFI_STATUS_DISCONNECTED,
 } wifi_status;
 
+typedef struct 
+{
+    bool is_connected;
+}wifi_state;
+
+
+
 typedef struct
 {
     char *ssid;
@@ -48,13 +57,11 @@ typedef struct
 
 esp_err_t WiFi_Initialize();
 
-void WiFi_CreateQueues();
-
-esp_err_t WiFi_Scan(wifi_data *w_data);
-
 void WiFi_Work(void *arg);
 
 esp_err_t WiFi_Connect(wifi_data *w_data);
+
+bool WiFi_IsConnected();
 
 esp_err_t WiFi_Disconnect(void);
 

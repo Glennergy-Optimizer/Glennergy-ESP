@@ -4,6 +4,8 @@ idf_component_register(
     "leop/leop.cpp" "leop/fake_leop.cpp" 
     "sensor/sensor.cpp" "sensor/fake_sensor.cpp"
     "UART/UART.cpp" "UART/uart_diag_shell.cpp"
+    "../ui/Tabs/Home/Sensor_UI.c" "../ui/Tabs/Settings/WiFi_UI.c"
+    "LEOP/Recommendation.c" "JSONParser/DataParser.c"
     INCLUDE_DIRS "." "fake" "leop" "sensor" "UART"
     WHOLE_ARCHIVE
     PRIV_REQUIRES can gpio rgb_lcd_port
