@@ -9,7 +9,7 @@ idf_component_register(
     INCLUDE_DIRS "." "fake" "leop" "sensor" "UART"
     WHOLE_ARCHIVE
     PRIV_REQUIRES can gpio rgb_lcd_port
-    REQUIRES esp_lcd nvs_flash esp_event esp_wifi esp_http_client jansson
+    REQUIRES esp_lcd nvs_flash esp_event esp_wifi esp_http_client jansson espressif__bme280 espressif__i2c_bus
     )
     
 idf_component_get_property(lvgl_lib lvgl__lvgl COMPONENT_LIB)
