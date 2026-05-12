@@ -41,8 +41,8 @@ void Recommendation_Dispose(RecommendationList *r_list)
 {
     r_list->count = 0;
 
-    for (int i = 0; i < 96)
+    for (int i = 0; i < 96; i++)
     {
-        r_list->rec[i].recommendation = (Recommendation){0};
+        r_list->rec[i] = (Recommendation){0};
     }
 }

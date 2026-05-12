@@ -21,7 +21,7 @@ void Sensor_UI_Initialize()
     lv_obj_set_x(sensor_ui.temperature_label_dyn, -321);
     lv_obj_set_y(sensor_ui.temperature_label_dyn, -79);
     lv_obj_set_align(sensor_ui.temperature_label_dyn, LV_ALIGN_CENTER);
-    lv_label_set_text(sensor_ui.temperature_label_dyn, "23.7°");
+    lv_label_set_text(sensor_ui.temperature_label_dyn, "98.76°");
     lv_obj_set_style_text_font(sensor_ui.temperature_label_dyn, &lv_font_montserrat_16, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     sensor_ui.pressure_label_dyn = lv_label_create(ui_TabPage_Home);
@@ -88,12 +88,21 @@ void Sensor_UI_Update(void)
     sensor_data_t sensor_data;
     if (Sensor_Queue != NULL && xQueueReceive(Sensor_Queue, &sensor_data, 0) == pdPASS)
     {
-        char temp[50];
-        snprintf(temp, sizeof(temp), "%2.f", sensor_data.temperature);
-        if (lvgl_port_lock(-1))
-        {
-            lv_label_set_text(sensor_ui.temperature_label_dyn, temp);
-            lvgl_port_unlock();
+        if (sensor_data.valid) {
+            char temp[50];
+            snprintf(temp, sizeof(temp), "%2.f", sensor_data.temperature);
+            if (lvgl_port_lock(-1))
+            {
+                lv_label_set_text(sensor_ui.temperature_label_dyn, temp);
+                lvgl_port_unlock();
+            }
+        }
+        else {
+            if (lvgl_port_lock(-1))
+            {
+                lv_label_set_text(sensor_ui.temperature_label_dyn, "--(invalid)");
+                lvgl_port_unlock();
+            }
         }
     }
 }
