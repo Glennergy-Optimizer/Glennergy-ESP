@@ -5,7 +5,7 @@
     extern "C" {
 #endif
 
-void UART_Init(app_state_t* app);
+void UART_Work(app_state_t* app);
 
 
 #ifdef __cplusplus
