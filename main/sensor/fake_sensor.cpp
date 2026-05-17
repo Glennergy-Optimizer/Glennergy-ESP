@@ -2,7 +2,7 @@
 #include "esp_timer.h"
 
 
-static const char* TAG = "Sensor";
+static constexpr char* TAG = "Sensor";
 
 static int counter = 0;
 static int temp_direction = 1;

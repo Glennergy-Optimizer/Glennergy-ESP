@@ -9,8 +9,8 @@
     extern "C" {
 #endif
 
-void Sensor_Init(app_state_t* app);
-bool Sensor_Read(sensor_data_t* out);
+//void Sensor_Init(app_state_t* app);
+//bool Sensor_Read(sensor_data_t* out);
 
 void Sensor_Work(void* parameter);
 

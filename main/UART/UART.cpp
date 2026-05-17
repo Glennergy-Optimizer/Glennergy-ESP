@@ -15,6 +15,11 @@
 
 
 static const char* TAG = "UART";
+// Helper function to read max 1 byte via UART, exposed so "help immersive" command has easy access  
+bool UART_ReadByte(uint8_t* byte, TickType_t timeout)
+{
+    return uart_read_bytes(UART_PORT, byte, 1, timeout) > 0;
+}
 
 // Helper function - std::tolower can work to handle inputs while being case-insensitive, but may not work well when dealing with negative char values.
 // This helper function is future proof

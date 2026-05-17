@@ -10,6 +10,7 @@
 #include "esp_timer.h"
 #include "esp_heap_caps.h"
 #include "../app_types.h"
+#include "UART.hpp"
 
 
 static const char* TAG = "UART_DIAG_SHELL.CPP";
@@ -125,6 +126,7 @@ void handle_input(const std::string& input, app_state_t* state)
 // TODO - Only sensor is mocked right now
 // TODO - "Status" systemtillstånd som Wifi, LEOP anslutning, sensor, uptime osv
 // Status - Mer face-value till user, tex "är wifi ok"
+// Todo - Update counter currently throttled to once a second. Disable this?
 void handle_status(app_state_t* state)
 {
     std::cout << "Wifi: " << connected_text(state->system_status.wifi_connected) << std::endl;
@@ -147,7 +149,6 @@ void handle_sensor(app_state_t* state)
     std::cout << "Temperature - " << state->sensor_data.temperature << std::endl;
     std::cout << "Pressure    - " << state->sensor_data.pressure << std::endl;
     std::cout << "Humidity    - " << state->sensor_data.humidity << std::endl;
-    std::cout << "End of status. Not fully implemented yet." << std::endl;
 }
 
 void print_config(app_state_t* state) {
@@ -169,21 +170,10 @@ void handle_config(std::vector<std::string> tokens, app_state_t* state)
         int int_value;
         // Use helper function to see if we can parse something as int
         if (parse_int(value, int_value))
-        {
-            
+        {            
             std::cout << "Now setting \"fetch_interval_minutes\" to \"" << int_value << "\"." << std::endl;
             state->config_data.fetch_interval_minutes = int_value;
         }
-        
-        // Nähäpp, man får inte try-catch i embedded.
-        // Behöver C-variant.
-        // try {
-        //     int int_value = std::stoi(value);
-        //     state->config_data.fetch_interval_minutes = int_value;
-        //     //test_value = v;
-        // } catch (...) {
-        //     std::cout << "Invalid integer. Try again.\n";
-        // } 
     }
     else if (key == "test_mode") {
         if (value == "true") {
@@ -212,7 +202,6 @@ void handle_leop(app_state_t* app)
     for (int i = 0; i < total_entries; i++) {
         std::cout << leop.entries[i].timestamp << ", " << leop.entries[i].recommendation << ", " << leop.entries[i].recommendation_type << std::endl;
     }
-    //std::cout << "LEOP IS TODO." << std::endl;
 }
 
 
@@ -265,6 +254,7 @@ void handle_help(bool wait_for_enter)
     std::cout << "LEOP - Shows latest data received from the LEOP-server." << std::endl;
     std::cout << "SENSOR - Shows current BME280-readings." << std::endl;
     std::cout << "CONFIG <param> <value> - Change config values." << std::endl;
+    std::cout << "PCONFIG - prints out current config values." << std::endl;
     std::cout << "DIAG - shows system diagnostics(Task-statistics, heap-usage etc.)" << std::endl;
     std::cout << "HELP - This command =)" << std::endl;
 }
@@ -272,21 +262,16 @@ void handle_help(bool wait_for_enter)
 
 void print_and_wait_for_enter(const std::string message)
 {
-    char input[8];
-
+    uint8_t byte;
     std::cout << message << std::endl;
     std::cout.flush();
 
     while (1) {
-        if (fgets(input, sizeof(input), stdin) != NULL) {
-            for (int i = 0; input[i] != '\0'; i++) {
-                if (input[i] == '\n' || input[i] == '\r') {
-                    std::cout << std::endl;
-                    return;
-                }
+        if (UART_ReadByte(&byte, portMAX_DELAY)) {
+            if (byte == '\n' || byte == '\r') {
+                std::cout << std::endl;
+                return;
             }
-        } else {
-            vTaskDelay(pdMS_TO_TICKS(20));
         }
     }
 }

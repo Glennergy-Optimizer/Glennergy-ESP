@@ -33,7 +33,7 @@ static bool bme280_ready = false;
 
 
 
-static const char* TAG = "Sensor.cpp";
+static constexpr char* TAG = "Sensor.cpp";
 // Reminder, static so only this file can see it
 static bool fake_mode = false;
 
@@ -51,7 +51,7 @@ static void publish_sensor_data(sensor_data_t* sensor)
 
 
 // Init bme280 at a specfic I2C adress
-static bool bme280_init_at_address(uint8_t address)
+const static bool bme280_init_at_address(uint8_t address)
 {
     // Connect the driver object to the I2C buss at the specific adress
     bme280 = bme280_create(bme280_bus, address);
@@ -115,7 +115,6 @@ static bool bme280_sensor_init()
 
 void Sensor_Init(app_state_t* app)
 {
-    // Do it matter if we have fake or true when initializing?
     if (fake_mode == true)
     {
         fake_sensor_fill(&app->sensor_data);
@@ -138,7 +137,6 @@ void Sensor_Init(app_state_t* app)
 
 }
 
-// Fake-data for now, should use i2C to read BME280 later
 // True on success, false on failure to let consumer know if we successfully read valid data or failed to read.
 bool Sensor_Read(sensor_data_t* sensor)
 {
@@ -151,7 +149,6 @@ bool Sensor_Read(sensor_data_t* sensor)
     else {
         if (!bme280_ready || bme280 == NULL) {
             int64_t now_ms = esp_timer_get_time() / 1000;
-
             if (now_ms - last_reconnect_attempt_ms >= BME280_RECONNECT_INTERVAL_MS) {
                 last_reconnect_attempt_ms = now_ms;
                 ESP_LOGI(TAG, "Trying to reconnect BME280...");
@@ -161,7 +158,6 @@ bool Sensor_Read(sensor_data_t* sensor)
                     ESP_LOGI(TAG, "BME280 reconnected :)");
                 }
             }
-
             sensor->valid = false;
             publish_sensor_data(sensor);
             return false;
@@ -187,14 +183,12 @@ bool Sensor_Read(sensor_data_t* sensor)
 
             if (bme280_read_failures >= BME280_MAX_READ_FAILURES) {
                 ESP_LOGW(TAG, "BME280 marked disconnected after repeated read failures. Please restart application.");
-
                 bme280_ready = false;
                 bme280_read_failures = 0;
                 if (bme280 != NULL) {
                     bme280_delete(&bme280);
                 }
             }
-
             sensor->valid = false;
             publish_sensor_data(sensor);
             return false;
