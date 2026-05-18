@@ -6,6 +6,7 @@
 #include "../ui.h"
 #include "../Tabs/Settings/WiFi_UI.h"
 #include "../Tabs/Home/Sensor_UI.h"
+#include "../Tabs/Electricity/Electricity_UI.h"
 
 lv_obj_t *ui_Screen1 = NULL;
 lv_obj_t *ui_Glennergy_Label = NULL;
@@ -35,6 +36,7 @@ void ui_update_task(void)
     {
         WiFi_UI_Update();
         Sensor_UI_Update();
+        Electricity_UI_Update();
         vTaskDelay(pdMS_TO_TICKS(10));
     }
 }
@@ -99,30 +101,6 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_style_bg_opa(ui_TabPage_Electricity, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_recolor(ui_TabPage_Electricity, lv_color_hex(0x1E1425), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_recolor_opa(ui_TabPage_Electricity, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    ui_Chart_Electricity = lv_chart_create(ui_TabPage_Electricity);
-    lv_obj_set_width(ui_Chart_Electricity, 689);
-    lv_obj_set_height(ui_Chart_Electricity, 285);
-    lv_obj_set_x(ui_Chart_Electricity, 3);
-    lv_obj_set_y(ui_Chart_Electricity, 20);
-    lv_obj_set_align(ui_Chart_Electricity, LV_ALIGN_CENTER);
-    lv_chart_set_type(ui_Chart_Electricity, LV_CHART_TYPE_BAR);
-    lv_chart_set_point_count(ui_Chart_Electricity, 24);
-    lv_chart_set_axis_tick(ui_Chart_Electricity, LV_CHART_AXIS_PRIMARY_X, 10, 5, 5, 2, true, 50);
-    lv_chart_set_axis_tick(ui_Chart_Electricity, LV_CHART_AXIS_PRIMARY_Y, 10, 5, 5, 2, true, 50);
-    lv_chart_set_axis_tick(ui_Chart_Electricity, LV_CHART_AXIS_SECONDARY_Y, 10, 5, 5, 2, true, 25);
-    lv_chart_series_t *ui_Chart1_series_1 = lv_chart_add_series(ui_Chart_Electricity, lv_color_hex(0x808080),
-                                                                LV_CHART_AXIS_PRIMARY_Y);
-    static lv_coord_t ui_Chart1_series_1_array[] = {0, 10, 20, 40, 80, 80, 40, 20, 10, 0};
-    lv_chart_set_ext_y_array(ui_Chart_Electricity, ui_Chart1_series_1, ui_Chart1_series_1_array);
-    lv_obj_set_style_bg_color(ui_Chart_Electricity, lv_color_hex(0x20142F), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(ui_Chart_Electricity, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_grad_color(ui_Chart_Electricity, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_line_color(ui_Chart_Electricity, lv_color_hex(0x9240FF), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_line_opa(ui_Chart_Electricity, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    lv_obj_set_style_text_color(ui_Chart_Electricity, lv_color_hex(0xFFFFFF), LV_PART_TICKS | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_opa(ui_Chart_Electricity, 255, LV_PART_TICKS | LV_STATE_DEFAULT);
 
     ui_TabPage_Weather = lv_tabview_add_tab(ui_Tab_Main, "WEATHER");
     lv_obj_set_style_bg_color(ui_TabPage_Weather, lv_color_hex(0x1E1425), LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -190,6 +168,8 @@ void ui_Screen1_screen_init(void)
     Sensor_UI_Initialize();
 
     WiFi_UI_Initialize();
+
+    Electricity_UI_Initialize();
 
     ui_Label9 = lv_label_create(ui_Screen1);
     lv_obj_set_width(ui_Label9, LV_SIZE_CONTENT);  /// 1

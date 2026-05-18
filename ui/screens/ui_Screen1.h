@@ -22,7 +22,6 @@ extern lv_obj_t * ui_Glennergy_Label;
 extern lv_obj_t * ui_Tab_Main;
 extern lv_obj_t * ui_TabPage_Home;
 extern lv_obj_t * ui_TabPage_Electricity;
-extern lv_obj_t * ui_Chart_Electricity;
 extern lv_obj_t * ui_TabPage_Weather;
 extern lv_obj_t * ui_Chart_Weather;
 extern lv_obj_t * ui_TabPage_Settings;

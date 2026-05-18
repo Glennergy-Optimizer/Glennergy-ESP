@@ -151,10 +151,7 @@ void WiFi_UI_Update(void)
             lv_obj_set_style_text_color(wifi_ui.status_label_dyn, lv_color_hex(0x66FF00), LV_PART_MAIN | LV_STATE_DEFAULT);
 
 
-            vTaskDelay(pdMS_TO_TICKS(10000));
-            RecommendationList r_list;
-            Recommendation_Initialize(&r_list);
-            Recommendation_Fetch("http://10.0.0.3:8080/id=2", &r_list);
+            vTaskDelay(pdMS_TO_TICKS(1000));
         }
         // xQueueSend(wifi_queue, &w_data, portMAX_DELAY);
     }

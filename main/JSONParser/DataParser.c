@@ -5,7 +5,7 @@
 
 static const char *TAG = "DataParser";
 
-void DataParser_Parse(const char *raw_data, RecommendationList *r_list)
+int DataParser_Parse(const char *raw_data, RecommendationList *r_list)
 {
     json_error_t error;
     json_t *root = json_loads(raw_data, 0, &error);
@@ -13,17 +13,23 @@ void DataParser_Parse(const char *raw_data, RecommendationList *r_list)
     if (root == NULL)
     {
         ESP_LOGE(TAG, "Failed to load data from http response");
-        return;
+        return 1;
     }
 
     if (!json_is_array(root))
     {
         ESP_LOGW(TAG, "data is not an array");
         json_decref(root);
-        return;
+        return 2;
     }
 
     size_t array_size = json_array_size(root);
+
+    if(array_size <= 0)
+    {
+        ESP_LOGW(TAG, "array is empty");
+        return 3;
+    }
 
     r_list->count = array_size;
 
@@ -45,5 +51,5 @@ void DataParser_Parse(const char *raw_data, RecommendationList *r_list)
     }
 
     json_decref(root);
-    ESP_LOGI(TAG, "%2.f", r_list->rec[0].recommendation);
+    return 0;
 }
