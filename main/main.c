@@ -22,7 +22,7 @@
 #include "HTTP.h"
 #include "UART/UART.hpp"
 #include "sensor/sensor.h"
-
+#include "LEOP/LEOP_Fetcher.h"
 
 #define WIFI_PASS "rockyunit953"
 #define WIFI_SSID "NETGEAR49"
@@ -68,5 +68,11 @@ void app_main()
     xTaskCreate(UART_Work, "UART", 4096, &app, 4, NULL);
 
     xTaskCreate(Sensor_Work, "Sensor", 4096, &app, 4, NULL);
-    // ESP_ERROR_CHECK(WiFi_Dispose());
+
+    static LEOPData leop_data;
+
+    LEOPFetcher_Initialize(&leop_data, 3000);
+
+    xTaskCreate(LEOPFetcher_Work, "LEOP", 4096, &leop_data, 4, NULL);
+    //  ESP_ERROR_CHECK(WiFi_Dispose());
 }

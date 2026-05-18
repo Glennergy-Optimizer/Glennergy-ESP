@@ -5,7 +5,7 @@
 #include "../LEOP/Recommendation.h"
 
 
-void DataParser_Parse(const char* raw_data, RecommendationList* r_list);
+int DataParser_Parse(const char* raw_data, RecommendationList* r_list);
 
 
 #endif
