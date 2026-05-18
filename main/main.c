@@ -65,7 +65,7 @@ void app_main()
 
     xTaskCreate(ui_update_task, "UI_Update", 12288, NULL, 5, NULL);
 
-    xTaskCreate(UART_Init, "UART", 4096, &app, 4, NULL);
+    xTaskCreate(UART_Work, "UART", 4096, &app, 4, NULL);
 
     xTaskCreate(Sensor_Work, "Sensor", 4096, &app, 4, NULL);
 
