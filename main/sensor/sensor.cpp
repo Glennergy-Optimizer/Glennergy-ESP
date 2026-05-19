@@ -13,6 +13,9 @@
 #include "bme280.h"
 #include "i2c_bus.h"
 
+#include "../hal/bme280_sensor.hpp"
+#include "../hal/temperature_sensor.hpp"
+
 #define BME280_SDA_GPIO GPIO_NUM_8 // The I2C SDA 
 #define BME280_SCL_GPIO GPIO_NUM_9 // SCL
 #define BME280_I2C_PORT I2C_NUM_0 // Use ESP32 I2C controller 0
@@ -37,9 +40,12 @@ static constexpr char* TAG = "Sensor.cpp";
 // Reminder, static so only this file can see it
 static bool fake_mode = false;
 
+//static hal::BME280Sensor bmeSensor;
 
 
-QueueHandle_t Sensor_Queue = NULL;
+
+
+
 
 // Publishes/sends the data to UI via queue
 static void publish_sensor_data(sensor_data_t* sensor)
@@ -84,6 +90,7 @@ static bool bme280_sensor_init()
     conf.master.clk_speed = BME280_I2C_FREQ_HZ; // sets clock speed to previously defined clock speed
 
     // This scans for devices, logs adresses. Mainly used for debugging so we can see if the 0x77 appears, or the fallback 0x76
+    
     // If bme280 bus is set it means we're trying to attempting to reconnect, so don't create duplicated bus.
     // if not set(NULL), then create it for the first time 
     if (bme280_bus == NULL) {
@@ -135,6 +142,14 @@ void Sensor_Init(app_state_t* app)
         ESP_LOGI(TAG, "Failed to create sensor queue!");
     }
 
+}
+
+bool Sensor_Read_v2(hal::BME280Sensor& bmeSensor)
+{
+    //hal::BME280Sensor bmeSensor();
+    hal::TemperatureReading temperatur;
+    hal::SensorError result = bmeSensor.read(temperatur);
+    return true;
 }
 
 // True on success, false on failure to let consumer know if we successfully read valid data or failed to read.
@@ -214,10 +229,19 @@ bool Sensor_Read(sensor_data_t* sensor)
 void Sensor_Work(void* parameter) {
     app_state_t* app = (app_state_t*)parameter;
 
-    Sensor_Init(app);
+    //Sensor_Init(app);
 
+    Sensor_Queue = xQueueCreate(1, sizeof(hal::TemperatureReading));
+
+    if (Sensor_Queue == NULL)
+    {
+        ESP_LOGI(TAG, "Failed to create sensor queue!");
+    }
+    
+    hal::BME280Sensor bmeSensor = hal::BME280Sensor();
     while (1) {
-        Sensor_Read(&app->sensor_data);
+        Sensor_Read_v2(bmeSensor);
+        //Sensor_Read(&app->sensor_data);
         vTaskDelay(pdMS_TO_TICKS(1000));
     }
 }

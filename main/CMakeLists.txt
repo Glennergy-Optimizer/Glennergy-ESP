@@ -8,7 +8,8 @@ idf_component_register(
     "../ui/Tabs/Electricity/Electricity_UI.c"
     "LEOP/Recommendation.c" "JSONParser/DataParser.c"
     "LEOP/LEOP_Fetcher.c"
-    INCLUDE_DIRS "." "fake" "leop" "sensor" "UART"
+    "hal/bme280_sensor.cpp"
+    INCLUDE_DIRS "." "fake" "hal" "leop" "sensor" "UART"
     WHOLE_ARCHIVE
     PRIV_REQUIRES can gpio rgb_lcd_port
     REQUIRES esp_lcd nvs_flash esp_event esp_wifi esp_http_client jansson espressif__bme280 espressif__i2c_bus

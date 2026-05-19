@@ -3,6 +3,7 @@
 #include "../../screens/ui_Screen1.h"
 #include "../../../main/app_queues.h"
 #include "../../../main/sensor/sensor.h"
+#include "../../../main/hal/temperature_sensor.hpp";
 
 static Sensor_UI sensor_ui = {
     .arc_humidity_dyn = NULL,
@@ -85,14 +86,17 @@ void Sensor_UI_Initialize()
 
 void Sensor_UI_Update(void)
 {
-    sensor_data_t sensor_data;
-    if (Sensor_Queue != NULL && xQueueReceive(Sensor_Queue, &sensor_data, 0) == pdPASS)
+    hal::TemperatureReading temp_reading;
+    //sensor_data_t sensor_data;
+    //if (Sensor_Queue != NULL && xQueueReceive(Sensor_Queue, &sensor_data, 0) == pdPASS)
+    if (Sensor_Queue != NULL && xQueueReceive(Sensor_Queue, &temp_reading, 0) == pdPASS)
     {
         if (sensor_data.valid) {
             char temp[50];
             char relative_humidity[50];
             char barometric_preassure[50];
-            snprintf(temp, sizeof(temp), "%2.1f", sensor_data.temperature);
+            snprintf(temp, sizeof(temp), "%2.1f", temp_reading.celcius);
+            //snprintf(temp, sizeof(temp), "%2.1f", sensor_data.temperature);
             snprintf(relative_humidity, sizeof(relative_humidity), "%2.1f%%", sensor_data.humidity);
             snprintf(barometric_preassure, sizeof(barometric_preassure), "%.1fpHa", sensor_data.pressure);
             if (lvgl_port_lock(-1))
