@@ -80,4 +80,8 @@ typedef struct {
     system_status_t system_status;
 } app_state_t;
 
+typedef struct {
+    float celcius;
+} TemperatureReadingInC;
+
 #endif

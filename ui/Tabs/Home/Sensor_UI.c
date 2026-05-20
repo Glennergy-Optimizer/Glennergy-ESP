@@ -3,7 +3,9 @@
 #include "../../screens/ui_Screen1.h"
 #include "../../../main/app_queues.h"
 #include "../../../main/sensor/sensor.h"
-#include "../../../main/hal/temperature_sensor.hpp";
+//#include "../../../main/hal/temperature_sensor.hpp";
+//#include "../../../main/hal/temperature_sensor_c_api.h";
+#include "../../../main/app_types.h";
 
 static Sensor_UI sensor_ui = {
     .arc_humidity_dyn = NULL,
@@ -13,6 +15,8 @@ static Sensor_UI sensor_ui = {
     .pressure_label_dyn = NULL,
     .temperature_label_dyn = NULL,
 };
+
+const static char* TAG = "Sensor_UI";
 
 void Sensor_UI_Initialize()
 {
@@ -85,37 +89,43 @@ void Sensor_UI_Initialize()
 }
 
 void Sensor_UI_Update(void)
-{
-    hal::TemperatureReading temp_reading;
+{    
+    //hal::TemperatureReading temp_reading;
     //sensor_data_t sensor_data;
+    TemperatureReadingInC TempReadInC;
     //if (Sensor_Queue != NULL && xQueueReceive(Sensor_Queue, &sensor_data, 0) == pdPASS)
-    if (Sensor_Queue != NULL && xQueueReceive(Sensor_Queue, &temp_reading, 0) == pdPASS)
+    if (Sensor_Queue != NULL && xQueueReceive(Sensor_Queue, &TempReadInC, 0) == pdPASS)
+    //if (Sensor_Queue != NULL && xQueueReceive(Sensor_Queue, &temp_reading, 0) == pdPASS)
     {
-        if (sensor_data.valid) {
+        //if (sensor_data.valid) {
             char temp[50];
             char relative_humidity[50];
             char barometric_preassure[50];
-            snprintf(temp, sizeof(temp), "%2.1f", temp_reading.celcius);
+            // ESP_LOGI(TAG, "TempReadInC: %.f", TempReadInC.celcius);
+            //snprintf(temp, sizeof(temp), "%2.1f", temp_reading.celcius);
+            snprintf(temp, sizeof(temp), "%2.1f", TempReadInC.celcius);
             //snprintf(temp, sizeof(temp), "%2.1f", sensor_data.temperature);
-            snprintf(relative_humidity, sizeof(relative_humidity), "%2.1f%%", sensor_data.humidity);
-            snprintf(barometric_preassure, sizeof(barometric_preassure), "%.1fpHa", sensor_data.pressure);
+            //snprintf(relative_humidity, sizeof(relative_humidity), "%2.1f%%", sensor_data.humidity);
+            //snprintf(barometric_preassure, sizeof(barometric_preassure), "%.1fpHa", sensor_data.pressure);
             if (lvgl_port_lock(-1))
             {
                 lv_label_set_text(sensor_ui.temperature_label_dyn, temp);
-                lv_label_set_text(sensor_ui.humidity_label_dyn, relative_humidity);
-                lv_label_set_text(sensor_ui.pressure_label_dyn, barometric_preassure);
+                //lv_label_set_text(sensor_ui.humidity_label_dyn, relative_humidity);
+                //lv_label_set_text(sensor_ui.pressure_label_dyn, barometric_preassure);
                 lvgl_port_unlock();
             }
+        /*
         }
-        else {
-            if (lvgl_port_lock(-1))
-            {
-
+            else {
+                if (lvgl_port_lock(-1))
+                {
+                    
                 lv_label_set_text(sensor_ui.temperature_label_dyn, "--(invalid)");
                 lv_label_set_text(sensor_ui.humidity_label_dyn, "--(invalid)");
                 lv_label_set_text(sensor_ui.pressure_label_dyn, "--(invalid)");
                 lvgl_port_unlock();
             }
         }
+        */
     }
 }

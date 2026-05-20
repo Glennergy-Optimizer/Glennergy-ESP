@@ -13,8 +13,11 @@
 #include "bme280.h"
 #include "i2c_bus.h"
 
-#include "../hal/bme280_sensor.hpp"
+//#include "../hal/bme280_sensor.hpp"
+#include "../hal/temperature_sensor_c_api.h"
 #include "../hal/temperature_sensor.hpp"
+//#include "../hal/temperature_sensor_c_api.cpp"
+#include "../app_types.h"
 
 #define BME280_SDA_GPIO GPIO_NUM_8 // The I2C SDA 
 #define BME280_SCL_GPIO GPIO_NUM_9 // SCL
@@ -52,6 +55,13 @@ static void publish_sensor_data(sensor_data_t* sensor)
 {
     if (Sensor_Queue != NULL) {
         xQueueOverwrite(Sensor_Queue, sensor);
+    }
+}
+
+static void publish_temperature_data(TemperatureReadingInC* tempReadInC)
+{
+    if (Sensor_Queue != NULL) {
+        xQueueOverwrite(Sensor_Queue, tempReadInC);
     }
 }
 
@@ -144,13 +154,24 @@ void Sensor_Init(app_state_t* app)
 
 }
 
-bool Sensor_Read_v2(hal::BME280Sensor& bmeSensor)
+//bool Sensor_Read_v2(hal::BME280Sensor& bmeSensor)
+bool Sensor_Read_v2()
 {
+    //sensor_read();
     //hal::BME280Sensor bmeSensor();
-    hal::TemperatureReading temperatur;
-    hal::SensorError result = bmeSensor.read(temperatur);
+    hal::TemperatureReading temperatur = hal::TemperatureReading();
+    hal::SensorError result = sensor_read(temperatur);
+    
+    TemperatureReadingInC Ctemperature;
+    Ctemperature.celcius = temperatur.celcius;
+    publish_temperature_data(&Ctemperature);
+    //ESP_LOGI(TAG, "temperature: %.f, Ctemperature: %.f", temperatur.celcius, Ctemperature.celcius);
+    // ESP_LOGI(TAG, "Ctemperature: %.f", Ctemperature.celcius);
+
     return true;
 }
+
+
 
 // True on success, false on failure to let consumer know if we successfully read valid data or failed to read.
 bool Sensor_Read(sensor_data_t* sensor)
@@ -231,16 +252,19 @@ void Sensor_Work(void* parameter) {
 
     //Sensor_Init(app);
 
-    Sensor_Queue = xQueueCreate(1, sizeof(hal::TemperatureReading));
+    //Sensor_Queue = xQueueCreate(1, sizeof(hal::TemperatureReading));
+    Sensor_Queue = xQueueCreate(1, sizeof(TemperatureReadingInC));
 
     if (Sensor_Queue == NULL)
     {
         ESP_LOGI(TAG, "Failed to create sensor queue!");
     }
-    
-    hal::BME280Sensor bmeSensor = hal::BME280Sensor();
+    sensor = hal::BME280Sensor();
+    sensor.bme280_sensor_init();
+    //hal::BME280Sensor bmeSensor = hal::BME280Sensor();
     while (1) {
-        Sensor_Read_v2(bmeSensor);
+        //Sensor_Read_v2(bmeSensor);
+        Sensor_Read_v2();
         //Sensor_Read(&app->sensor_data);
         vTaskDelay(pdMS_TO_TICKS(1000));
     }

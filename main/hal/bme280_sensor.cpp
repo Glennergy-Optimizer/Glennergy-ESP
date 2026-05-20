@@ -12,7 +12,15 @@
 #define BME280_RECONNECT_INTERVAL_MS 5000
 
 
+/// ***  C-exposed functions *** ///
+
+// static version t
+//static hal::BME280Sensor sensor;
+
+
+
 /*
+
 static uint8_t bme280_read_failures = 0;
 static int64_t last_reconnect_attempt_ms = 0;
 
@@ -63,7 +71,7 @@ hal::SensorError hal::BME280Sensor::read(hal::TemperatureReading& reading) {
     //float humidity = 0.0f;
     //float pressure = 0.0f;
 
-    esp_err_t temp_result = bme280_read_temperature(bme280, &temperature);
+    esp_err_t temp_result = bme280_read_temperature(this->bme280, &temperature);
     //esp_err_t humidity_result = bme280_read_humidity(bme280, &humidity);
     //esp_err_t pressure_result = bme280_read_pressure(bme280, &pressure);
 
@@ -96,7 +104,7 @@ hal::SensorError hal::BME280Sensor::read(hal::TemperatureReading& reading) {
     this->bme280_read_failures = 0;
     
     bme280_read_temperature(this->bme280, &reading.celcius);
-    publish_temperature_data(reading);
+    ////publish_temperature_data(reading);
 
     /*
     sensor->temperature = temperature;
@@ -120,7 +128,7 @@ hal::SensorError hal::BME280Sensor::read(hal::TemperatureReading& reading) {
 hal::BME280Sensor::BME280Sensor()
 {
     BME280Sensor_init_i2c_config();
-    bme280_sensor_init();
+    //bme280_sensor_init();
 }
 
 bool hal::BME280Sensor::bme280_init_at_address(uint8_t address)
@@ -159,16 +167,16 @@ bool hal::BME280Sensor::bme280_sensor_init() {
     // This scans for devices, logs adresses. Mainly used for debugging so we can see if the 0x77 appears, or the fallback 0x76
     // If bme280 bus is set it means we're trying to attempting to reconnect, so don't create duplicated bus.
     // if not set(NULL), then create it for the first time 
-    if (bme280_bus == NULL) {
-        bme280_bus = i2c_bus_create(BME280_I2C_PORT, &this->i2c_config);
-        if (bme280_bus == NULL) {
+    if (this->bme280_bus == NULL) {
+        this->bme280_bus = i2c_bus_create(BME280_I2C_PORT, &this->i2c_config);
+        if (this->bme280_bus == NULL) {
             ESP_LOGE(TAG, "Failed to create I2C bus for BME280");
             return false;
         }
     }
     // Debugging only so we know what connections we have
     uint8_t found_devices[8] = {};
-    uint8_t device_count = i2c_bus_scan(bme280_bus, found_devices, sizeof(found_devices));
+    uint8_t device_count = i2c_bus_scan(this->bme280_bus, found_devices, sizeof(found_devices));
     ESP_LOGI(TAG, "I2C scan found %u device(s)", device_count);
 
     for (uint8_t i = 0; i < device_count && i < sizeof(found_devices); i++) {

@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 
+
 namespace hal {
     // Ok = 0, CommunicationFailure, DeviceNotFound, InvalidReading, Timeout
     enum class SensorError : uint8_t {
@@ -32,6 +33,12 @@ namespace hal {
     };
 
 }
+
+
+typedef struct {
+    //hal::TemperatureReading temptest;
+    float celciustest;
+} Ttest;
 
 
 

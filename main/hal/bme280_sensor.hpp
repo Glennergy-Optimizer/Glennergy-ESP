@@ -1,3 +1,6 @@
+#ifndef BME280_SENSOR_HPP
+#define BME280_SENSOR_HPP
+
 #include "temperature_sensor.hpp"
 //#include "driver/i2c.h"
 #include "i2c_bus.h"
@@ -26,6 +29,9 @@ namespace hal {
 
             bool is_present() override;
 
+
+
+            bool bme280_sensor_init();
         private:
             uint8_t bme280_read_failures;
             int64_t last_reconnect_attempt_ms;
@@ -39,7 +45,6 @@ namespace hal {
             uint8_t adress; 
             
             void BME280Sensor_init_i2c_config();
-            bool bme280_sensor_init();
             bool bme280_init_at_address(uint8_t address);
             void publish_temperature_data(hal::TemperatureReading& reading);
 
@@ -47,3 +52,5 @@ namespace hal {
 
     };
 }
+
+#endif
