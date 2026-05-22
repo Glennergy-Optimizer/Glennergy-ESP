@@ -31,6 +31,7 @@ static bool bme280_ready = false;
 
 */
 QueueHandle_t Sensor_Queue = NULL;
+QueueHandle_t Humidity_Queue = NULL;
 
 static constexpr char* TAG = "bme280_sensor.cpp";
 // Reminder, static so only this file can see it
@@ -42,12 +43,23 @@ void hal::BME280Sensor::publish_temperature_data(hal::TemperatureReading& readin
     }
 }
 
+void hal::BME280Sensor::publish_humidity_data(hal::HumidityReading& reading) {
+    if (Humidity_Queue != NULL) {
+        xQueueOverwrite(Humidity_Queue, &reading);
+    }
+}
 
 bool hal::BME280Sensor::is_present () {
     return 0;
 }
 
 
+// TODO - Antingen använda pekare med namn temperature_sensor, humidity_sensor som i vårt fall alla pekar till samma sensor.
+// Sean kalla temperature_sensor.read.
+// Alternativt att bme280 sensor har tre olika funktionsnamn, temperature_read, humidity_read och pressure_read
+// Jag testar med första alternativet.
+// Kommer skapa overloading för "read" så vi kan skicka in TemperatureReading, HumidityReading eller PressureReading
+// TODO - Reconnect logic som funkar oavsett om man läser från en eller tre grejer
 hal::SensorError hal::BME280Sensor::read(hal::TemperatureReading& reading) {
 
     if (!this->bme280_ready || this->bme280 == NULL) {
@@ -123,6 +135,69 @@ hal::SensorError hal::BME280Sensor::read(hal::TemperatureReading& reading) {
     return hal::SensorError::Ok;
 }
 
+
+// TODO - Antingen använda pekare med namn temperature_sensor, humidity_sensor som i vårt fall alla pekar till samma sensor.
+// Sean kalla temperature_sensor.read.
+// Alternativt att bme280 sensor har tre olika funktionsnamn, temperature_read, humidity_read och pressure_read
+// Jag testar med första alternativet.
+// Kommer skapa overloading för "read" så vi kan skicka in TemperatureReading, HumidityReading eller PressureReading
+hal::SensorError hal::BME280Sensor::read(hal::HumidityReading& reading) {
+
+    if (!this->bme280_ready || this->bme280 == NULL) {
+        int64_t now_ms = esp_timer_get_time() / 1000;
+        if (now_ms - this->last_reconnect_attempt_ms >= BME280_RECONNECT_INTERVAL_MS) {
+            this->last_reconnect_attempt_ms = now_ms;
+            ESP_LOGI(TAG, "Trying to reconnect BME280...");
+            this->bme280_ready = bme280_sensor_init();
+
+            if (this->bme280_ready) {
+                ESP_LOGI(TAG, "BME280 reconnected :)");
+            }
+        }
+        //sensor->valid = false;
+        //publish_sensor_data(sensor);
+        return hal::SensorError::CommunicationFailure;
+        //return false;
+    }
+    float humidity = 0.0f;
+
+    esp_err_t humidity_result = bme280_read_temperature(this->bme280, &humidity);
+
+    if (humidity_result != ESP_OK) {
+        this->bme280_read_failures++;
+
+        ESP_LOGW(TAG, "BME280 read failed %u/%u: humidity=%s",
+            this->bme280_read_failures,
+            BME280_MAX_READ_FAILURES,     
+            esp_err_to_name(humidity_result)
+        );
+
+        if (this->bme280_read_failures >= BME280_MAX_READ_FAILURES) {
+            ESP_LOGW(TAG, "BME280 marked disconnected after repeated read failures. Please restart application.");
+            this->bme280_ready = false;
+            this->bme280_read_failures = 0;
+            if (this->bme280 != NULL) {
+                bme280_delete(&this->bme280);
+            }
+        }
+        //sensor->valid = false;
+        //publish_sensor_data(sensor);
+        return hal::SensorError::CommunicationFailure;
+    }
+    
+    this->bme280_read_failures = 0;
+    
+    bme280_read_temperature(this->bme280, &reading.humidity);
+
+    reading.timestamp = esp_timer_get_time() / 1000000ULL;
+    //sensor->last_update_seconds = esp_timer_get_time() / 1000000ULL;
+
+    ESP_LOGI(TAG, "BME280: %.f C", reading.humidity);
+
+
+    //publish_sensor_data(sensor);
+    return hal::SensorError::Ok;
+}
 
 
 hal::BME280Sensor::BME280Sensor()

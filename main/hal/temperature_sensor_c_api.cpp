@@ -1,8 +1,10 @@
 #include "temperature_sensor_c_api.h"
 #include "bme280_sensor.hpp"
 #include "../app_types.h"
+//#include "temperature_sensor.hpp"
 
-hal::BME280Sensor sensor;
+
+hal::BME280Sensor temperature_sensor;
 hal::TemperatureReading temp;
 
 
@@ -13,7 +15,7 @@ temp_read() {
 */
 hal::SensorError sensor_read(hal::TemperatureReading& temperature) {
     hal::SensorError sensorResult;
-    sensorResult = sensor.read(temperature);
+    sensorResult = temperature_sensor.read(temperature);
     return sensorResult;
 }
 
@@ -30,5 +32,5 @@ TemperatureReadingInC temperature_sensor_get_celcius(hal::TemperatureReading& re
 }
 
 bool temperature_sensor_is_available(void) {
-    return sensor.is_present();
+    return temperature_sensor.is_present();
 }

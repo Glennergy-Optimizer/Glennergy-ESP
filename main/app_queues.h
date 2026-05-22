@@ -6,4 +6,6 @@
 
 extern QueueHandle_t Sensor_Queue;
 
+extern QueueHandle_t Humidity_Queue;
+
 #endif

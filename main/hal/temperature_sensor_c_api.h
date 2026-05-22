@@ -15,7 +15,7 @@
     TemperatureReadingInC temperature_sensor_get_celcius(hal::TemperatureReading& reading);
 #endif
 
-extern hal::BME280Sensor sensor;
+extern hal::BME280Sensor temperature_sensor;
 extern hal::TemperatureReading temp;
 
 

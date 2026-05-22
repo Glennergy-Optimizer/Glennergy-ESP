@@ -80,8 +80,17 @@ typedef struct {
     system_status_t system_status;
 } app_state_t;
 
+// *** HAL structs ***
+
+// todo - Lägga till timestamp
 typedef struct {
     float celcius;
 } TemperatureReadingInC;
+
+// todo - Lägga till timestamp
+typedef struct {
+    float humidity;
+} HumidityReadingInC;
+
 
 #endif
