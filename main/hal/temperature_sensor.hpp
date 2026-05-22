@@ -2,17 +2,19 @@
 #define TEMPERATURE_SENSOR_HPP
 
 #include <stdint.h>
+#include "Hal_classes.h"
 
 
 namespace hal {
     // Ok = 0, CommunicationFailure, DeviceNotFound, InvalidReading, Timeout
-    enum class SensorError : uint8_t {
+    
+    /*enum class SensorError : uint8_t {
         Ok = 0,
         CommunicationFailure,
         DeviceNotFound,
         InvalidReading,
         Timeout
-    };
+    };*/
     
     // float: celcius, uint32_t: timestamp.
     struct TemperatureReading { 

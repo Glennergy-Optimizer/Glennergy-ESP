@@ -16,6 +16,8 @@
 //#include "../hal/bme280_sensor.hpp"
 #include "../hal/temperature_sensor_c_api.h"
 #include "../hal/temperature_sensor.hpp"
+#include "../hal/humidity_sensor.hpp"
+#include "../hal/humidity_sensor_c_api.h"
 //#include "../hal/temperature_sensor_c_api.cpp"
 #include "../app_types.h"
 
@@ -62,6 +64,13 @@ static void publish_temperature_data(TemperatureReadingInC* tempReadInC)
 {
     if (Sensor_Queue != NULL) {
         xQueueOverwrite(Sensor_Queue, tempReadInC);
+    }
+}
+
+static void publish_humidity_data(HumidityReadingInC* humidityReadingInC)
+{
+    if (Humidity_Queue != NULL) {
+        xQueueOverwrite(Humidity_Queue, humidityReadingInC);
     }
 }
 
@@ -161,10 +170,20 @@ bool Sensor_Read_v2()
     //hal::BME280Sensor bmeSensor();
     hal::TemperatureReading temperatur = hal::TemperatureReading();
     hal::SensorError result = sensor_read(temperatur);
+
+    hal::HumidityReading humidityReading = hal::HumidityReading();
+    hal::SensorError humidityResult = sensor_read(humidityReading);
     
+    // Todo - validation of SensorError code
     TemperatureReadingInC Ctemperature;
     Ctemperature.celcius = temperatur.celcius;
+
+    HumidityReadingInC Chumidity;
+    Chumidity.humidity = humidityReading.humidity;
+
     publish_temperature_data(&Ctemperature);
+    publish_humidity_data(&Chumidity);
+
     //ESP_LOGI(TAG, "temperature: %.f, Ctemperature: %.f", temperatur.celcius, Ctemperature.celcius);
     // ESP_LOGI(TAG, "Ctemperature: %.f", Ctemperature.celcius);
 
@@ -257,10 +276,26 @@ void Sensor_Work(void* parameter) {
 
     if (Sensor_Queue == NULL)
     {
-        ESP_LOGI(TAG, "Failed to create sensor queue!");
+        ESP_LOGW(TAG, "Failed to create sensor queue!");
     }
-    sensor = hal::BME280Sensor();
-    sensor.bme280_sensor_init();
+
+    Humidity_Queue = xQueueCreate(1, sizeof(HumidityReadingInC));
+    if (Humidity_Queue == NULL)
+    {
+        ESP_LOGW(TAG, "Failed to create humidity queue!");
+    }
+
+    temperature_sensor = hal::BME280Sensor();
+    
+    hal::BME280Sensor BME280_sensor_object = hal::BME280Sensor();
+
+    hal::BME280Sensor& humidity_sensor = BME280_sensor_object;
+
+    // humidity_sensor = &hal::BME280Sensor();
+    // humidity_sensor = &temperature_sensor;
+
+    temperature_sensor.bme280_sensor_init();
+
     //hal::BME280Sensor bmeSensor = hal::BME280Sensor();
     while (1) {
         //Sensor_Read_v2(bmeSensor);
