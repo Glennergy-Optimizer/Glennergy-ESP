@@ -139,6 +139,27 @@ static bool bme280_sensor_init()
 }
 
 
+void Sensor_Init_v2(app_state_t* app) 
+{
+    app->sensor_data.valid = false;
+    app->sensor_data.last_update_seconds = 0;
+    app->sensor_data.temperature = 0;
+    app->sensor_data.pressure = 0;
+    app->sensor_data.humidity = 0;
+
+    Sensor_Queue = xQueueCreate(1, sizeof(TemperatureReadingInC));
+
+    if (Sensor_Queue == NULL)
+    {
+        ESP_LOGW(TAG, "Failed to create sensor queue!");
+    }
+
+    Humidity_Queue = xQueueCreate(1, sizeof(HumidityReadingInC));
+    if (Humidity_Queue == NULL)
+    {
+        ESP_LOGW(TAG, "Failed to create humidity queue!");
+    }
+}
 void Sensor_Init(app_state_t* app)
 {
     if (fake_mode == true)
@@ -166,12 +187,13 @@ void Sensor_Init(app_state_t* app)
 //bool Sensor_Read_v2(hal::BME280Sensor& bmeSensor)
 // Todo as of 2026-05-25 - Let's not overabstract since we only have a single bme280 sensor for now.
 // 
-bool Sensor_Read_v2(hal::BME280Sensor& environment_sensor)
+bool Sensor_Read_v2(sensor_data_t* sensor, hal::BME280Sensor& environment_sensor)
 {
     //sensor_read();
     //hal::BME280Sensor bmeSensor();
     hal::TemperatureReading temperatur = hal::TemperatureReading();
     hal::HumidityReading humidityReading = hal::HumidityReading();
+
     
     //hal::SensorError humidityResult = sensor_read(humidityReading);
     hal::SensorError result = environment_sensor.read(temperatur);
@@ -179,6 +201,11 @@ bool Sensor_Read_v2(hal::BME280Sensor& environment_sensor)
     
     if (result != hal::SensorError::Ok || humidityResult != hal::SensorError::Ok) {
         ESP_LOGW(TAG, "Something went wrong with reading data from sensor.\nTemperature code: %d, humidity code: %d", static_cast<int>(result), static_cast<int>(humidityResult));
+        // Om något inte är okej med error codes för SensorError så hanteras det här.
+        // Om något inte är okej, oavsett anledning, så blir sensor->valid false.
+        // Då uppdateras inte värderna i strukten.
+        // UIn visar då de senaste värderna, med (TODO-fix this) en timestamp och något typ av errornotering, så användaren lätt vet att tex 15:37:02 var senaste OK sensorreaden
+        sensor->valid = false;
         return false;
     }
 
@@ -189,6 +216,14 @@ bool Sensor_Read_v2(hal::BME280Sensor& environment_sensor)
 
     HumidityReadingInC Chumidity;
     Chumidity.humidity = humidityReading.humidity;
+
+    sensor->temperature = Ctemperature.celcius;
+    sensor->humidity = Chumidity.humidity;
+    // Todo - använda SensorError enum och koppla till valid?
+    sensor->valid = true;
+    // Todo - Låta read skicka temperatur?
+    sensor->last_update_seconds = esp_timer_get_time() / 1000000ULL;
+
 
     publish_temperature_data(&Ctemperature);
     publish_humidity_data(&Chumidity);
@@ -279,20 +314,22 @@ void Sensor_Work(void* parameter) {
     app_state_t* app = (app_state_t*)parameter;
 
     //Sensor_Init(app);
+    Sensor_Init_v2(app);
 
     //Sensor_Queue = xQueueCreate(1, sizeof(hal::TemperatureReading));
-    Sensor_Queue = xQueueCreate(1, sizeof(TemperatureReadingInC));
+    
+    // Sensor_Queue = xQueueCreate(1, sizeof(TemperatureReadingInC));
 
-    if (Sensor_Queue == NULL)
-    {
-        ESP_LOGW(TAG, "Failed to create sensor queue!");
-    }
+    // if (Sensor_Queue == NULL)
+    // {
+    //     ESP_LOGW(TAG, "Failed to create sensor queue!");
+    // }
 
-    Humidity_Queue = xQueueCreate(1, sizeof(HumidityReadingInC));
-    if (Humidity_Queue == NULL)
-    {
-        ESP_LOGW(TAG, "Failed to create humidity queue!");
-    }
+    // Humidity_Queue = xQueueCreate(1, sizeof(HumidityReadingInC));
+    // if (Humidity_Queue == NULL)
+    // {
+    //     ESP_LOGW(TAG, "Failed to create humidity queue!");
+    // }
 
     //temperature_sensor = hal::BME280Sensor();
     
@@ -310,7 +347,7 @@ void Sensor_Work(void* parameter) {
     //hal::BME280Sensor bmeSensor = hal::BME280Sensor();
     while (1) {
         //Sensor_Read_v2(bmeSensor);
-        Sensor_Read_v2(environment_sensor);
+        Sensor_Read_v2(&app->sensor_data, environment_sensor);
         //Sensor_Read(&app->sensor_data);
         vTaskDelay(pdMS_TO_TICKS(1000));
     }
