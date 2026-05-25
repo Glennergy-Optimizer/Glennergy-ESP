@@ -37,12 +37,12 @@ namespace hal {
 
             bool bme280_sensor_init();
         private:
-            uint8_t bme280_read_failures;
-            int64_t last_reconnect_attempt_ms;
+            uint8_t bme280_read_failures = 0;
+            int64_t last_reconnect_attempt_ms = 0;
 
-            i2c_bus_handle_t bme280_bus;
+            i2c_bus_handle_t bme280_bus = NULL;
             bme280_handle_t bme280 = NULL;
-            bool bme280_ready;
+            bool bme280_ready = false;
         
             i2c_config_t i2c_config;
             i2c_port_t i2c_port;

@@ -11,7 +11,7 @@
 //extern hal::BME280Sensor original_sensor_object;
 //hal::BME280Sensor& humidity_sensor = original_sensor_object;
 //hal::BME280Sensor& humidity_sensor = original_sensor_object;
-extern hal::BME280Sensor humidity_sensor;
+extern hal::BME280Sensor& humidity_sensor;
 
 hal::HumidityReading humidity;
 

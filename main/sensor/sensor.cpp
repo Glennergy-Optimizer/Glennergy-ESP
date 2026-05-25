@@ -164,16 +164,25 @@ void Sensor_Init(app_state_t* app)
 }
 
 //bool Sensor_Read_v2(hal::BME280Sensor& bmeSensor)
-bool Sensor_Read_v2()
+// Todo as of 2026-05-25 - Let's not overabstract since we only have a single bme280 sensor for now.
+// 
+bool Sensor_Read_v2(hal::BME280Sensor& environment_sensor)
 {
     //sensor_read();
     //hal::BME280Sensor bmeSensor();
     hal::TemperatureReading temperatur = hal::TemperatureReading();
-    hal::SensorError result = sensor_read(temperatur);
-
     hal::HumidityReading humidityReading = hal::HumidityReading();
-    hal::SensorError humidityResult = sensor_read(humidityReading);
     
+    //hal::SensorError humidityResult = sensor_read(humidityReading);
+    hal::SensorError result = environment_sensor.read(temperatur);
+    hal::SensorError humidityResult = environment_sensor.read(humidityReading);
+    
+    if (result != hal::SensorError::Ok || humidityResult != hal::SensorError::Ok) {
+        ESP_LOGW(TAG, "Something went wrong with reading data from sensor.\nTemperature code: %d, humidity code: %d", static_cast<int>(result), static_cast<int>(humidityResult));
+        return false;
+    }
+
+
     // Todo - validation of SensorError code
     TemperatureReadingInC Ctemperature;
     Ctemperature.celcius = temperatur.celcius;
@@ -285,21 +294,23 @@ void Sensor_Work(void* parameter) {
         ESP_LOGW(TAG, "Failed to create humidity queue!");
     }
 
-    temperature_sensor = hal::BME280Sensor();
+    //temperature_sensor = hal::BME280Sensor();
     
-    hal::BME280Sensor BME280_sensor_object = hal::BME280Sensor();
-
-    hal::BME280Sensor& humidity_sensor = BME280_sensor_object;
+    //hal::BME280Sensor BME280_sensor_object = hal::BME280Sensor();
+    hal::BME280Sensor environment_sensor = hal::BME280Sensor();
+    environment_sensor.bme280_sensor_init();
+    //hal::BME280Sensor& humidity_sensor = BME280_sensor_object;
+    //hal::BME280Sensor humidity_sensor = hal::BME280Sensor();
 
     // humidity_sensor = &hal::BME280Sensor();
     // humidity_sensor = &temperature_sensor;
 
-    temperature_sensor.bme280_sensor_init();
+    //temperature_sensor.bme280_sensor_init();
 
     //hal::BME280Sensor bmeSensor = hal::BME280Sensor();
     while (1) {
         //Sensor_Read_v2(bmeSensor);
-        Sensor_Read_v2();
+        Sensor_Read_v2(environment_sensor);
         //Sensor_Read(&app->sensor_data);
         vTaskDelay(pdMS_TO_TICKS(1000));
     }

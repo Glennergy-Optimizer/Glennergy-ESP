@@ -127,7 +127,7 @@ hal::SensorError hal::BME280Sensor::read(hal::TemperatureReading& reading) {
     reading.timestamp = esp_timer_get_time() / 1000000ULL;
     //sensor->last_update_seconds = esp_timer_get_time() / 1000000ULL;
 
-    ESP_LOGI(TAG, "BME280: %.f C", reading.celcius);
+    ESP_LOGI(TAG, "BME280 temperature: %.f C", reading.celcius);
     //ESP_LOGI(TAG, "BME280: %.2f C, %.2f %%RH, %.2f hPa",
     //         temperature, humidity, pressure);
 
@@ -161,7 +161,7 @@ hal::SensorError hal::BME280Sensor::read(hal::HumidityReading& reading) {
     }
     float humidity = 0.0f;
 
-    esp_err_t humidity_result = bme280_read_temperature(this->bme280, &humidity);
+    esp_err_t humidity_result = bme280_read_humidity(this->bme280, &humidity);
 
     if (humidity_result != ESP_OK) {
         this->bme280_read_failures++;
@@ -187,12 +187,12 @@ hal::SensorError hal::BME280Sensor::read(hal::HumidityReading& reading) {
     
     this->bme280_read_failures = 0;
     
-    bme280_read_temperature(this->bme280, &reading.humidity);
+    bme280_read_humidity(this->bme280, &reading.humidity);
 
     reading.timestamp = esp_timer_get_time() / 1000000ULL;
     //sensor->last_update_seconds = esp_timer_get_time() / 1000000ULL;
 
-    ESP_LOGI(TAG, "BME280: %.f C", reading.humidity);
+    ESP_LOGI(TAG, "BME280 humidity: %2.1f%%", reading.humidity);
 
 
     //publish_sensor_data(sensor);
