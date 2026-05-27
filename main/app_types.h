@@ -92,5 +92,8 @@ typedef struct {
     float humidity;
 } HumidityReadingInC;
 
+typedef struct {
+    float pressure;
+} PressureReadingInC;
 
 #endif

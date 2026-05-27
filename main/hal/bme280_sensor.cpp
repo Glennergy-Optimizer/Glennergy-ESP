@@ -32,6 +32,7 @@ static bool bme280_ready = false;
 */
 QueueHandle_t Sensor_Queue = NULL;
 QueueHandle_t Humidity_Queue = NULL;
+QueueHandle_t Pressure_Queue = NULL;
 
 static constexpr char* TAG = "bme280_sensor.cpp";
 // Reminder, static so only this file can see it
@@ -46,6 +47,12 @@ void hal::BME280Sensor::publish_temperature_data(hal::TemperatureReading& readin
 void hal::BME280Sensor::publish_humidity_data(hal::HumidityReading& reading) {
     if (Humidity_Queue != NULL) {
         xQueueOverwrite(Humidity_Queue, &reading);
+    }
+}
+
+void hal::BME280Sensor::publish_pressure_data(hal::PressureReading& reading) {
+    if (Pressure_Queue != NULL) {
+        xQueueOverwrite(Pressure_Queue, &reading);
     }
 }
 
@@ -198,6 +205,65 @@ hal::SensorError hal::BME280Sensor::read(hal::HumidityReading& reading) {
     //publish_sensor_data(sensor);
     return hal::SensorError::Ok;
 }
+
+hal::SensorError hal::BME280Sensor::read(hal::PressureReading& reading) {
+
+    if (!this->bme280_ready || this->bme280 == NULL) {
+        int64_t now_ms = esp_timer_get_time() / 1000;
+        if (now_ms - this->last_reconnect_attempt_ms >= BME280_RECONNECT_INTERVAL_MS) {
+            this->last_reconnect_attempt_ms = now_ms;
+            ESP_LOGI(TAG, "Trying to reconnect BME280...");
+            this->bme280_ready = bme280_sensor_init();
+
+            if (this->bme280_ready) {
+                ESP_LOGI(TAG, "BME280 reconnected :)");
+            }
+        }
+        //sensor->valid = false;
+        //publish_sensor_data(sensor);
+        return hal::SensorError::CommunicationFailure;
+        //return false;
+    }
+    float pressure = 0.0f;
+
+    esp_err_t pressure_result = bme280_read_pressure(this->bme280, &pressure);
+
+    if (pressure_result != ESP_OK) {
+        this->bme280_read_failures++;
+
+        ESP_LOGW(TAG, "BME280 read failed %u/%u: pressure=%s",
+            this->bme280_read_failures,
+            BME280_MAX_READ_FAILURES,     
+            esp_err_to_name(pressure_result)
+        );
+
+        if (this->bme280_read_failures >= BME280_MAX_READ_FAILURES) {
+            ESP_LOGW(TAG, "BME280 marked disconnected after repeated read failures. Please restart application.");
+            this->bme280_ready = false;
+            this->bme280_read_failures = 0;
+            if (this->bme280 != NULL) {
+                bme280_delete(&this->bme280);
+            }
+        }
+        //sensor->valid = false;
+        //publish_sensor_data(sensor);
+        return hal::SensorError::CommunicationFailure;
+    }
+    
+    this->bme280_read_failures = 0;
+    
+    bme280_read_pressure(this->bme280, &reading.pressure);
+
+    reading.timestamp = esp_timer_get_time() / 1000000ULL;
+    //sensor->last_update_seconds = esp_timer_get_time() / 1000000ULL;
+
+    ESP_LOGI(TAG, "BME280: %.f pHa", reading.pressure);
+
+
+    //publish_sensor_data(sensor);
+    return hal::SensorError::Ok;
+}
+
 
 
 hal::BME280Sensor::BME280Sensor()

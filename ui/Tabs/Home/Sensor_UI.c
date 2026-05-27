@@ -94,9 +94,11 @@ void Sensor_UI_Update(void)
     //sensor_data_t sensor_data;
     TemperatureReadingInC TempReadInC;
     HumidityReadingInC HumidityReadingInC;
+    PressureReadingInC pressureReadingInC;
     //if (Sensor_Queue != NULL && xQueueReceive(Sensor_Queue, &sensor_data, 0) == pdPASS)
     if (Sensor_Queue != NULL && xQueueReceive(Sensor_Queue, &TempReadInC, 0) == pdPASS
-        && Humidity_Queue != NULL && xQueueReceive(Humidity_Queue, &HumidityReadingInC, 0) == pdPASS)
+        && Humidity_Queue != NULL && xQueueReceive(Humidity_Queue, &HumidityReadingInC, 0) == pdPASS
+        && Pressure_Queue != NULL && xQueueReceive(Pressure_Queue, &pressureReadingInC, 0) == pdPASS)
     //if (Sensor_Queue != NULL && xQueueReceive(Sensor_Queue, &temp_reading, 0) == pdPASS)
     {
         //if (sensor_data.valid) {
@@ -109,11 +111,13 @@ void Sensor_UI_Update(void)
             snprintf(relative_humidity, sizeof(temp), "%2.1f%%", HumidityReadingInC.humidity);
             //snprintf(temp, sizeof(temp), "%2.1f", sensor_data.temperature);
             //snprintf(relative_humidity, sizeof(relative_humidity), "%2.1f%%", sensor_data.humidity);
+            snprintf(barometric_preassure, sizeof(barometric_preassure), "%.1f pHa", pressureReadingInC.pressure);
             //snprintf(barometric_preassure, sizeof(barometric_preassure), "%.1fpHa", sensor_data.pressure);
             if (lvgl_port_lock(-1))
             {
                 lv_label_set_text(sensor_ui.temperature_label_dyn, temp);
                 lv_label_set_text(sensor_ui.humidity_label_dyn, relative_humidity);
+                lv_label_set_text(sensor_ui.pressure_label_dyn, barometric_preassure);
                 //lv_label_set_text(sensor_ui.pressure_label_dyn, barometric_preassure);
                 lvgl_port_unlock();
             }

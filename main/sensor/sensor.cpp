@@ -18,6 +18,8 @@
 #include "../hal/temperature_sensor.hpp"
 #include "../hal/humidity_sensor.hpp"
 #include "../hal/humidity_sensor_c_api.h"
+#include "../hal/pressure_sensor.hpp"
+#include "../hal/pressure_sensor_c_api.h"
 //#include "../hal/temperature_sensor_c_api.cpp"
 #include "../app_types.h"
 
@@ -74,6 +76,12 @@ static void publish_humidity_data(HumidityReadingInC* humidityReadingInC)
     }
 }
 
+static void publish_pressure_data(PressureReadingInC* pressureReadingInC)
+{
+    if (Pressure_Queue != NULL) {
+        xQueueOverwrite(Pressure_Queue, pressureReadingInC);
+    }
+}
 
 // Init bme280 at a specfic I2C adress
 const static bool bme280_init_at_address(uint8_t address)
@@ -159,6 +167,11 @@ void Sensor_Init_v2(app_state_t* app)
     {
         ESP_LOGW(TAG, "Failed to create humidity queue!");
     }
+
+    Pressure_Queue = xQueueCreate(1, sizeof(PressureReadingInC));
+    if (Pressure_Queue == NULL) {
+        ESP_LOGW(TAG, "Failed to create pressure queue!");
+    }
 }
 void Sensor_Init(app_state_t* app)
 {
@@ -193,13 +206,15 @@ bool Sensor_Read_v2(sensor_data_t* sensor, hal::BME280Sensor& environment_sensor
     //hal::BME280Sensor bmeSensor();
     hal::TemperatureReading temperatur = hal::TemperatureReading();
     hal::HumidityReading humidityReading = hal::HumidityReading();
+    hal::PressureReading pressureReading = hal::PressureReading();
 
     
     //hal::SensorError humidityResult = sensor_read(humidityReading);
     hal::SensorError result = environment_sensor.read(temperatur);
     hal::SensorError humidityResult = environment_sensor.read(humidityReading);
-    
-    if (result != hal::SensorError::Ok || humidityResult != hal::SensorError::Ok) {
+    hal::SensorError pressureResult = environment_sensor.read(pressureReading);
+
+    if (result != hal::SensorError::Ok || humidityResult != hal::SensorError::Ok || pressureResult != hal::SensorError::Ok) {
         ESP_LOGW(TAG, "Something went wrong with reading data from sensor.\nTemperature code: %d, humidity code: %d", static_cast<int>(result), static_cast<int>(humidityResult));
         // Om något inte är okej med error codes för SensorError så hanteras det här.
         // Om något inte är okej, oavsett anledning, så blir sensor->valid false.
@@ -217,8 +232,14 @@ bool Sensor_Read_v2(sensor_data_t* sensor, hal::BME280Sensor& environment_sensor
     HumidityReadingInC Chumidity;
     Chumidity.humidity = humidityReading.humidity;
 
+    PressureReadingInC Cpressure;
+    Cpressure.pressure = pressureReading.pressure;
+
+
+
     sensor->temperature = Ctemperature.celcius;
     sensor->humidity = Chumidity.humidity;
+    sensor->pressure = Cpressure.pressure;
     // Todo - använda SensorError enum och koppla till valid?
     sensor->valid = true;
     // Todo - Låta read skicka temperatur?
@@ -227,6 +248,7 @@ bool Sensor_Read_v2(sensor_data_t* sensor, hal::BME280Sensor& environment_sensor
 
     publish_temperature_data(&Ctemperature);
     publish_humidity_data(&Chumidity);
+    publish_pressure_data(&Cpressure);
 
     //ESP_LOGI(TAG, "temperature: %.f, Ctemperature: %.f", temperatur.celcius, Ctemperature.celcius);
     // ESP_LOGI(TAG, "Ctemperature: %.f", Ctemperature.celcius);
@@ -331,7 +353,7 @@ void Sensor_Work(void* parameter) {
     //     ESP_LOGW(TAG, "Failed to create humidity queue!");
     // }
 
-    //temperature_sensor = hal::BME280Sensor();
+    temperature_sensor = hal::BME280Sensor();
     
     //hal::BME280Sensor BME280_sensor_object = hal::BME280Sensor();
     hal::BME280Sensor environment_sensor = hal::BME280Sensor();

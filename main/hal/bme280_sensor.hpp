@@ -3,6 +3,7 @@
 
 #include "temperature_sensor.hpp"
 #include "humidity_sensor.hpp"
+#include "pressure_sensor.hpp"
 //#include "driver/i2c.h"
 #include "i2c_bus.h"
 #include "bme280.h"
@@ -20,6 +21,7 @@
 
 extern QueueHandle_t Sensor_Queue;
 extern QueueHandle_t Humidity_Queue;
+extern QueueHandle_t Pressure_Queue;
 
 namespace hal {
     class BME280Sensor : public ITemperatureSensor {
@@ -29,6 +31,7 @@ namespace hal {
 
             SensorError read(TemperatureReading& reading) override;
             SensorError read(HumidityReading& reading);
+            SensorError read(PressureReading& reading);
 
 
             bool is_present() override;
@@ -43,7 +46,7 @@ namespace hal {
             i2c_bus_handle_t bme280_bus = NULL;
             bme280_handle_t bme280 = NULL;
             bool bme280_ready = false;
-        
+
             i2c_config_t i2c_config;
             i2c_port_t i2c_port;
             uint8_t adress; 
@@ -52,6 +55,7 @@ namespace hal {
             bool bme280_init_at_address(uint8_t address);
             void publish_temperature_data(hal::TemperatureReading& reading);
             void publish_humidity_data(hal::HumidityReading& reading);
+            void publish_pressure_data(hal::PressureReading& reading);
 
 
 
