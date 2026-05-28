@@ -20,8 +20,6 @@ namespace hal {
 
             virtual bool is_present() = 0;
     };
-
 }
-
 
 #endif

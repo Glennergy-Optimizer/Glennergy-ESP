@@ -14,11 +14,6 @@
     
 #endif
 
-extern hal::BME280Sensor pressure_sensor;
-extern hal::PressureReading pressure;
-
-
-
 bool pressure_sensor_is_available(void);
 
 #ifdef __cplusplus

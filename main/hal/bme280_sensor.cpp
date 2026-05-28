@@ -12,31 +12,15 @@
 #define BME280_RECONNECT_INTERVAL_MS 5000
 
 
-/// ***  C-exposed functions *** ///
-
-// static version t
-//static hal::BME280Sensor sensor;
-
-
-
-/*
-
-static uint8_t bme280_read_failures = 0;
-static int64_t last_reconnect_attempt_ms = 0;
-
-
-static i2c_bus_handle_t bme280_bus = NULL;
-static bme280_handle_t bme280 = NULL;
-static bool bme280_ready = false;
-
-*/
 QueueHandle_t Sensor_Queue = NULL;
 QueueHandle_t Humidity_Queue = NULL;
 QueueHandle_t Pressure_Queue = NULL;
 
+
 static constexpr char* TAG = "bme280_sensor.cpp";
-// Reminder, static so only this file can see it
+
 static bool fake_mode = false;
+
 
 void hal::BME280Sensor::publish_temperature_data(hal::TemperatureReading& reading) {
     if (Sensor_Queue != NULL) {
@@ -80,31 +64,20 @@ hal::SensorError hal::BME280Sensor::read(hal::TemperatureReading& reading) {
                 ESP_LOGI(TAG, "BME280 reconnected :)");
             }
         }
-        //sensor->valid = false;
-        //publish_sensor_data(sensor);
         return hal::SensorError::CommunicationFailure;
-        //return false;
     }
 
     float temperature = 0.0f;
-    //float humidity = 0.0f;
-    //float pressure = 0.0f;
 
     esp_err_t temp_result = bme280_read_temperature(this->bme280, &temperature);
-    //esp_err_t humidity_result = bme280_read_humidity(bme280, &humidity);
-    //esp_err_t pressure_result = bme280_read_pressure(bme280, &pressure);
 
-    //if (temp_result != ESP_OK || humidity_result != ESP_OK || pressure_result != ESP_OK) {
     if (temp_result != ESP_OK) {
         this->bme280_read_failures++;
 
-        //ESP_LOGW(TAG, "BME280 read failed %u/%u: temp=%s humidity=%s pressure=%s",
         ESP_LOGW(TAG, "BME280 read failed %u/%u: temp=%s",
             this->bme280_read_failures,
             BME280_MAX_READ_FAILURES,     
             esp_err_to_name(temp_result)
-            //esp_err_to_name(humidity_result),
-            //esp_err_to_name(pressure_result)
         );
 
         if (this->bme280_read_failures >= BME280_MAX_READ_FAILURES) {
@@ -115,39 +88,20 @@ hal::SensorError hal::BME280Sensor::read(hal::TemperatureReading& reading) {
                 bme280_delete(&this->bme280);
             }
         }
-        //sensor->valid = false;
-        //publish_sensor_data(sensor);
         return hal::SensorError::CommunicationFailure;
     }
     
     this->bme280_read_failures = 0;
     
     bme280_read_temperature(this->bme280, &reading.celcius);
-    ////publish_temperature_data(reading);
 
-    /*
-    sensor->temperature = temperature;
-    sensor->humidity = humidity;
-    sensor->pressure = pressure;
-    sensor->valid = true;
-    */
     reading.timestamp = esp_timer_get_time() / 1000000ULL;
-    //sensor->last_update_seconds = esp_timer_get_time() / 1000000ULL;
 
     ESP_LOGI(TAG, "BME280 temperature: %.f C", reading.celcius);
-    //ESP_LOGI(TAG, "BME280: %.2f C, %.2f %%RH, %.2f hPa",
-    //         temperature, humidity, pressure);
-
-    //publish_sensor_data(sensor);
     return hal::SensorError::Ok;
 }
 
 
-// TODO - Antingen använda pekare med namn temperature_sensor, humidity_sensor som i vårt fall alla pekar till samma sensor.
-// Sean kalla temperature_sensor.read.
-// Alternativt att bme280 sensor har tre olika funktionsnamn, temperature_read, humidity_read och pressure_read
-// Jag testar med första alternativet.
-// Kommer skapa overloading för "read" så vi kan skicka in TemperatureReading, HumidityReading eller PressureReading
 hal::SensorError hal::BME280Sensor::read(hal::HumidityReading& reading) {
 
     if (!this->bme280_ready || this->bme280 == NULL) {
@@ -161,10 +115,7 @@ hal::SensorError hal::BME280Sensor::read(hal::HumidityReading& reading) {
                 ESP_LOGI(TAG, "BME280 reconnected :)");
             }
         }
-        //sensor->valid = false;
-        //publish_sensor_data(sensor);
         return hal::SensorError::CommunicationFailure;
-        //return false;
     }
     float humidity = 0.0f;
 
@@ -187,24 +138,18 @@ hal::SensorError hal::BME280Sensor::read(hal::HumidityReading& reading) {
                 bme280_delete(&this->bme280);
             }
         }
-        //sensor->valid = false;
-        //publish_sensor_data(sensor);
         return hal::SensorError::CommunicationFailure;
     }
     
     this->bme280_read_failures = 0;
     
     bme280_read_humidity(this->bme280, &reading.humidity);
-
-    reading.timestamp = esp_timer_get_time() / 1000000ULL;
-    //sensor->last_update_seconds = esp_timer_get_time() / 1000000ULL;
-
+    reading.timestamp = esp_timer_get_time() / 1000000ULL;    
     ESP_LOGI(TAG, "BME280 humidity: %2.1f%%", reading.humidity);
 
-
-    //publish_sensor_data(sensor);
     return hal::SensorError::Ok;
 }
+
 
 hal::SensorError hal::BME280Sensor::read(hal::PressureReading& reading) {
 
@@ -219,10 +164,7 @@ hal::SensorError hal::BME280Sensor::read(hal::PressureReading& reading) {
                 ESP_LOGI(TAG, "BME280 reconnected :)");
             }
         }
-        //sensor->valid = false;
-        //publish_sensor_data(sensor);
         return hal::SensorError::CommunicationFailure;
-        //return false;
     }
     float pressure = 0.0f;
 
@@ -245,22 +187,15 @@ hal::SensorError hal::BME280Sensor::read(hal::PressureReading& reading) {
                 bme280_delete(&this->bme280);
             }
         }
-        //sensor->valid = false;
-        //publish_sensor_data(sensor);
         return hal::SensorError::CommunicationFailure;
     }
     
     this->bme280_read_failures = 0;
     
     bme280_read_pressure(this->bme280, &reading.pressure);
-
     reading.timestamp = esp_timer_get_time() / 1000000ULL;
-    //sensor->last_update_seconds = esp_timer_get_time() / 1000000ULL;
-
     ESP_LOGI(TAG, "BME280: %.f pHa", reading.pressure);
 
-
-    //publish_sensor_data(sensor);
     return hal::SensorError::Ok;
 }
 

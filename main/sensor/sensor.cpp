@@ -353,7 +353,7 @@ void Sensor_Work(void* parameter) {
     //     ESP_LOGW(TAG, "Failed to create humidity queue!");
     // }
 
-    temperature_sensor = hal::BME280Sensor();
+    //temperature_sensor = hal::BME280Sensor();
     
     //hal::BME280Sensor BME280_sensor_object = hal::BME280Sensor();
     hal::BME280Sensor environment_sensor = hal::BME280Sensor();

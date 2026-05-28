@@ -8,7 +8,7 @@ idf_component_register(
     "../ui/Tabs/Electricity/Electricity_UI.c"
     "LEOP/Recommendation.c" "JSONParser/DataParser.c"
     "LEOP/LEOP_Fetcher.c"
-    "hal/bme280_sensor.cpp" "hal/temperature_sensor_c_api.cpp" "hal/humidity_sensor_c_api.cpp"
+    "hal/bme280_sensor.cpp" "hal/temperature_sensor_c_api.cpp" "hal/humidity_sensor_c_api.cpp" "hal/pressure_sensor_c_api.cpp"
     INCLUDE_DIRS "." "fake" "hal" "leop" "sensor" "UART"
     WHOLE_ARCHIVE
     PRIV_REQUIRES can gpio rgb_lcd_port

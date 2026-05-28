@@ -4,7 +4,6 @@
 #include "temperature_sensor.hpp"
 #include "humidity_sensor.hpp"
 #include "pressure_sensor.hpp"
-//#include "driver/i2c.h"
 #include "i2c_bus.h"
 #include "bme280.h"
 #include "freertos/FreeRTOS.h"
@@ -33,10 +32,7 @@ namespace hal {
             SensorError read(HumidityReading& reading);
             SensorError read(PressureReading& reading);
 
-
             bool is_present() override;
-
-
 
             bool bme280_sensor_init();
         private:
@@ -56,9 +52,6 @@ namespace hal {
             void publish_temperature_data(hal::TemperatureReading& reading);
             void publish_humidity_data(hal::HumidityReading& reading);
             void publish_pressure_data(hal::PressureReading& reading);
-
-
-
     };
 }
 

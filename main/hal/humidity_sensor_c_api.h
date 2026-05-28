@@ -12,8 +12,8 @@
 
 #endif
 
-extern hal::BME280Sensor& humidity_sensor;
-extern hal::HumidityReading humidity;
+//extern hal::BME280Sensor& humidity_sensor;
+//extern hal::HumidityReading humidity;
 
 bool humidity_sensor_is_available(void);
 

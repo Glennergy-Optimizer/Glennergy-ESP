@@ -13,9 +13,6 @@
 //hal::BME280Sensor& humidity_sensor = original_sensor_object;
 extern hal::BME280Sensor& humidity_sensor;
 
-hal::HumidityReading humidity;
-
-
 hal::SensorError sensor_read(hal::HumidityReading& humidity) {
     hal::SensorError sensorResult;
     sensorResult = humidity_sensor.read(humidity);

@@ -7,16 +7,11 @@
     #include "temperature_sensor.hpp"
     #include "bme280_sensor.hpp"
 
+    hal::SensorError sensor_read(hal::TemperatureReading& temperature);
+    TemperatureReadingInC temperature_sensor_get_celcius(hal::TemperatureReading& reading);
     extern "C" {
     
-    hal::SensorError sensor_read(hal::TemperatureReading& temperature);
-    
-    
-    TemperatureReadingInC temperature_sensor_get_celcius(hal::TemperatureReading& reading);
 #endif
-
-extern hal::BME280Sensor temperature_sensor;
-extern hal::TemperatureReading temp;
 
 
 
