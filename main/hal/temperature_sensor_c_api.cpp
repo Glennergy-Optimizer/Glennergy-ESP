@@ -1,6 +1,5 @@
 #include "temperature_sensor_c_api.h"
 #include "bme280_sensor.hpp"
-#include "../app_types.h"
 
 extern hal::BME280Sensor& temperature_sensor;
 

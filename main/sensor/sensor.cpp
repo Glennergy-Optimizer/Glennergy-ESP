@@ -1,22 +1,21 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "fake_sensor.hpp"
 #include "freertos/queue.h"
 #include "sensor.h"
-#include "driver/gpio.h"
-#include "esp_err.h"
 #include "esp_log.h"
 #include "esp_timer.h"
 #include "../app_queues.h"
-#include "bme280.h"
-#include "i2c_bus.h"
+#include "../hal/bme280_sensor.hpp"
+// the C api is currently unused
+/*
 #include "../hal/temperature_sensor_c_api.h"
 #include "../hal/temperature_sensor.hpp"
 #include "../hal/humidity_sensor.hpp"
 #include "../hal/humidity_sensor_c_api.h"
 #include "../hal/pressure_sensor.hpp"
 #include "../hal/pressure_sensor_c_api.h"
-#include "../app_types.h"
+*/
+//#include "../app_types.h"
 
 static constexpr char* TAG = "Sensor.cpp";
 static bool fake_mode = false;

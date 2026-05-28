@@ -17,7 +17,7 @@
 
 bool humidity_sensor_is_available(void);
 
-#ifndef __cpluscplus
+#ifdef __cplusplus
     }
 #endif
 

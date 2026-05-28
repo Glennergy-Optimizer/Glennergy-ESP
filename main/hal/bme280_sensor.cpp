@@ -1,4 +1,9 @@
 #include "bme280_sensor.hpp"
+#include "driver/gpio.h"
+#include "freertos/task.h"
+#include "esp_err.h"
+#include "esp_log.h"
+#include "esp_timer.h"
 #include "../app_queues.h"
 
 #define BME280_SDA_GPIO GPIO_NUM_8 // The I2C SDA 

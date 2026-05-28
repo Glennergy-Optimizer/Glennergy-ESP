@@ -1,7 +1,7 @@
-#include "humidity_sensor_c_api.h"
 #include "bme280_sensor.hpp"
-#include "../app_types.h"
 #include "humidity_sensor.hpp"
+#include "humidity_sensor_c_api.h"
+
 
 
 // TODO - Detta bör vara en pekare?
