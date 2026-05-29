@@ -86,7 +86,7 @@ static bool bme280_sensor_init()
     // This scans for devices, logs adresses. Mainly used for debugging so we can see if the 0x77 appears, or the fallback 0x76
     // If bme280 bus is set it means we're trying to attempting to reconnect, so don't create duplicated bus.
     // if not set(NULL), then create it for the first time 
-    if (bme280_bus == NULL) {
+    /*if (bme280_bus == NULL) {
         bme280_bus = i2c_bus_create(BME280_I2C_PORT, &conf);
         if (bme280_bus == NULL) {
             ESP_LOGE(TAG, "Failed to create I2C bus for BME280");
@@ -101,7 +101,7 @@ static bool bme280_sensor_init()
 
     for (uint8_t i = 0; i < device_count && i < sizeof(found_devices); i++) {
         ESP_LOGI(TAG, "I2C device found at address 0x%02X", found_devices[i]);
-    }
+    }*/
 
     // Waveshare BME280 defaults to 0x77 when ADDR is left unconnected.
     if (bme280_init_at_address(BME280_WAVESHARE_DEFAULT_ADDRESS)) {

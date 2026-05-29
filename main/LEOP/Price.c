@@ -1,23 +1,23 @@
-#include "Recommendation.h"
+#include "Price.h"
 #include "../HTTP.h"
 #include "../JSONParser/DataParser.h"
 #include "esp_log.h"
 
-static const char *TAG = "Recommendation";
+static const char *TAG = "Price";
 
-int Recommendation_Initialize(RecommendationList *r_list)
+int Price_Initialize(PriceList *p_list)
 {
     ESP_LOGI(TAG, "CRASH 1");
-    r_list->count = 0;
+    p_list->count = 0;
     for (int i = 0; i < 96; i++)
     {
-        r_list->rec[i] = (Recommendation){0};
+        p_list->price[i] = (Price){0};
     }
     ESP_LOGI(TAG, "CRASH 2");
     return 0;
 }
 
-int Recommendation_Fetch(const char *url, RecommendationList *r_list)
+int Price_Fetch(const char *url, PriceList *p_list)
 {
     HTTPResponse http_response = {0};
 
@@ -29,16 +29,16 @@ int Recommendation_Fetch(const char *url, RecommendationList *r_list)
         return 1;
     }
 
-    int ret = DataParser_ParseRecommendation(http_response.data, r_list);
+    int ret = DataParser_ParsePrice(http_response.data, p_list);
 
     if(ret != 0)
     {
         return 2;
     }
 
-    for (int i = 0; i < r_list->count; i++)
+    for (int i = 0; i < p_list->count; i++)
     {
-        ESP_LOGI(TAG, "%lf", r_list->rec[i].recommendation);
+        ESP_LOGI(TAG, "%lf", p_list->price[i].current_prices);
     }
 
     HTTPClient_Dispose(&http_response);
@@ -46,12 +46,12 @@ int Recommendation_Fetch(const char *url, RecommendationList *r_list)
     return 0;
 }
 
-void Recommendation_Dispose(RecommendationList *r_list)
+void Price_Dispose(PriceList *p_list)
 {
-    r_list->count = 0;
+    p_list->count = 0;
 
     for (int i = 0; i < 96; i++)
     {
-        r_list->rec[i] = (Recommendation){0};
+        p_list->price[i] = (Price){0};
     }
 }

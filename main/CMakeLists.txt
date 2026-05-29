@@ -6,7 +6,8 @@ idf_component_register(
     "UART/UART.cpp" "UART/uart_diag_shell.cpp"
     "../ui/Tabs/Home/Sensor_UI.c" "../ui/Tabs/Settings/WiFi_UI.c"
     "../ui/Tabs/Electricity/Electricity_UI.c"
-    "LEOP/Recommendation.c" "JSONParser/DataParser.c"
+    "LEOP/Recommendation.c" "LEOP/Weather.c" "JSONParser/DataParser.c"
+    "LEOP/Price.c"
     "LEOP/LEOP_Fetcher.c"
     INCLUDE_DIRS "." "fake" "leop" "sensor" "UART"
     WHOLE_ARCHIVE

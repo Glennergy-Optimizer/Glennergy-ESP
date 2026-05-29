@@ -1,23 +1,23 @@
-#include "Recommendation.h"
+#include "Weather.h"
 #include "../HTTP.h"
 #include "../JSONParser/DataParser.h"
 #include "esp_log.h"
 
-static const char *TAG = "Recommendation";
+static const char *TAG = "Weather";
 
-int Recommendation_Initialize(RecommendationList *r_list)
+int Weather_Initialize(WeatherList *w_list)
 {
     ESP_LOGI(TAG, "CRASH 1");
-    r_list->count = 0;
+    w_list->count = 0;
     for (int i = 0; i < 96; i++)
     {
-        r_list->rec[i] = (Recommendation){0};
+        w_list->weather[i] = (Weather){0};
     }
     ESP_LOGI(TAG, "CRASH 2");
     return 0;
 }
 
-int Recommendation_Fetch(const char *url, RecommendationList *r_list)
+int Weather_Fetch(const char *url, WeatherList *w_list)
 {
     HTTPResponse http_response = {0};
 
@@ -29,16 +29,16 @@ int Recommendation_Fetch(const char *url, RecommendationList *r_list)
         return 1;
     }
 
-    int ret = DataParser_ParseRecommendation(http_response.data, r_list);
+    int ret = DataParser_ParseWeather(http_response.data, w_list);
 
     if(ret != 0)
     {
         return 2;
     }
 
-    for (int i = 0; i < r_list->count; i++)
+    for (int i = 0; i < w_list->count; i++)
     {
-        ESP_LOGI(TAG, "%lf", r_list->rec[i].recommendation);
+        ESP_LOGI(TAG, "%.f", w_list->weather[i].temp);
     }
 
     HTTPClient_Dispose(&http_response);
@@ -46,12 +46,12 @@ int Recommendation_Fetch(const char *url, RecommendationList *r_list)
     return 0;
 }
 
-void Recommendation_Dispose(RecommendationList *r_list)
+void Weather_Dispose(WeatherList *w_list)
 {
-    r_list->count = 0;
+    w_list->count = 0;
 
     for (int i = 0; i < 96; i++)
     {
-        r_list->rec[i] = (Recommendation){0};
+        w_list->weather[i] = (Weather){0};
     }
 }

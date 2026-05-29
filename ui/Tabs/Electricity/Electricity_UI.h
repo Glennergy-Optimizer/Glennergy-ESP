@@ -10,6 +10,6 @@ typedef struct
 
 void Electricity_UI_Initialize();
 
-void Electricity_UI_Update(void);
+void Electricity_UI_Update();
 
 #endif
