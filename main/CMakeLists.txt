@@ -6,11 +6,12 @@ idf_component_register(
     "UART/UART.cpp" "UART/uart_diag_shell.cpp"
     "../ui/Tabs/Home/Sensor_UI.c" "../ui/Tabs/Settings/WiFi_UI.c"
     "../ui/Tabs/Electricity/Electricity_UI.c"
-    "LEOP/Recommendation.c" "JSONParser/DataParser.c"
+    "LEOP/Recommendation.c" "LEOP/Weather.c" "JSONParser/DataParser.c"
+    "LEOP/Price.c"
     "LEOP/LEOP_Fetcher.c"
     INCLUDE_DIRS "." "fake" "leop" "sensor" "UART"
     WHOLE_ARCHIVE
-    PRIV_REQUIRES can gpio rgb_lcd_port
+    PRIV_REQUIRES can gpio rgb_lcd_port spiffs
     REQUIRES esp_lcd nvs_flash esp_event esp_wifi esp_http_client jansson espressif__bme280 espressif__i2c_bus
     )
     

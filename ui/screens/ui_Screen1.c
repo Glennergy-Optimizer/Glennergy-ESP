@@ -35,9 +35,14 @@ void ui_update_task(void)
     while (1)
     {
         WiFi_UI_Update();
-        Sensor_UI_Update();
-        Electricity_UI_Update();
-        vTaskDelay(pdMS_TO_TICKS(10));
+        if (lvgl_port_lock(pdMS_TO_TICKS(100)))
+        {
+            Sensor_UI_Update();
+            Electricity_UI_Update();
+
+            lvgl_port_unlock();
+        }
+        vTaskDelay(pdMS_TO_TICKS(50));
     }
 }
 
@@ -119,7 +124,7 @@ void ui_Screen1_screen_init(void)
     lv_chart_set_axis_tick(ui_Chart_Weather, LV_CHART_AXIS_SECONDARY_Y, 10, 5, 5, 2, true, 25);
     lv_chart_series_t *ui_Chart3_series_1 = lv_chart_add_series(ui_Chart_Weather, lv_color_hex(0x808080),
                                                                 LV_CHART_AXIS_PRIMARY_Y);
-    static lv_coord_t ui_Chart3_series_1_array[] = {0, 10, 20, 40, 80, 80, 40, 20, 10, 0};
+    static lv_coord_t ui_Chart3_series_1_array[24] = {0};
     lv_chart_set_ext_y_array(ui_Chart_Weather, ui_Chart3_series_1, ui_Chart3_series_1_array);
     lv_obj_set_style_bg_color(ui_Chart_Weather, lv_color_hex(0x20142F), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(ui_Chart_Weather, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -164,10 +169,10 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_y(ui_Label2, -131);
     lv_obj_set_align(ui_Label2, LV_ALIGN_CENTER);
     lv_label_set_text(ui_Label2, "WiFi");
-    
-    Sensor_UI_Initialize();
 
     WiFi_UI_Initialize();
+
+    Sensor_UI_Initialize();
 
     Electricity_UI_Initialize();
 
