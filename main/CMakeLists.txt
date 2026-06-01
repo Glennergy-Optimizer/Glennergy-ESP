@@ -7,7 +7,7 @@ idf_component_register(
     "../ui/Tabs/Home/Sensor_UI.c" "../ui/Tabs/Settings/WiFi_UI.c"
     "../ui/Tabs/Electricity/Electricity_UI.c"
     "LEOP/Recommendation.c" "LEOP/Weather.c" "JSONParser/DataParser.c"
-    "LEOP/Price.c"
+    "LEOP/Price.c" "Memory/Spiffs.c"
     "LEOP/LEOP_Fetcher.c"
     INCLUDE_DIRS "." "fake" "leop" "sensor" "UART"
     WHOLE_ARCHIVE

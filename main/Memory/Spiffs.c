@@ -1,5 +1,6 @@
 #include "Spiffs.h"
 #include "esp_log.h"
+#include "jansson.h"
 
 static const char *TAG = "Spiffs";
 
@@ -19,6 +20,44 @@ int Spiffs_Initialize(Spiffs_t *spiffs, const char *file)
     }
 
     return 0;
+}
+
+int Spiffs_WriteToFileJSON(Spiffs_t* spiffs, const char* raw_data)
+{
+    json_error_t error;
+    json_t* root = json_loads(raw_data, 0, &error);
+
+    if(root == NULL)
+    {
+        ESP_LOGW(TAG, "Failed to load json data");
+        return 1;
+    }
+
+    int result = json_dump_file(root, spiffs->filepath, JSON_INDENT(4));
+
+    if(result < 0)
+    {
+        ESP_LOGW(TAG, "Failed to dump json file");
+        return 2;
+    }
+
+
+    
+    return 0;
+}
+
+char* Spiffs_ReadFromFileJSON(Spiffs_t* spiffs)
+{
+    json_error_t error;
+    json_t* root = json_load_file(spiffs->filepath, 0, &error);
+
+    if(root == NULL)
+    {
+        ESP_LOGW(TAG, "Failed to load json file");
+        return 1;
+    }
+
+    return json_dumps(root, 0);
 }
 
 int Spiffs_WriteToFile(Spiffs_t *spiffs, const char *content)
