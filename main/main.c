@@ -23,6 +23,7 @@
 #include "UART/UART.hpp"
 #include "sensor/sensor.h"
 #include "LEOP/LEOP_Fetcher.h"
+#include "Memory/Spiffs.h"
 
 #define WIFI_PASS "rockyunit953"
 #define WIFI_SSID "NETGEAR49"
@@ -52,6 +53,14 @@ void app_main()
     ESP_ERROR_CHECK(lvgl_port_init(panel_handle, tp_handle)); // Initialize LVGL with the panel and touch handles
 
     WiFi_Initialize();
+
+
+    static Spiffs_t spiffs;
+    Spiffs_Initialize(&spiffs, "test.txt");
+    Spiffs_WriteToFile(&spiffs, "Hej 123");
+    char buffer[128];
+    Spiffs_ReadFromFile(&spiffs, buffer, sizeof(buffer));
+    ESP_LOGE(TAG, "%s", buffer);
 
     // Lock the mutex due to the LVGL APIs are not thread-safe
     if (lvgl_port_lock(-1))

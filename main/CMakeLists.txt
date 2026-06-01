@@ -11,7 +11,7 @@ idf_component_register(
     "LEOP/LEOP_Fetcher.c"
     INCLUDE_DIRS "." "fake" "leop" "sensor" "UART"
     WHOLE_ARCHIVE
-    PRIV_REQUIRES can gpio rgb_lcd_port
+    PRIV_REQUIRES can gpio rgb_lcd_port spiffs
     REQUIRES esp_lcd nvs_flash esp_event esp_wifi esp_http_client jansson espressif__bme280 espressif__i2c_bus
     )
     
