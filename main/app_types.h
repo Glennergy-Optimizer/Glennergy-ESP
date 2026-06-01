@@ -56,6 +56,7 @@ typedef struct {
 typedef struct {
     uint32_t fetch_interval_minutes; // TODO - Default should be 15 unless changed
     bool test_mode;
+    uint32_t sensor_interval_ms; //Default to once a second
 
 } config_data_t;
 
@@ -79,5 +80,21 @@ typedef struct {
     config_data_t config_data;
     system_status_t system_status;
 } app_state_t;
+
+// *** HAL structs ***
+
+// todo - Lägga till timestamp
+typedef struct {
+    float celcius;
+} TemperatureReadingInC;
+
+// todo - Lägga till timestamp
+typedef struct {
+    float humidity;
+} HumidityReadingInC;
+
+typedef struct {
+    float pressure;
+} PressureReadingInC;
 
 #endif

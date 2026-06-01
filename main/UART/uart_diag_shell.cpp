@@ -163,6 +163,7 @@ void handle_sensor(app_state_t *state)
 void print_config(app_state_t *state)
 {
     std::cout << "fetch_interval_minutes: " << state->config_data.fetch_interval_minutes << std::endl;
+    std::cout << "sensor_interval_ms: " << state->config_data.sensor_interval_ms << std::endl;
     std::cout << "test_mode: " << enabled_text(state->config_data.test_mode) << std::endl;
 }
 
@@ -185,6 +186,25 @@ void handle_config(std::vector<std::string> tokens, app_state_t *state)
         {            
             std::cout << "Now setting \"fetch_interval_minutes\" to \"" << int_value << "\"." << std::endl;
             state->config_data.fetch_interval_minutes = int_value;
+        }
+    }
+    else if (key == "sensor_interval_ms")
+    {
+        // Minimum och maximum mellan 1s och 60s
+        int int_value; 
+        if (parse_int(value, int_value))
+        {
+            if (int_value >= 1000 && int_value <= 60000)
+            {
+                std::cout << "Now setting \"sensor_interval_ms\" to \"" << int_value << "\"." << std::endl;
+                state->config_data.sensor_interval_ms = int_value;
+            }
+            else {
+                std::cout << "You must enter a int value between 1 000 and 60 000ms(1-60s)" << std::endl;
+            }
+        }
+        else {
+                std::cout << "You must enter a int value between 1 000 and 60 000ms(1-60s)" << std::endl;
         }
     }
     else if (key == "test_mode")

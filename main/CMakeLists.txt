@@ -9,7 +9,9 @@ idf_component_register(
     "LEOP/Recommendation.c" "LEOP/Weather.c" "JSONParser/DataParser.c"
     "LEOP/Price.c"
     "LEOP/LEOP_Fetcher.c"
-    INCLUDE_DIRS "." "fake" "leop" "sensor" "UART"
+    "hal/bme280_sensor.cpp" "hal/temperature_sensor_c_api.cpp" "hal/humidity_sensor_c_api.cpp" "hal/pressure_sensor_c_api.cpp"
+    "Memory/Spiffs.c"
+    INCLUDE_DIRS "." "fake" "hal" "leop" "sensor" "UART" "Memory"
     WHOLE_ARCHIVE
     PRIV_REQUIRES can gpio rgb_lcd_port spiffs
     REQUIRES esp_lcd nvs_flash esp_event esp_wifi esp_http_client jansson espressif__bme280 espressif__i2c_bus
