@@ -1,6 +1,8 @@
 #ifndef LEOP_FETCHER_H
 #define LEOP_FETCHER_H
 #include "Recommendation.h"
+#include "Weather.h"
+#include "Price.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
 #include <stdint.h>
@@ -21,6 +23,8 @@ typedef struct{
 
 typedef struct{
     RecommendationList recommendations;
+    WeatherList weather;
+    PriceList price_list;
     LEOPStatus leop_status;
     LEOPConfig leop_conf;
 }LEOPData;

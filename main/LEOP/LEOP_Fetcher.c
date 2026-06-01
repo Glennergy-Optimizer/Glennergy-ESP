@@ -16,10 +16,10 @@ int LEOPFetcher_Initialize(LEOPData *leop_data, uint32_t interval)
     }
 
     Recommendation_Initialize(&leop_data->recommendations);
-
+    Weather_Initialize(&leop_data->weather);
+    Price_Initialize(&leop_data->price_list);
 
     leop_data->leop_conf.time_interval = interval;
-
 
     leop_data->leop_status.electricity_fetched = false;
     leop_data->leop_status.recommendation_fetched = false;
@@ -47,21 +47,19 @@ void LEOPFetcher_Work(void *arg)
     {
         if (WiFi_IsConnected())
         {
-            if (leop_data->leop_status.recommendation_fetched == false)
+
+            leop_data->leop_status.recommendation_fetched =
+                (Recommendation_Fetch("http://10.0.0.3:8080/id=2?recommendation", &leop_data->recommendations) == 0);
+
+            leop_data->leop_status.weather_fetched =
+                (Weather_Fetch("http://10.0.0.3:8080/id=2?weather", &leop_data->weather) == 0);
+
+            leop_data->leop_status.electricity_fetched =
+                (Price_Fetch("http://10.0.0.3:8080/id=2?price", &leop_data->price_list) == 0);
+
+            if (xQueueSend(leop_queue, &leop_data, 0) != pdPASS)
             {
-                int ret = Recommendation_Fetch("http://10.0.0.3:8080/id=2", &leop_data->recommendations);
-
-                if (ret != 0)
-                {
-                    ESP_LOGW(TAG, "Failed to fetch recommendations");
-                    leop_data->leop_status.recommendation_fetched = false;
-                }
-                else
-                {
-                    leop_data->leop_status.recommendation_fetched = true;
-
-                    xQueueSend(leop_queue, &leop_data, 0);
-                }
+                ESP_LOGW(TAG, "Failed to send data to leop queue");
             }
         }
         else

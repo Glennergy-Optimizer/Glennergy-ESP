@@ -134,7 +134,7 @@ void WiFi_UI_Update(void)
         if (w_data.status == WIFI_STATUS_SCAN_DONE)
         {
             ESP_LOGI(TAG, "Scan finished!");
-            if (lvgl_port_lock(-1))
+            if (lvgl_port_lock(pdMS_TO_TICKS(100)))
             {
                 lv_dropdown_clear_options(wifi_ui.network_dropdown_dyn);
                 for (int i = 0; i < w_data.number; i++)
