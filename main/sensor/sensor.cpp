@@ -120,12 +120,17 @@ bool Sensor_Read_v2(sensor_data_t* sensor, hal::BME280Sensor& environment_sensor
 
 void Sensor_Work(void* parameter) {
     app_state_t* app = (app_state_t*)parameter;
+    // Todo - ska default-config värden, om inget existerar i caches, 
+    // skapas/initeras här(där respektive modul initieras de värden som är relevanta) eller i main?
+    app->config_data.sensor_interval_ms = 1000; 
+    uint32_t sensor_read_interval;
 
     Sensor_Init_v2(app);
     hal::BME280Sensor environment_sensor = hal::BME280Sensor();
     environment_sensor.bme280_sensor_init();
     while (1) {
+        sensor_read_interval = app->config_data.sensor_interval_ms;
         Sensor_Read_v2(&app->sensor_data, environment_sensor);
-        vTaskDelay(pdMS_TO_TICKS(1000));
+        vTaskDelay(pdMS_TO_TICKS(sensor_read_interval));
     }
 }
