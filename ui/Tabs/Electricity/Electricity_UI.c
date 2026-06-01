@@ -80,7 +80,7 @@ void Electricity_Update_TimeAxis(const LEOPData *data)
     int start_hour =
         get_hour(data->recommendations.rec[0].timestamp);
 
-    for(int i = 0; i < 24; i++)
+    for (int i = 0; i < 24; i++)
     {
         int hour = (start_hour + i) % 24;
 
@@ -129,25 +129,21 @@ void Electricity_UI_Update(void)
     if (leop_queue != NULL && xQueueReceive(leop_queue, &leop_data, 0) == pdPASS)
     {
 
-        if (lvgl_port_lock(-1))
+        for (int i = 0; i < 96; i++)
         {
-            for (int i = 0; i < 96; i++)
-            {
-                float value = leop_data->recommendations.rec[i].recommendation;
+            float value = leop_data->recommendations.rec[i].recommendation;
 
-                if (value < 0.0f)
-                    value = 0.0f;
+            if (value < 0.0f)
+                value = 0.0f;
 
-                if (value > 1.0f)
-                    value = 1.0f;
+            if (value > 1.0f)
+                value = 1.0f;
 
-                ESP_LOGI(TAG, "value: %.f", value);
+            ESP_LOGI(TAG, "value: %.f", value);
 
-                electricity_chart_data[i] = (lv_coord_t)(value * 100.0f);
-            }
-            Electricity_Update_TimeAxis(leop_data);
-            lv_chart_refresh(electricity_ui.ui_Chart_Electricity);
-            lvgl_port_unlock();
+            electricity_chart_data[i] = (lv_coord_t)(value * 100.0f);
         }
+        Electricity_Update_TimeAxis(leop_data);
+        lv_chart_refresh(electricity_ui.ui_Chart_Electricity);
     }
 }
