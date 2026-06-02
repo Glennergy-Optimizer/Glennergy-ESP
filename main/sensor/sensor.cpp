@@ -89,6 +89,8 @@ bool Sensor_Read_v2(sensor_data_t* sensor, hal::BME280Sensor& environment_sensor
         // Då uppdateras inte värderna i strukten.
         // UIn visar då de senaste värderna, med (TODO-fix this) en timestamp och något typ av errornotering, så användaren lätt vet att tex 15:37:02 var senaste OK sensorreaden
         sensor->valid = false;
+        // Flyttat ut adderingen av last_reconnect_attempt_ms här, så den bara körs 1 gång om något failar, inte 3 fails per attempt(då vi gör en read på temp, en på humidity och en på pressure)
+        environment_sensor.increment_read_failure();
         return false;
     }
 

@@ -49,6 +49,10 @@ bool hal::BME280Sensor::is_present () {
     return 0;
 }
 
+void hal::BME280Sensor::increment_read_failure() {
+    this->bme280_read_failures++;
+}
+
 
 // TODO - Antingen använda pekare med namn temperature_sensor, humidity_sensor som i vårt fall alla pekar till samma sensor.
 // Sean kalla temperature_sensor.read.
@@ -77,7 +81,7 @@ hal::SensorError hal::BME280Sensor::read(hal::TemperatureReading& reading) {
     esp_err_t temp_result = bme280_read_temperature(this->bme280, &reading.celcius);
 
     if (temp_result != ESP_OK) {
-        this->bme280_read_failures++;
+        //this->bme280_read_failures++;
 
         ESP_LOGW(TAG, "BME280 read failed %u/%u: temp=%s",
             this->bme280_read_failures,
@@ -127,7 +131,7 @@ hal::SensorError hal::BME280Sensor::read(hal::HumidityReading& reading) {
     esp_err_t humidity_result = bme280_read_humidity(this->bme280, &reading.humidity);
 
     if (humidity_result != ESP_OK) {
-        this->bme280_read_failures++;
+        //this->bme280_read_failures++;
 
         ESP_LOGW(TAG, "BME280 read failed %u/%u: humidity=%s",
             this->bme280_read_failures,
@@ -176,7 +180,7 @@ hal::SensorError hal::BME280Sensor::read(hal::PressureReading& reading) {
     esp_err_t pressure_result = bme280_read_pressure(this->bme280, &reading.pressure);
 
     if (pressure_result != ESP_OK) {
-        this->bme280_read_failures++;
+        //this->bme280_read_failures++;
 
         ESP_LOGW(TAG, "BME280 read failed %u/%u: pressure=%s",
             this->bme280_read_failures,
