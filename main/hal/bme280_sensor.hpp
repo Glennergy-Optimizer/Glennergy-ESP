@@ -33,6 +33,8 @@ namespace hal {
             SensorError read(PressureReading& reading);
 
             bool is_present() override;
+            void increment_read_failure();   
+            //void increment_read_failure_v2(hal::BME280Sensor& sensor);
 
             bool bme280_sensor_init();
         private:
