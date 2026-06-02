@@ -259,7 +259,7 @@ bool hal::BME280Sensor::bme280_sensor_init() {
             return false;
         }
     }
-    /*
+    /* TODO - Printa ut 0x77 och 0x76 istället för att skanna igenom ALLA i2c adresser
     // Debugging only so we know what connections we have
     uint8_t found_devices[8] = {};
     uint8_t device_count = i2c_bus_scan(this->bme280_bus, found_devices, sizeof(found_devices));
