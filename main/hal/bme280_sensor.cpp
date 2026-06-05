@@ -5,6 +5,7 @@
 #include "esp_log.h"
 #include "esp_timer.h"
 #include "../app_queues.h"
+#include "time.h"
 
 #define BME280_SDA_GPIO GPIO_NUM_8 // The I2C SDA 
 #define BME280_SCL_GPIO GPIO_NUM_9 // SCL
@@ -53,6 +54,20 @@ void hal::BME280Sensor::increment_read_failure() {
     this->bme280_read_failures++;
 }
 
+
+// void hal::BME280Sensor::clock_unix_time_public() {
+    
+// }
+
+static time_t clock_unix_time() {
+    time_t now;
+    time(&now);
+
+    return now;
+    // struct tm local_time;
+    // localtime_r(&now, &local_time);
+    // return local_time;
+}
 
 // TODO - Antingen använda pekare med namn temperature_sensor, humidity_sensor som i vårt fall alla pekar till samma sensor.
 // Sean kalla temperature_sensor.read.
@@ -104,7 +119,8 @@ hal::SensorError hal::BME280Sensor::read(hal::TemperatureReading& reading) {
     
     //bme280_read_temperature(this->bme280, &reading.celcius);
 
-    reading.timestamp = esp_timer_get_time() / 1000000ULL;
+    reading.monotonic_timestamp = esp_timer_get_time() / 1000000ULL;
+    reading.unix_timestamp = clock_unix_time();
 
     ESP_LOGI(TAG, "BME280 temperature: %.f C", reading.celcius);
     return hal::SensorError::Ok;
@@ -153,7 +169,9 @@ hal::SensorError hal::BME280Sensor::read(hal::HumidityReading& reading) {
     this->bme280_read_failures = 0;
     
     //bme280_read_humidity(this->bme280, &reading.humidity);
-    reading.timestamp = esp_timer_get_time() / 1000000ULL;    
+    reading.monotonic_timestamp = esp_timer_get_time() / 1000000ULL;    
+    reading.unix_timestamp = clock_unix_time();
+
     ESP_LOGI(TAG, "BME280 humidity: %2.1f%%", reading.humidity);
 
     return hal::SensorError::Ok;
@@ -202,7 +220,9 @@ hal::SensorError hal::BME280Sensor::read(hal::PressureReading& reading) {
     this->bme280_read_failures = 0;
     
     //bme280_read_pressure(this->bme280, &reading.pressure);
-    reading.timestamp = esp_timer_get_time() / 1000000ULL;
+    reading.monotonic_timestamp = esp_timer_get_time() / 1000000ULL;
+    reading.unix_timestamp = clock_unix_time();
+
     ESP_LOGI(TAG, "BME280: %.f pHa", reading.pressure);
 
     return hal::SensorError::Ok;

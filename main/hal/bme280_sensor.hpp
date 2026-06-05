@@ -33,7 +33,8 @@ namespace hal {
             SensorError read(PressureReading& reading);
 
             bool is_present() override;
-            void increment_read_failure();   
+            void increment_read_failure();
+            //void clock_unix_time_public();   
             //void increment_read_failure_v2(hal::BME280Sensor& sensor);
 
             bool bme280_sensor_init();
@@ -48,6 +49,8 @@ namespace hal {
             i2c_config_t i2c_config;
             i2c_port_t i2c_port;
             uint8_t adress; 
+
+            //void clock_unix_time();
             
             void BME280Sensor_init_i2c_config();
             bool bme280_init_at_address(uint8_t address);
