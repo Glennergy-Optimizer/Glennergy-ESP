@@ -2,7 +2,7 @@
 #include "lvgl_port.h"
 #include "../../screens/ui_Screen1.h"
 #include "../../../main/app_queues.h"
-#include "../../../main/sensor/sensor.h"
+//#include "../../../main/sensor/sensor.h"
 //#include "../../../main/hal/temperature_sensor.hpp";
 //#include "../../../main/hal/temperature_sensor_c_api.h";
 #include "../../../main/app_types.h";
@@ -91,16 +91,53 @@ void Sensor_UI_Initialize()
 void Sensor_UI_Update(void)
 {    
     //hal::TemperatureReading temp_reading;
-    //sensor_data_t sensor_data;
-    TemperatureReadingInC TempReadInC;
-    HumidityReadingInC HumidityReadingInC;
-    PressureReadingInC pressureReadingInC;
+    sensor_data_t sensor_data;
+    sensor_data.temperature = 999;
+    sensor_data.humidity = 999;
+    sensor_data.pressure = 9999;
+    sensor_data.valid = false;
+
+    
+    // TemperatureReadingInC TempReadInC;
+    // HumidityReadingInC HumidityReadingInC;
+    // PressureReadingInC pressureReadingInC;
     //if (Sensor_Queue != NULL && xQueueReceive(Sensor_Queue, &sensor_data, 0) == pdPASS)
+    if (Sensor_Queue != NULL && xQueueReceive(Sensor_Queue, &sensor_data, 0) == pdPASS)
+    /*
     if (Sensor_Queue != NULL && xQueueReceive(Sensor_Queue, &TempReadInC, 0) == pdPASS
         && Humidity_Queue != NULL && xQueueReceive(Humidity_Queue, &HumidityReadingInC, 0) == pdPASS
         && Pressure_Queue != NULL && xQueueReceive(Pressure_Queue, &pressureReadingInC, 0) == pdPASS)
-    //if (Sensor_Queue != NULL && xQueueReceive(Sensor_Queue, &temp_reading, 0) == pdPASS)
+    */
+        //if (Sensor_Queue != NULL && xQueueReceive(Sensor_Queue, &temp_reading, 0) == pdPASS)
     {
+        if (sensor_data.valid)
+        {
+            char temp[50];
+            char humidity[50];
+            char pressure[50];
+            snprintf(temp, sizeof(temp), "%2.1f", sensor_data.temperature);
+            snprintf(humidity, sizeof(humidity), "%2.1f%%", sensor_data.humidity);
+            snprintf(pressure, sizeof(pressure), "%.1f pHa", sensor_data.pressure);
+
+            if (lvgl_port_lock(-1))
+            {
+                lv_label_set_text(sensor_ui.temperature_label_dyn, temp);
+                lv_label_set_text(sensor_ui.humidity_label_dyn, humidity);
+                lv_label_set_text(sensor_ui.pressure_label_dyn, pressure);
+                //lv_label_set_text(sensor_ui.pressure_label_dyn, barometric_preassure);
+                lvgl_port_unlock();
+            }
+            else {
+                if (lvgl_port_lock(-1))
+                {                        
+                    lv_label_set_text(sensor_ui.temperature_label_dyn, "--(invalid)");
+                    lv_label_set_text(sensor_ui.humidity_label_dyn, "--(invalid)");
+                    lv_label_set_text(sensor_ui.pressure_label_dyn, "--(invalid)");
+                    lvgl_port_unlock();
+                }
+            }
+        }
+        /*
         //if (sensor_data.valid) {
             char temp[50];
             char relative_humidity[50];
@@ -121,6 +158,7 @@ void Sensor_UI_Update(void)
                 //lv_label_set_text(sensor_ui.pressure_label_dyn, barometric_preassure);
                 lvgl_port_unlock();
             }
+        */
         /*
         }
             else {

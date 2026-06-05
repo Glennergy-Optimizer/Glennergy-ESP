@@ -17,33 +17,10 @@
 #define BME280_RECONNECT_INTERVAL_MS 5000
 
 
-QueueHandle_t Sensor_Queue = NULL;
-QueueHandle_t Humidity_Queue = NULL;
-QueueHandle_t Pressure_Queue = NULL;
-
-
 static constexpr char* TAG = "bme280_sensor.cpp";
 
 static bool fake_mode = false;
 
-
-void hal::BME280Sensor::publish_temperature_data(hal::TemperatureReading& reading) {
-    if (Sensor_Queue != NULL) {
-        xQueueOverwrite(Sensor_Queue, &reading);
-    }
-}
-
-void hal::BME280Sensor::publish_humidity_data(hal::HumidityReading& reading) {
-    if (Humidity_Queue != NULL) {
-        xQueueOverwrite(Humidity_Queue, &reading);
-    }
-}
-
-void hal::BME280Sensor::publish_pressure_data(hal::PressureReading& reading) {
-    if (Pressure_Queue != NULL) {
-        xQueueOverwrite(Pressure_Queue, &reading);
-    }
-}
 
 bool hal::BME280Sensor::is_present () {
     return 0;

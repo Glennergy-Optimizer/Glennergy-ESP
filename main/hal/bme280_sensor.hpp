@@ -17,11 +17,6 @@
 //#include "esp_timer.h"
 #include "../app_queues.h"
 
-
-extern QueueHandle_t Sensor_Queue;
-extern QueueHandle_t Humidity_Queue;
-extern QueueHandle_t Pressure_Queue;
-
 namespace hal {
     class BME280Sensor : public ITemperatureSensor {
         public:
@@ -51,9 +46,6 @@ namespace hal {
             
             void BME280Sensor_init_i2c_config();
             bool bme280_init_at_address(uint8_t address);
-            void publish_temperature_data(hal::TemperatureReading& reading);
-            void publish_humidity_data(hal::HumidityReading& reading);
-            void publish_pressure_data(hal::PressureReading& reading);
     };
 }
 
