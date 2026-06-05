@@ -1,23 +1,23 @@
-#ifndef PRESSURE_SENSOR_C_API
-#define PRESSURE_SENSOR_C_API
-#include "../app_types.h"
+// #ifndef PRESSURE_SENSOR_C_API
+// #define PRESSURE_SENSOR_C_API
+// #include "../app_types.h"
  
 
-#ifdef __cplusplus
-    #include "pressure_sensor.hpp"
-    #include "bme280_sensor.hpp"
+// #ifdef __cplusplus
+//     #include "pressure_sensor.hpp"
+//     #include "bme280_sensor.hpp"
     
-    // obs - dessa ska vara innan extern
-    hal::SensorError sensor_read(hal::PressureReading& pressure);    
-    PressureReadingInC pressure_sensor_get_celcius(hal::PressureReading& reading);
-    extern "C" {
+//     // obs - dessa ska vara innan extern
+//     hal::SensorError sensor_read(hal::PressureReading& pressure);    
+//     PressureReadingInC pressure_sensor_get_celcius(hal::PressureReading& reading);
+//     extern "C" {
     
-#endif
+// #endif
 
-bool pressure_sensor_is_available(void);
+// bool pressure_sensor_is_available(void);
 
-#ifdef __cplusplus
-}
-#endif
+// #ifdef __cplusplus
+// }
+// #endif
 
-#endif
+// #endif
