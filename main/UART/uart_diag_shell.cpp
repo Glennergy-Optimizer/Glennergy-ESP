@@ -11,6 +11,7 @@
 #include "esp_heap_caps.h"
 #include "../app_types.h"
 #include "UART.hpp"
+#include <ctime>
 
 static const char *TAG = "UART_DIAG_SHELL.CPP";
 
@@ -56,6 +57,16 @@ const char *ok_text(bool value)
 {
     return value ? "OK" : "Not OK";
 }
+
+static void print_local_time(time_t& time) {
+    struct tm local_time;
+    localtime_r(&time, &local_time);
+
+    char buffer[32];
+    strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", &local_time);
+    std::cout << "Last updated local time: " << buffer << std::endl;
+}
+
 
 // Takes in a std::string,
 // .c_str() converts to C-style char*,
@@ -154,7 +165,14 @@ void handle_sensor(app_state_t *state)
         return;
     }
 
-    std::cout << "Last updated time: " << state->sensor_data.last_update_seconds << std::endl;
+    std::cout << "Last updated monotinic time: " << state->sensor_data.last_update_seconds << std::endl;
+    if (state->sensor_data.wall_time_valid) {
+        print_local_time(state->sensor_data.last_unix_time);
+    }
+    else {
+        std::cout << "Last updated local time: not synced yet" << std::endl;
+    }
+    //std::cout << "Last updated time local: " << print_local_time(state->sensor_data.last_unix_time) << std::endl;
     std::cout << "Temperature - " << state->sensor_data.temperature << std::endl;
     std::cout << "Pressure    - " << state->sensor_data.pressure << std::endl;
     std::cout << "Humidity    - " << state->sensor_data.humidity << std::endl;

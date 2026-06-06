@@ -3,12 +3,14 @@
 
 #include <stdint.h>
 #include "hal_classes.h"
+#include <time.h>
 
 namespace hal {
     // Ok = 0, CommunicationFailure, DeviceNotFound, InvalidReading, Timeout
     struct HumidityReading {
         float humidity;
-        uint32_t timestamp;
+        uint32_t monotonic_timestamp;
+        time_t unix_timestamp;
     };
 
     class IHumiditySensor{

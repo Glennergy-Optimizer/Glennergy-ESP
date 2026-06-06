@@ -24,9 +24,13 @@
 #include "sensor/sensor.h"
 #include "LEOP/LEOP_Fetcher.h"
 #include "Memory/Spiffs.h"
+#include <stdlib.h>
+#include <time.h>
+
 
 #define WIFI_PASS "rockyunit953"
 #define WIFI_SSID "NETGEAR49"
+
 
 static app_state_t app;
 
@@ -35,6 +39,9 @@ static const char *TAG = "main";
 // Main application function
 void app_main()
 {
+    // Time stuff
+    setenv("TZ", "CET-1CEST,M3.5.0,M10.5.0/3", 1);
+    tzset();
     // Sensor_Init(&app.sensor_data);
 
     static esp_lcd_panel_handle_t panel_handle = NULL; // Declare a handle for the LCD panel

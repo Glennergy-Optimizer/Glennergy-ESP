@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <time.h>
 
 typedef enum {
     RECOMMENDATION_BUY = 1,
@@ -45,6 +46,8 @@ typedef struct {
 typedef struct {
     bool valid;
     uint32_t last_update_seconds;
+    time_t last_unix_time;
+    bool wall_time_valid;
     double temperature;
     double pressure;
     double humidity;
