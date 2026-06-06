@@ -80,8 +80,8 @@ void app_main()
 
     static LEOPData leop_data;
 
-    LEOPFetcher_Initialize(&leop_data, 3000);
+    //LEOPFetcher_Initialize(&leop_data, 3000);
 
-    xTaskCreate(LEOPFetcher_Work, "LEOP", 4096, &leop_data, 4, NULL);
+    //xTaskCreate(LEOPFetcher_Work, "LEOP", 4096, &leop_data, 4, NULL);
     //  ESP_ERROR_CHECK(WiFi_Dispose());
 }
