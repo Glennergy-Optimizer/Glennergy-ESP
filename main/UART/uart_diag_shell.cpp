@@ -19,7 +19,7 @@ void handle_sensor(app_state_t *state);
 void handle_status(app_state_t *state);
 void handle_leop(app_state_t *state);
 void handle_config(std::vector<std::string> tokens, app_state_t *state);
-void handle_diag();
+void handle_diag(app_state_t *state);
 void print_config(app_state_t *state);
 
 void handle_help(bool wait_for_enter);
@@ -135,7 +135,7 @@ void handle_input(const std::string &input, app_state_t *state)
     }
     else if (cmd == "diag")
     {
-        handle_diag();
+        handle_diag(state);
     }
     else
     {
@@ -258,11 +258,28 @@ void handle_leop(app_state_t *app)
     }
 }
 
+
+// Diagnostics helper function - prints info about a task
+void print_task_stack(const char* name, TaskHandle_t handle, uint32_t stack_size)
+{
+    if (handle == NULL)
+    {
+        std::cout << name << ": no handle: " << std::endl;
+        return;
+    }
+
+    UBaseType_t free = uxTaskGetStackHighWaterMark(handle);
+    uint32_t used = stack_size - free;
+    uint32_t used_percent = (used * 100) / stack_size;
+
+    std::cout << name << ": used " << used << "/" << stack_size << " {" << used_percent << "%), min free " << free << std::endl;
+}
+
 // We could easily create a summary of the app-state, which would be a summarized version of all other help commands?
 // Later on, we could add stuff like task statistics, stack usage, heap usage?
 // If something is wrong, show the latest successful update times from LEOP or something?
 // Mer fokus på detaljer om varför något är ok eller inte?
-void handle_diag()
+void handle_diag(app_state_t *app)
 {
     // Mirkoseconds since boot, then converted to seconds and divide by matching type (unsigned long long)
     uint64_t uptime_seconds = esp_timer_get_time() / 1000000ULL;
@@ -279,6 +296,12 @@ void handle_diag()
     std::cout << "Free Heap: " << free_heap << " bytes. " << std::endl;
     std::cout << "Minimum free heap: " << min_free_heap << " bytes." << std::endl;
     std::cout << "Task count: " << task_count << std::endl;
+
+    // New helper stuff
+    print_task_stack("WiFi", app->system_task_handlers.wifi_handle, 4096);
+    print_task_stack("UI", app->system_task_handlers.ui_handle, 12288);
+    print_task_stack("UART", app->system_task_handlers.uart_handle, 4096);
+    print_task_stack("Sensor", app->system_task_handlers.sensor_handle, 4096);
 }
 
 // *** HELP helper functions ***

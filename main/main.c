@@ -34,6 +34,14 @@
 
 static app_state_t app;
 
+// Handlers so we can get stack statistics per task
+static TaskHandle_t wifi_task_handle = NULL;
+static TaskHandle_t ui_task_handle = NULL;
+static TaskHandle_t uart_task_handle = NULL;
+static TaskHandle_t sensor_task_handle = NULL;
+static TaskHandle_t leop_task_handle = NULL;
+
+
 static const char *TAG = "main";
 
 // Main application function
@@ -42,7 +50,11 @@ void app_main()
     // Time stuff
     setenv("TZ", "CET-1CEST,M3.5.0,M10.5.0/3", 1);
     tzset();
+
+    //app.system_task_handlers->
     // Sensor_Init(&app.sensor_data);
+
+    
 
     static esp_lcd_panel_handle_t panel_handle = NULL; // Declare a handle for the LCD panel
     static esp_lcd_touch_handle_t tp_handle = NULL;
@@ -77,13 +89,13 @@ void app_main()
         lvgl_port_unlock();
     }
 
-    xTaskCreate(WiFi_Work, "WIFI_Work", 4096, NULL, 5, NULL);
+    xTaskCreate(WiFi_Work, "WIFI_Work", 4096, NULL, 5, &wifi_task_handle);
 
-    xTaskCreate(ui_update_task, "UI_Update", 12288, NULL, 5, NULL);
+    xTaskCreate(ui_update_task, "UI_Update", 12288, NULL, 5, &ui_task_handle);
 
-    xTaskCreate(UART_Work, "UART", 4096, &app, 4, NULL);
+    xTaskCreate(UART_Work, "UART", 4096, &app, 4, &uart_task_handle);
 
-    xTaskCreate(Sensor_Work, "Sensor", 4096, &app, 4, NULL);
+    xTaskCreate(Sensor_Work, "Sensor", 4096, &app, 4, &sensor_task_handle);
 
     static LEOPData leop_data;
 
@@ -91,4 +103,11 @@ void app_main()
 
     //xTaskCreate(LEOPFetcher_Work, "LEOP", 4096, &leop_data, 4, NULL);
     //  ESP_ERROR_CHECK(WiFi_Dispose());
+
+    // Set the task handles after the tasks has been started, so we actually store info/data instead of NULL
+    app.system_task_handlers.wifi_handle = wifi_task_handle;
+    app.system_task_handlers.ui_handle = ui_task_handle;
+    app.system_task_handlers.uart_handle = uart_task_handle;
+    app.system_task_handlers.sensor_handle = sensor_task_handle;
+    app.system_task_handlers.leop_handle = leop_task_handle;
 }

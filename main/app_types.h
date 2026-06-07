@@ -4,6 +4,9 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <time.h>
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
+//#include <task.h>
 
 typedef enum {
     RECOMMENDATION_BUY = 1,
@@ -71,6 +74,15 @@ typedef struct {
     uint32_t update_counter;
 } system_status_t;
 
+// Task Handle references
+typedef struct {
+    TaskHandle_t wifi_handle;
+    TaskHandle_t ui_handle;
+    TaskHandle_t uart_handle;
+    TaskHandle_t sensor_handle;
+    TaskHandle_t leop_handle;
+} system_task_handlers_t;
+
 
 // I think the flow should be:
 // Main creates this and passes the access to this ot the other modules.
@@ -82,6 +94,7 @@ typedef struct {
     sensor_data_t sensor_data;
     config_data_t config_data;
     system_status_t system_status;
+    system_task_handlers_t system_task_handlers;
 } app_state_t;
 
 // *** HAL structs ***
