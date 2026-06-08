@@ -20,6 +20,14 @@ void WiFi_UI_Set_Callbacks(void);
 void WiFi_UI_Initialize()
 {
 
+    wifi_ui.group_label = lv_label_create(ui_Group_Settings);
+    lv_obj_set_width(wifi_ui.group_label, LV_SIZE_CONTENT);  /// 1
+    lv_obj_set_height(wifi_ui.group_label, LV_SIZE_CONTENT); /// 1
+    lv_obj_set_x(wifi_ui.group_label, -163);
+    lv_obj_set_y(wifi_ui.group_label, -131);
+    lv_obj_set_align(wifi_ui.group_label, LV_ALIGN_CENTER);
+    lv_label_set_text(wifi_ui.group_label, "WiFi");
+
     wifi_ui.network_dropdown_dyn = lv_dropdown_create(ui_Group_Settings);
     lv_obj_set_width(wifi_ui.network_dropdown_dyn, 364);
     lv_obj_set_height(wifi_ui.network_dropdown_dyn, LV_SIZE_CONTENT); /// 1
@@ -69,6 +77,27 @@ void WiFi_UI_Initialize()
     lv_obj_set_style_bg_opa(wifi_ui.scan_button_dyn, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_grad_color(wifi_ui.scan_button_dyn, lv_color_hex(0x5F06CF), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_grad_dir(wifi_ui.scan_button_dyn, LV_GRAD_DIR_VER, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    wifi_ui.wifi_label = lv_label_create(ui_Screen1);
+    lv_obj_set_width(wifi_ui.wifi_label, LV_SIZE_CONTENT);  /// 1
+    lv_obj_set_height(wifi_ui.wifi_label, LV_SIZE_CONTENT); /// 1
+    lv_obj_set_x(wifi_ui.wifi_label, 408);
+    lv_obj_set_y(wifi_ui.wifi_label, -258);
+    lv_obj_set_align(wifi_ui.wifi_label, LV_ALIGN_CENTER);
+    lv_label_set_text(wifi_ui.wifi_label, "WiFi");
+    lv_obj_set_style_text_letter_space(wifi_ui.wifi_label, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_line_space(wifi_ui.wifi_label, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(wifi_ui.wifi_label, LV_TEXT_ALIGN_AUTO, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    wifi_ui.ssid_label = lv_label_create(ui_Screen1);
+    lv_obj_set_width(wifi_ui.ssid_label, LV_SIZE_CONTENT);  /// 1
+    lv_obj_set_height(wifi_ui.ssid_label, LV_SIZE_CONTENT); /// 1
+    lv_obj_set_x(wifi_ui.ssid_label, 410);
+    lv_obj_set_y(wifi_ui.ssid_label, -233);
+    lv_obj_set_align(wifi_ui.ssid_label, LV_ALIGN_CENTER);
+    lv_label_set_text(wifi_ui.ssid_label, "Not Connected");
+    lv_obj_set_style_text_color(wifi_ui.ssid_label, lv_color_hex(0x00FF07), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_opa(wifi_ui.ssid_label, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     WiFi_UI_Set_Callbacks();
 }
@@ -149,7 +178,7 @@ void WiFi_UI_Update(void)
             ESP_LOGI(TAG, "Connection finished!");
             lv_label_set_text(wifi_ui.status_label_dyn, "Connected");
             lv_obj_set_style_text_color(wifi_ui.status_label_dyn, lv_color_hex(0x66FF00), LV_PART_MAIN | LV_STATE_DEFAULT);
-
+            lv_label_set_text(wifi_ui.ssid_label, wifi_ui.selected_ssid);
 
             vTaskDelay(pdMS_TO_TICKS(1000));
         }

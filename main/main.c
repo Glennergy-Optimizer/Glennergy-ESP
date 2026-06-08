@@ -24,6 +24,7 @@
 #include "sensor/sensor.h"
 #include "LEOP/LEOP_Fetcher.h"
 #include "Memory/Spiffs.h"
+#include "Cache/Cache.h"
 #include <stdlib.h>
 #include <time.h>
 #include "fake/fake_config.hpp"
@@ -67,6 +68,18 @@ void init_app_system_task_handlers(app_state_t* app) {
 
 static const char *TAG = "main";
 
+const char *data =
+"{"
+"\"stad\": \"Göteborg\","
+"\"temperatur\": 12,"
+"\"enhet\": \"C\","
+"\"väder\": \"molnigt\","
+"\"vindstyrka\": 6,"
+"\"vind_enhet\": \"m/s\","
+"\"luftfuktighet\": 78,"
+"\"datum\": \"2026-06-02\""
+"}";
+
 // Main application function
 void app_main()
 {
@@ -97,13 +110,7 @@ void app_main()
 
     WiFi_Initialize();
 
-
-    static Spiffs_t spiffs;
-    Spiffs_Initialize(&spiffs, "test.txt");
-    Spiffs_WriteToFile(&spiffs, "Hej 123");
-    char buffer[128];
-    Spiffs_ReadFromFile(&spiffs, buffer, sizeof(buffer));
-    ESP_LOGE(TAG, "%s", buffer);
+    Spiffs_Initialize();
 
     // Lock the mutex due to the LVGL APIs are not thread-safe
     if (lvgl_port_lock(-1))

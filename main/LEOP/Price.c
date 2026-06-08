@@ -7,13 +7,16 @@ static const char *TAG = "Price";
 
 int Price_Initialize(PriceList *p_list)
 {
-    ESP_LOGI(TAG, "CRASH 1");
     p_list->count = 0;
     for (int i = 0; i < 96; i++)
     {
         p_list->price[i] = (Price){0};
     }
-    ESP_LOGI(TAG, "CRASH 2");
+
+    p_list->status.electricity_fetched = false;
+
+    Cache_Initialize(&p_list->cache);
+
     return 0;
 }
 
@@ -29,19 +32,49 @@ int Price_Fetch(const char *url, PriceList *p_list)
         return 1;
     }
 
+    int res = Cache_WriteFileJSON(&p_list->cache, http_response.data, "Price.json");
+
+    if (res != 0)
+    {
+        ESP_LOGW(TAG, "Failed to cache data");
+    }
+
     int ret = DataParser_ParsePrice(http_response.data, p_list);
 
-    if(ret != 0)
+    if (ret != 0)
     {
         return 2;
     }
 
     for (int i = 0; i < p_list->count; i++)
     {
-        ESP_LOGI(TAG, "%lf", p_list->price[i].current_prices);
+        //ESP_LOGI(TAG, "%lf", p_list->price[i].current_prices);
     }
 
     HTTPClient_Dispose(&http_response);
+
+    return 0;
+}
+
+int Price_FetchCache(PriceList *p_list)
+{
+    int res = Cache_LoadFileJSON(&p_list->cache, "Price.json");
+
+    if(res != 0)
+    {
+        ESP_LOGE(TAG, "Failed to load cache");
+        return 1;
+    }
+
+    res = DataParser_ParsePrice(p_list->cache.data, p_list);
+
+    if (res != 0)
+    {
+        ESP_LOGE(TAG, "Failed to parse cached data");
+        return 2;
+    }
+
+    Cache_Dispose(&p_list->cache);
 
     return 0;
 }
