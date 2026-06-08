@@ -3,6 +3,10 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <time.h>
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
+//#include <task.h>
 
 typedef enum {
     RECOMMENDATION_BUY = 1,
@@ -45,6 +49,8 @@ typedef struct {
 typedef struct {
     bool valid;
     uint32_t last_update_seconds;
+    time_t last_unix_time;
+    bool wall_time_valid;
     double temperature;
     double pressure;
     double humidity;
@@ -56,6 +62,7 @@ typedef struct {
 typedef struct {
     uint32_t fetch_interval_minutes; // TODO - Default should be 15 unless changed
     bool test_mode;
+    uint32_t sensor_interval_ms; //Default to once a second
 
 } config_data_t;
 
@@ -66,6 +73,27 @@ typedef struct {
     bool sensor_ok;
     uint32_t update_counter;
 } system_status_t;
+
+typedef struct {
+    const char * name;
+    TaskHandle_t handle;
+    uint32_t stack_size;
+} task_info_t;
+
+
+/*
+    Task Handle references, contains:
+    - char* name
+    - TaskHandle_t handle
+    - uint32_t stack_size
+*/ 
+typedef struct {
+    task_info_t wifi_task;
+    task_info_t ui_task;
+    task_info_t uart_task;
+    task_info_t sensor_task;
+    task_info_t leop_task;
+} system_task_handlers_t;
 
 
 // I think the flow should be:
@@ -78,6 +106,23 @@ typedef struct {
     sensor_data_t sensor_data;
     config_data_t config_data;
     system_status_t system_status;
+    system_task_handlers_t system_task_handlers;
 } app_state_t;
+
+// *** HAL structs ***
+
+// todo - Lägga till timestamp
+typedef struct {
+    float celcius;
+} TemperatureReadingInC;
+
+// todo - Lägga till timestamp
+typedef struct {
+    float humidity;
+} HumidityReadingInC;
+
+typedef struct {
+    float pressure;
+} PressureReadingInC;
 
 #endif

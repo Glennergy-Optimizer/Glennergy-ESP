@@ -11,6 +11,7 @@
 #include "esp_heap_caps.h"
 #include "../app_types.h"
 #include "UART.hpp"
+#include <ctime>
 
 static const char *TAG = "UART_DIAG_SHELL.CPP";
 
@@ -18,7 +19,7 @@ void handle_sensor(app_state_t *state);
 void handle_status(app_state_t *state);
 void handle_leop(app_state_t *state);
 void handle_config(std::vector<std::string> tokens, app_state_t *state);
-void handle_diag();
+void handle_diag(app_state_t *state);
 void print_config(app_state_t *state);
 
 void handle_help(bool wait_for_enter);
@@ -56,6 +57,16 @@ const char *ok_text(bool value)
 {
     return value ? "OK" : "Not OK";
 }
+
+static void print_local_time(time_t& time) {
+    struct tm local_time;
+    localtime_r(&time, &local_time);
+
+    char buffer[32];
+    strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", &local_time);
+    std::cout << "Last updated local time: " << buffer << std::endl;
+}
+
 
 // Takes in a std::string,
 // .c_str() converts to C-style char*,
@@ -124,7 +135,7 @@ void handle_input(const std::string &input, app_state_t *state)
     }
     else if (cmd == "diag")
     {
-        handle_diag();
+        handle_diag(state);
     }
     else
     {
@@ -154,7 +165,14 @@ void handle_sensor(app_state_t *state)
         return;
     }
 
-    std::cout << "Last updated time: " << state->sensor_data.last_update_seconds << std::endl;
+    std::cout << "Last updated monotinic time: " << state->sensor_data.last_update_seconds << std::endl;
+    if (state->sensor_data.wall_time_valid) {
+        print_local_time(state->sensor_data.last_unix_time);
+    }
+    else {
+        std::cout << "Last updated local time: not synced yet" << std::endl;
+    }
+    //std::cout << "Last updated time local: " << print_local_time(state->sensor_data.last_unix_time) << std::endl;
     std::cout << "Temperature - " << state->sensor_data.temperature << std::endl;
     std::cout << "Pressure    - " << state->sensor_data.pressure << std::endl;
     std::cout << "Humidity    - " << state->sensor_data.humidity << std::endl;
@@ -163,6 +181,7 @@ void handle_sensor(app_state_t *state)
 void print_config(app_state_t *state)
 {
     std::cout << "fetch_interval_minutes: " << state->config_data.fetch_interval_minutes << std::endl;
+    std::cout << "sensor_interval_ms: " << state->config_data.sensor_interval_ms << std::endl;
     std::cout << "test_mode: " << enabled_text(state->config_data.test_mode) << std::endl;
 }
 
@@ -185,6 +204,25 @@ void handle_config(std::vector<std::string> tokens, app_state_t *state)
         {            
             std::cout << "Now setting \"fetch_interval_minutes\" to \"" << int_value << "\"." << std::endl;
             state->config_data.fetch_interval_minutes = int_value;
+        }
+    }
+    else if (key == "sensor_interval_ms")
+    {
+        // Minimum och maximum mellan 1s och 60s
+        int int_value; 
+        if (parse_int(value, int_value))
+        {
+            if (int_value >= 1000 && int_value <= 60000)
+            {
+                std::cout << "Now setting \"sensor_interval_ms\" to \"" << int_value << "\"." << std::endl;
+                state->config_data.sensor_interval_ms = int_value;
+            }
+            else {
+                std::cout << "You must enter a int value between 1 000 and 60 000ms(1-60s)" << std::endl;
+            }
+        }
+        else {
+                std::cout << "You must enter a int value between 1 000 and 60 000ms(1-60s)" << std::endl;
         }
     }
     else if (key == "test_mode")
@@ -220,11 +258,28 @@ void handle_leop(app_state_t *app)
     }
 }
 
+
+// Diagnostics helper function - prints info about a task
+void print_task_stack(const char* name, TaskHandle_t handle, uint32_t stack_size)
+{
+    if (handle == NULL)
+    {
+        std::cout << name << ": no handle: " << std::endl;
+        return;
+    }
+
+    UBaseType_t free = uxTaskGetStackHighWaterMark(handle);
+    uint32_t used = stack_size - free;
+    uint32_t used_percent = (used * 100) / stack_size;
+
+    std::cout << name << ": used " << used << "/" << stack_size << " {" << used_percent << "%), min free " << free << std::endl;
+}
+
 // We could easily create a summary of the app-state, which would be a summarized version of all other help commands?
 // Later on, we could add stuff like task statistics, stack usage, heap usage?
 // If something is wrong, show the latest successful update times from LEOP or something?
 // Mer fokus på detaljer om varför något är ok eller inte?
-void handle_diag()
+void handle_diag(app_state_t *app)
 {
     // Mirkoseconds since boot, then converted to seconds and divide by matching type (unsigned long long)
     uint64_t uptime_seconds = esp_timer_get_time() / 1000000ULL;
@@ -241,6 +296,13 @@ void handle_diag()
     std::cout << "Free Heap: " << free_heap << " bytes. " << std::endl;
     std::cout << "Minimum free heap: " << min_free_heap << " bytes." << std::endl;
     std::cout << "Task count: " << task_count << std::endl;
+
+    // New helper stuff
+    print_task_stack(app->system_task_handlers.wifi_task.name, app->system_task_handlers.wifi_task.handle, app->system_task_handlers.wifi_task.stack_size);
+    print_task_stack(app->system_task_handlers.ui_task.name, app->system_task_handlers.ui_task.handle, app->system_task_handlers.ui_task.stack_size);
+    print_task_stack(app->system_task_handlers.sensor_task.name, app->system_task_handlers.sensor_task.handle, app->system_task_handlers.sensor_task.stack_size);
+    print_task_stack(app->system_task_handlers.uart_task.name, app->system_task_handlers.uart_task.handle, app->system_task_handlers.uart_task.stack_size);
+    print_task_stack(app->system_task_handlers.leop_task.name, app->system_task_handlers.leop_task.handle, app->system_task_handlers.leop_task.stack_size);
 }
 
 // *** HELP helper functions ***

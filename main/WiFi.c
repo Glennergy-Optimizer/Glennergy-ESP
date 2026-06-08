@@ -4,6 +4,7 @@
 
 #include "freertos/event_groups.h"
 #include "freertos/task.h"
+#include "SNTP/time_sync.h"
 
 #define TAG "WiFi"
 
@@ -41,6 +42,7 @@ static void ip_event_cb(void *arg, esp_event_base_t event_base, int32_t event_id
     switch (event_id)
     {
     case (IP_EVENT_STA_GOT_IP):
+        esp_err_t time_result = TimeSync_Start();
         ip_event_got_ip_t *event_ip = (ip_event_got_ip_t *)event_data;
         ESP_LOGI(TAG, "Got IP: " IPSTR, IP2STR(&event_ip->ip_info.ip));
         wifi_retry_count = 0;
@@ -244,6 +246,7 @@ void WiFi_Work(void *arg)
                     {
                         w_state.is_connected = true;
                         w_data.status = status;
+                        //esp_err_t time_sync = TimeSync_Start();
                         xQueueSend(wifi_result_queue, &w_data, 0);
                     }
                 }
@@ -277,7 +280,6 @@ esp_err_t WiFi_Connect(wifi_data *w_data)
 
     strcpy((char *)wifi_config.sta.ssid, w_data->wifi_info.ssid);
     strcpy((char *)wifi_config.sta.password, w_data->wifi_info.password);
-
     esp_wifi_set_config(WIFI_IF_STA, &wifi_config);
     esp_err_t err = esp_wifi_connect();
 

@@ -3,6 +3,8 @@ idf_component_register(
     "../ui/images/icons8-clouds-50.c" "../ui/images/icons8-rain-50.c" "../ui/images/icons8-heavy-rain-50.c"
     "../ui/images/icons8-partly-cloudy-day-50.c" "../ui/images/icons8-snow-50.c" "../ui/images/icons8-fog-50.c"
     "../ui/images/icons8-cloud-lightning-50.c"
+    SRCS "HTTP.c" "../ui/ui.c" "../ui/ui_helpers.c" "../ui/screens/ui_Screen1.c" "../ui/images/ui_img_1286710220.c" "HTTP.c" "WiFi.c" "main.c"
+    "SNTP/time_sync.c"
     "fake/fake_config.cpp" "fake/fake_system_status.cpp" 
     "leop/leop.cpp" "leop/fake_leop.cpp" 
     "sensor/sensor.cpp" "sensor/fake_sensor.cpp"
@@ -15,6 +17,11 @@ idf_component_register(
     "LEOP/Price.c" "Memory/Spiffs.c"
     "LEOP/LEOP_Fetcher.c" "Cache/Cache.c"
     INCLUDE_DIRS "." "fake" "leop" "sensor" "UART"
+    "LEOP/Price.c"
+    "LEOP/LEOP_Fetcher.c"
+    "hal/bme280_sensor.cpp" "hal/temperature_sensor_c_api.cpp" "hal/humidity_sensor_c_api.cpp" "hal/pressure_sensor_c_api.cpp"
+    "Memory/Spiffs.c"
+    INCLUDE_DIRS "." "SNTP" "fake" "hal" "leop" "sensor" "UART" "Memory"
     WHOLE_ARCHIVE
     PRIV_REQUIRES can gpio rgb_lcd_port spiffs
     REQUIRES esp_lcd nvs_flash esp_event esp_wifi esp_http_client jansson espressif__bme280 espressif__i2c_bus

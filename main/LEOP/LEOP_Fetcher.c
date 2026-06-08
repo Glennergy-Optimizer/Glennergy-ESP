@@ -21,7 +21,7 @@ int LEOPFetcher_Initialize(LEOPData *leop_data, uint32_t interval)
     Weather_Initialize(&leop_data->weather);
     Price_Initialize(&leop_data->price_list);
 
-    leop_data->leop_conf.time_interval = interval;
+    //leop_data->leop_conf.time_interval = interval;
 
 
     recommendation_queue = xQueueCreate(1, sizeof(RecommendationList));
@@ -110,6 +110,8 @@ void LEOPFetcher_Work(void *arg)
             continue;
         }
 
-        vTaskDelay(pdMS_TO_TICKS(leop_data->leop_conf.time_interval));
+        // Delay by our fetch time interval in minutes.
+        // From MS, * 1000 to get S, * 60 to get M
+        vTaskDelay(pdMS_TO_TICKS((*leop_data->leop_conf.time_interval * 1000 * 60)));
     }
 }
