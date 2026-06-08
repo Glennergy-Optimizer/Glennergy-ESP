@@ -1,0 +1,377 @@
+#include "Weather_UI.h"
+#include "lvgl_port.h"
+#include "../../screens/ui_Screen1.h"
+#include "../../../main/LEOP/LEOP_Fetcher.h"
+
+static const char *TAG = "Weather_UI";
+
+static Weather_UI weather_ui;
+
+void Weather_UI_Initialize()
+{
+    for (int i = 0; i < 24; i++)
+    {
+        lv_obj_t *panel = lv_obj_create(ui_TabPage_Weather);
+
+        lv_obj_set_size(panel, 150, 95);
+
+        // Calculate row and column
+        int col = i % 6;
+        int row = i / 6;
+
+        lv_obj_set_pos(panel,
+                       15 + col * (150 + 5),
+                       15 + row * (95 + 5));
+
+        weather_ui.hourLabel[i] = lv_label_create(panel);
+        weather_ui.tempLabel[i] = lv_label_create(panel);
+        weather_ui.iconLabel[i] = lv_label_create(panel);
+        weather_ui.weather_code[i] = lv_label_create(panel);
+
+        lv_obj_align(weather_ui.hourLabel[i], LV_ALIGN_TOP_MID, 0, 5);
+        lv_obj_align(weather_ui.iconLabel[i], LV_ALIGN_CENTER, 0, 0);
+        lv_obj_align(weather_ui.tempLabel[i], LV_ALIGN_BOTTOM_MID, 0, -5);
+        lv_obj_align(weather_ui.weather_code[i], LV_ALIGN_BOTTOM_MID, 0, +10);
+    }
+}
+
+void Weather_UI_Update()
+{
+    static WeatherList weather_list;
+
+    if (weather_queue != NULL && xQueueReceive(weather_queue, &weather_list, 0) == pdPASS)
+    {
+        if (weather_list.status.weather_fetched)
+        {
+            ESP_LOGI(TAG, "Should print");
+            for (int j = 0; j < 24; j++)
+            {
+                int i = j * 4;
+                int hour, min;
+
+                sscanf(weather_list.weather[i].timestamp, "%*d-%*d-%*dT%d:%d:%*d", &hour, &min);
+
+                min = 0;
+
+                char buf[6];
+                snprintf(buf, sizeof(buf), "%02d:00", hour);
+
+                char temp[10];
+                snprintf(temp, sizeof(temp), "%.2f", weather_list.weather[i].temp);
+
+                char uv_index[10];
+                snprintf(uv_index, sizeof(uv_index), "%d", weather_list.weather[i].uv_index);
+
+                char weather_code[10];
+                snprintf(weather_code, sizeof(weather_code), "%d", weather_list.weather[i].weather_code);
+
+                lv_label_set_text(weather_ui.hourLabel[j], buf);
+                lv_label_set_text(weather_ui.tempLabel[j], temp);
+                lv_label_set_text(weather_ui.iconLabel[j], uv_index);
+                lv_label_set_text(weather_ui.weather_code[j], weather_code);
+            }
+        }
+    }
+}
+
+static lv_style_t style_card;
+static lv_style_t style_title;
+static lv_style_t style_temp;
+static lv_style_t style_info;
+static lv_style_t style_forecast_row;
+
+static void init_styles(void)
+{
+    lv_style_init(&style_card);
+
+    lv_style_set_radius(&style_card, 24);
+    lv_style_set_border_width(&style_card, 1);
+    lv_style_set_border_color(&style_card, lv_color_hex(0x4d6480));
+
+    lv_style_set_bg_opa(&style_card, LV_OPA_COVER);
+
+    lv_style_set_bg_grad_dir(&style_card, LV_GRAD_DIR_VER);
+    lv_style_set_bg_color(&style_card, lv_color_hex(0x143a66));
+    lv_style_set_bg_grad_color(&style_card, lv_color_hex(0x0b203f));
+
+    lv_style_set_shadow_width(&style_card, 20);
+    lv_style_set_shadow_opa(&style_card, LV_OPA_30);
+    lv_style_set_shadow_color(&style_card, lv_color_black());
+
+    lv_style_init(&style_title);
+    lv_style_set_text_color(&style_title, lv_color_white());
+    lv_style_set_text_font(&style_title, &lv_font_montserrat_26);
+
+    lv_style_init(&style_temp);
+    lv_style_set_text_color(&style_temp, lv_color_white());
+    lv_style_set_text_font(&style_temp, &lv_font_montserrat_48);
+
+    lv_style_init(&style_info);
+    lv_style_set_text_color(&style_info, lv_color_hex(0xdfe9f5));
+    lv_style_set_text_font(&style_info, &lv_font_montserrat_20);
+
+    lv_style_init(&style_forecast_row);
+    lv_style_set_bg_opa(&style_forecast_row, LV_OPA_TRANSP);
+    lv_style_set_border_side(&style_forecast_row, LV_BORDER_SIDE_BOTTOM);
+    lv_style_set_border_color(&style_forecast_row, lv_color_hex(0x345070));
+}
+
+/*********************
+ * WEATHER ICON
+ *********************/
+
+/*********************
+ * FORECAST ROW
+ *********************/
+
+static Weather_UI_test test;
+
+LV_IMG_DECLARE(icons8_summer_50);
+LV_IMG_DECLARE(icons8_partly_cloudy_day_50);
+LV_IMG_DECLARE(icons8_clouds_50);
+LV_IMG_DECLARE(icons8_rain_50);
+LV_IMG_DECLARE(icons8_heavy_rain_50);
+LV_IMG_DECLARE(icons8_snow_50);
+
+static void set_icon(lv_obj_t *obj, int weather_code)
+{
+    switch (weather_code)
+    {
+    case 0:
+        lv_img_set_src(obj, &icons8_summer_50);
+        break;
+    case 2:
+        lv_img_set_src(obj, &icons8_partly_cloudy_day_50);
+        break;
+    case 3:
+        lv_img_set_src(obj, &icons8_clouds_50);
+        break;
+    case 61:
+    case 62:
+        lv_img_set_src(obj, &icons8_rain_50);
+        break;
+    case 63:
+        lv_img_set_src(obj, &icons8_heavy_rain_50);
+        break;
+    case 71:
+    case 72:
+    case 73:
+        lv_img_set_src(obj, &icons8_snow_50);
+        break;
+    default:
+        lv_img_set_src(obj, &icons8_clouds_50);
+        break;
+    }
+}
+
+static forecast_row_t create_forecast_row(lv_obj_t *parent)
+{
+    forecast_row_t r;
+
+    r.row = lv_obj_create(parent);
+    lv_obj_remove_style_all(r.row);
+    lv_obj_add_style(r.row, &style_forecast_row, 0);
+
+    lv_obj_set_size(r.row, LV_PCT(100), 45);
+    lv_obj_clear_flag(r.row, LV_OBJ_FLAG_SCROLLABLE);
+
+    r.icon = lv_img_create(r.row);
+    lv_img_set_zoom(r.icon, 128);
+    lv_obj_align(r.icon, LV_ALIGN_LEFT_MID, 10, 0);
+
+    r.temp = lv_label_create(r.row);
+    lv_obj_set_style_text_color(r.temp, lv_color_white(), 0);
+    lv_obj_set_style_text_font(r.temp, &lv_font_montserrat_24, 0);
+    lv_obj_align(r.temp, LV_ALIGN_LEFT_MID, 90, 0);
+
+    r.time = lv_label_create(r.row);
+    lv_obj_set_style_text_color(r.time, lv_color_hex(0xc0cfe0), 0);
+    lv_obj_align(r.time, LV_ALIGN_RIGHT_MID, -10, 0);
+
+    return r;
+}
+
+/*********************
+ * MAIN SCREEN
+ *********************/
+
+void weather_dashboard_create(void)
+{
+    init_styles();
+
+    lv_obj_t *scr = ui_TabPage_Weather;
+
+    lv_obj_set_style_bg_color(scr, lv_color_hex(0x081321), 0);
+
+    lv_obj_set_flex_flow(scr, LV_FLEX_FLOW_ROW);
+    lv_obj_set_flex_align(scr, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+
+    /******** LEFT CARD ********/
+
+    test.left_card = lv_obj_create(scr);
+    lv_obj_add_style(test.left_card, &style_card, 0);
+
+    lv_obj_set_size(test.left_card, LV_PCT(40), LV_PCT(95));
+    lv_obj_set_style_pad_all(test.left_card, 10, 0);
+
+    lv_obj_t *title = lv_label_create(test.left_card);
+    lv_obj_add_style(title, &style_title, 0);
+    lv_label_set_text(title, "Current weather");
+    lv_obj_align(title, LV_ALIGN_TOP_MID, 0, 5);
+
+    
+
+    test.icon = lv_img_create(test.left_card); // ✅ correct widget
+    lv_img_set_zoom(test.icon, 512);
+    lv_obj_align(test.icon, LV_ALIGN_TOP_MID, 0, 120);
+
+    test.current_temp = lv_label_create(test.left_card);
+    lv_obj_add_style(test.current_temp, &style_temp, 0);
+
+    lv_label_set_text(test.current_temp, "22°C");
+    lv_obj_align(test.current_temp, LV_ALIGN_CENTER, 0, 60);
+
+    test.current_weather = lv_label_create(test.left_card);
+    lv_label_set_text(test.current_weather, "Delvis molnigt");
+
+    lv_obj_set_style_text_color(
+        test.current_weather,
+        lv_color_hex(0xdbe5ef),
+        0);
+
+    lv_obj_set_style_text_font(
+        test.current_weather,
+        &lv_font_montserrat_28,
+        0);
+
+    lv_obj_align(test.current_weather, LV_ALIGN_CENTER, 0, 150);
+
+    lv_obj_t *line = lv_obj_create(test.left_card);
+    lv_obj_remove_style_all(line);
+    lv_obj_set_width(line, LV_PCT(90));
+    lv_obj_set_height(line, 1);
+
+    lv_obj_set_style_bg_color(
+        line,
+        lv_color_hex(0x4a6480),
+        0);
+
+    lv_obj_align(line, LV_ALIGN_BOTTOM_MID, 0, -220);
+
+    lv_obj_t *info = lv_obj_create(test.left_card);
+    lv_obj_remove_style_all(info);
+
+    lv_obj_set_size(info, LV_PCT(100), LV_SIZE_CONTENT);
+    lv_obj_align(info, LV_ALIGN_BOTTOM_MID, 0, -80);
+
+    lv_obj_set_flex_flow(info, LV_FLEX_FLOW_ROW);
+    lv_obj_set_flex_align(
+        info,
+        LV_FLEX_ALIGN_SPACE_EVENLY,
+        LV_FLEX_ALIGN_CENTER,
+        LV_FLEX_ALIGN_CENTER);
+
+    /******** RIGHT CARD ********/
+
+    test.right_card = lv_obj_create(scr);
+    lv_obj_add_style(test.right_card, &style_card, 0);
+
+    lv_obj_set_size(test.right_card, LV_PCT(58), LV_PCT(95));
+    lv_obj_set_style_pad_all(test.right_card, 10, 0);
+
+    lv_obj_t *forecast_title = lv_label_create(test.right_card);
+    lv_obj_add_style(forecast_title, &style_title, 0);
+
+    lv_label_set_text(
+        forecast_title,
+        "Forecast 24 hours");
+
+    lv_obj_align(
+        forecast_title,
+        LV_ALIGN_TOP_LEFT,
+        25,
+        -2);
+
+    test.forecast_list = lv_obj_create(test.right_card);
+    lv_obj_remove_style_all(test.forecast_list);
+
+    lv_obj_set_size(test.forecast_list, LV_PCT(100), LV_PCT(90));
+    lv_obj_set_style_pad_row(test.forecast_list, 6, 0);
+    lv_obj_align(test.forecast_list, LV_ALIGN_BOTTOM_MID, 0, -20);
+
+    lv_obj_set_flex_flow(test.forecast_list, LV_FLEX_FLOW_COLUMN);
+
+    for (int i = 0; i < 24; i++)
+    {
+        test.forecast_rows[i] = create_forecast_row(test.forecast_list);
+    }
+}
+
+static const char *weather_code_to_text(int code)
+{
+    switch (code)
+    {
+    case 0:
+        return "Sunny";
+    case 2:
+        return "Partly cloudy";
+    case 3:
+        return "Cloudy";
+    case 61:
+        return "Rain";
+    case 63:
+        return "Heavy rain";
+    case 71:
+        return "Snow";
+    default:
+        return "Unknown";
+    }
+}
+
+void Weather_UI_Update_test()
+{
+    static WeatherList weather_list;
+
+    if (weather_queue != NULL &&
+        xQueueReceive(weather_queue, &weather_list, 0) == pdPASS)
+    {
+        if (!weather_list.status.weather_fetched)
+            return;
+
+        char current_temp[10];
+        snprintf(current_temp, sizeof(current_temp), "%.2f", weather_list.weather[0].temp);
+
+        lv_label_set_text(test.current_temp, current_temp);
+        lv_label_set_text(test.current_weather, weather_code_to_text(weather_list.weather[0].weather_code));
+
+        set_icon(test.icon,
+                 weather_list.weather[0].weather_code);
+
+        lv_img_set_zoom(test.icon, 512);
+
+        for (int j = 0; j < 24; j++)
+        {
+            int i = j * 4;
+
+            int hour, min;
+            sscanf(weather_list.weather[i].timestamp,
+                   "%*d-%*d-%*dT%d:%d:%*d",
+                   &hour, &min);
+
+            char time_buf[6];
+            snprintf(time_buf, sizeof(time_buf), "%02d:00", hour);
+
+            char temp_buf[10];
+            snprintf(temp_buf, sizeof(temp_buf),
+                     "%.2f", weather_list.weather[i].temp);
+
+            forecast_row_t *r = &test.forecast_rows[j];
+
+            set_icon(r->icon,
+                     weather_list.weather[i].weather_code);
+
+            lv_label_set_text(r->temp, temp_buf);
+            lv_label_set_text(r->time, time_buf);
+        }
+    }
+}

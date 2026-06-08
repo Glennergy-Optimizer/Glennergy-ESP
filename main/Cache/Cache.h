@@ -13,7 +13,7 @@ int Cache_WriteFileJSON(Cache_t* cache, const char* data, const char* file_name)
 
 int Cache_LoadFileJSON(Cache_t* cache, const char* file_name);
 
-
+void Cache_Dispose(Cache_t* cache);
 
 
 #endif

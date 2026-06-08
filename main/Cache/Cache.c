@@ -1,5 +1,6 @@
 #include "Cache.h"
 #include <string.h>
+#include "esp_log.h"
 
 static const char *TAG = "Cache";
 
@@ -12,20 +13,14 @@ int Cache_Initialize(Cache_t *cache)
     }
 
     cache->data = NULL;
+
+    return 0;
 }
 
 int Cache_WriteFileJSON(Cache_t *cache, const char *data, const char *file_name)
 {
-    Spiffs_t spiffs;
-    int result = Spiffs_Initialize(&spiffs, file_name);
 
-    if (result != 0)
-    {
-        ESP_LOGW(TAG, "Failed to initialize spiffs");
-        return 1;
-    }
-
-    result = Spiffs_WriteToFileJSON(&spiffs, data);
+    int result = Spiffs_WriteToFileJSON(file_name, data);
 
     if (result != 0)
     {
@@ -33,33 +28,21 @@ int Cache_WriteFileJSON(Cache_t *cache, const char *data, const char *file_name)
         return 2;
     }
 
-    Spiffs_Dispose(&spiffs);
     return 0;
 }
 
 int Cache_LoadFileJSON(Cache_t *cache, const char *file_name)
 {
-    Spiffs_t spiffs;
-
-    int result = Spiffs_Initialize(&spiffs, file_name);
-
-    if (result != 0)
-    {
-        ESP_LOGW(TAG, "Failed to initialize spiffs");
-        return 1;
-    }
-
-    char *json = Spiffs_ReadFromFileJSON(&spiffs);
+    char *json = Spiffs_ReadFromFileJSON(file_name);
 
     if (json == NULL)
     {
-        Spiffs_Dispose(&spiffs);
         return 2;
     }
 
     cache->data = strdup(json);
 
-    Spiffs_Dispose(&spiffs);
+    free(json);
 
     if (cache->data == NULL)
     {
@@ -69,10 +52,9 @@ int Cache_LoadFileJSON(Cache_t *cache, const char *file_name)
     return 0;
 }
 
-
-void Cache_Dispose(Cache_t* cache)
+void Cache_Dispose(Cache_t *cache)
 {
-    if(cache != NULL && cache->data != NULL)
+    if (cache != NULL && cache->data != NULL)
     {
         free(cache->data);
         cache = NULL;

@@ -2,24 +2,20 @@
 #define SPIFFS_H
 
 #include "esp_spiffs.h"
-
-typedef struct{
-    esp_vfs_spiffs_conf_t spiffs_config;
-    char filepath[50];
-}Spiffs_t;
+#include <stdbool.h>
 
 
-int Spiffs_Initialize(Spiffs_t *spiffs, const char *file);
+int Spiffs_Initialize();
 
-int Spiffs_WriteToFile(Spiffs_t *spiffs, const char *content);
+int Spiffs_WriteToFile(const char* file_name, const char *content);
 
-int Spiffs_ReadFromFile(Spiffs_t *spiffs, char *buffer, size_t buffer_size);
+int Spiffs_ReadFromFile(const char* file_name, char *buffer, size_t buffer_size);
 
-int Spiffs_WriteToFileJSON(Spiffs_t* spiffs, const char* raw_data);
+int Spiffs_WriteToFileJSON(const char *file_name, const char *raw_data);
 
-char* Spiffs_ReadFromFileJSON(Spiffs_t* spiffs);
+char *Spiffs_ReadFromFileJSON(const char *file_name);
 
-void Spiffs_Dispose(Spiffs_t* spiffs);
+
 
 
 #endif
