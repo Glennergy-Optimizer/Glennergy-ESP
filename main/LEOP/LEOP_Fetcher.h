@@ -11,9 +11,13 @@
 
 extern QueueHandle_t leop_queue;
 
+/*
+This should be a pointer to app_state_t->config_data_t->fetch_interval_minutes
+*/
 typedef struct{
-    uint32_t time_interval;
+    uint32_t* time_interval;
 }LEOPConfig;
+
 
 typedef struct{
     bool recommendation_fetched;

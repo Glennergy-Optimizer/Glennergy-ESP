@@ -26,6 +26,7 @@
 #include "Memory/Spiffs.h"
 #include <stdlib.h>
 #include <time.h>
+#include "fake/fake_config.hpp"
 
 
 #define WIFI_PASS "rockyunit953"
@@ -72,6 +73,9 @@ void app_main()
     // Time stuff
     setenv("TZ", "CET-1CEST,M3.5.0,M10.5.0/3", 1);
     tzset();
+
+    // Inits with "fake" config data, should be used as a default fallback if settings from NVS can't be loaded
+    fake_config_data(&app.config_data);
 
     // Init the name and stack sizes for our tasks
     init_app_system_task_handlers(&app);    
@@ -120,6 +124,8 @@ void app_main()
     static LEOPData leop_data;
 
     LEOPFetcher_Initialize(&leop_data, 3000);
+    leop_data.leop_conf.time_interval = &app.config_data.fetch_interval_minutes;
+    ESP_LOGI(TAG, "Leop data config time interval: %ld", *leop_data.leop_conf.time_interval);
 
     //xTaskCreate(LEOPFetcher_Work, "LEOP", LEOP_STACK_SIZE, &leop_data, 4, NULL);
     xTaskCreate(LEOPFetcher_Work, &app.system_task_handlers.leop_task.name, app.system_task_handlers.leop_task.stack_size, &leop_data, 4, &leop_task_handle);
