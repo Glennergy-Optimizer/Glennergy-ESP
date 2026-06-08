@@ -74,13 +74,25 @@ typedef struct {
     uint32_t update_counter;
 } system_status_t;
 
-// Task Handle references
 typedef struct {
-    TaskHandle_t wifi_handle;
-    TaskHandle_t ui_handle;
-    TaskHandle_t uart_handle;
-    TaskHandle_t sensor_handle;
-    TaskHandle_t leop_handle;
+    const char * name;
+    TaskHandle_t handle;
+    uint32_t stack_size;
+} task_info_t;
+
+
+/*
+    Task Handle references, contains:
+    - char* name
+    - TaskHandle_t handle
+    - uint32_t stack_size
+*/ 
+typedef struct {
+    task_info_t wifi_task;
+    task_info_t ui_task;
+    task_info_t uart_task;
+    task_info_t sensor_task;
+    task_info_t leop_task;
 } system_task_handlers_t;
 
 

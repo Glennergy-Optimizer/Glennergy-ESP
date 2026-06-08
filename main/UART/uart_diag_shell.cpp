@@ -298,10 +298,11 @@ void handle_diag(app_state_t *app)
     std::cout << "Task count: " << task_count << std::endl;
 
     // New helper stuff
-    print_task_stack("WiFi", app->system_task_handlers.wifi_handle, 4096);
-    print_task_stack("UI", app->system_task_handlers.ui_handle, 12288);
-    print_task_stack("UART", app->system_task_handlers.uart_handle, 4096);
-    print_task_stack("Sensor", app->system_task_handlers.sensor_handle, 4096);
+    print_task_stack(app->system_task_handlers.wifi_task.name, app->system_task_handlers.wifi_task.handle, app->system_task_handlers.wifi_task.stack_size);
+    print_task_stack(app->system_task_handlers.ui_task.name, app->system_task_handlers.ui_task.handle, app->system_task_handlers.ui_task.stack_size);
+    print_task_stack(app->system_task_handlers.sensor_task.name, app->system_task_handlers.sensor_task.handle, app->system_task_handlers.sensor_task.stack_size);
+    print_task_stack(app->system_task_handlers.uart_task.name, app->system_task_handlers.uart_task.handle, app->system_task_handlers.uart_task.stack_size);
+    print_task_stack(app->system_task_handlers.leop_task.name, app->system_task_handlers.leop_task.handle, app->system_task_handlers.leop_task.stack_size);
 }
 
 // *** HELP helper functions ***
