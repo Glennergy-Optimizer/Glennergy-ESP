@@ -4,6 +4,11 @@
 
 static const char *TAG = "LEOP";
 
+#define LEOP_SERVER_URL "http://31.59.105.197"
+#define LEOP_RECOMMENDATION_ENDPOINT LEOP_SERVER_URL "/id=2?recommendation"
+#define LEOP_WEATHER_ENDPOINT LEOP_SERVER_URL "/id=2?weather"
+#define LEOP_PRICE_ENDPOINT LEOP_SERVER_URL "/id=2?price"
+
 QueueHandle_t recommendation_queue = NULL;
 QueueHandle_t weather_queue = NULL;
 QueueHandle_t price_queue = NULL;
@@ -64,13 +69,13 @@ void LEOPFetcher_Work(void *arg)
         {
 
             leop_data->recommendations.status.recommendation_fetched =
-                (Recommendation_Fetch("http://10.0.0.3:8080/id=2?recommendation", &leop_data->recommendations) == 0);
+                (Recommendation_Fetch(LEOP_RECOMMENDATION_ENDPOINT, &leop_data->recommendations) == 0);
 
             leop_data->weather.status.weather_fetched =
-                (Weather_Fetch("http://10.0.0.3:8080/id=2?weather", &leop_data->weather) == 0);
+                (Weather_Fetch(LEOP_WEATHER_ENDPOINT, &leop_data->weather) == 0);
 
             leop_data->price_list.status.electricity_fetched =
-                (Price_Fetch("http://10.0.0.3:8080/id=2?price", &leop_data->price_list) == 0);
+                (Price_Fetch(LEOP_PRICE_ENDPOINT, &leop_data->price_list) == 0);
 
             if (xQueueSend(recommendation_queue, &leop_data->recommendations, 0) != pdPASS)
                 ESP_LOGW(TAG, "Failed to send data to recommendation queue");

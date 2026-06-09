@@ -7,6 +7,10 @@
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 //#include <task.h>
+#include "Price.h"
+#include "Recommendation.h"
+#include "LEOP_Fetcher.h"
+#include "Weather.h"
 
 typedef enum {
     RECOMMENDATION_BUY = 1,
@@ -102,7 +106,8 @@ typedef struct {
 // So main creates it, the uart_diag_shell should parse commands, and reads app_state_t, possibly update config
 // Then the leop-part should update leop_data_t, the sensor part should update sensor_data_t etc
 typedef struct {
-    leop_data_t leop_data;
+    LEOPData leop_data;
+    //leop_data_t leop_data;
     sensor_data_t sensor_data;
     config_data_t config_data;
     system_status_t system_status;

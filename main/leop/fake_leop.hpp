@@ -4,6 +4,6 @@
 
 #include "../app_types.h"
 
-void fake_leop_fill(leop_data_t* leop);
+void fake_leop_fill(LEOPData* leop);
 
 #endif
