@@ -8,7 +8,7 @@
 #endif
 
 void Leop_Init(app_state_t* app);
-bool Leop_GetData(leop_data_t* leop);
+bool Leop_GetData(LEOPData leop);
 
 void Leop_Work(void* parameter);
 

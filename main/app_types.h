@@ -3,6 +3,14 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <time.h>
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
+//#include <task.h>
+#include "Price.h"
+#include "Recommendation.h"
+#include "LEOP_Fetcher.h"
+#include "Weather.h"
 
 typedef enum {
     RECOMMENDATION_BUY = 1,
@@ -45,6 +53,8 @@ typedef struct {
 typedef struct {
     bool valid;
     uint32_t last_update_seconds;
+    time_t last_unix_time;
+    bool wall_time_valid;
     double temperature;
     double pressure;
     double humidity;
@@ -68,6 +78,27 @@ typedef struct {
     uint32_t update_counter;
 } system_status_t;
 
+typedef struct {
+    const char * name;
+    TaskHandle_t handle;
+    uint32_t stack_size;
+} task_info_t;
+
+
+/*
+    Task Handle references, contains:
+    - char* name
+    - TaskHandle_t handle
+    - uint32_t stack_size
+*/ 
+typedef struct {
+    task_info_t wifi_task;
+    task_info_t ui_task;
+    task_info_t uart_task;
+    task_info_t sensor_task;
+    task_info_t leop_task;
+} system_task_handlers_t;
+
 
 // I think the flow should be:
 // Main creates this and passes the access to this ot the other modules.
@@ -75,10 +106,12 @@ typedef struct {
 // So main creates it, the uart_diag_shell should parse commands, and reads app_state_t, possibly update config
 // Then the leop-part should update leop_data_t, the sensor part should update sensor_data_t etc
 typedef struct {
-    leop_data_t leop_data;
+    LEOPData leop_data;
+    //leop_data_t leop_data;
     sensor_data_t sensor_data;
     config_data_t config_data;
     system_status_t system_status;
+    system_task_handlers_t system_task_handlers;
 } app_state_t;
 
 // *** HAL structs ***

@@ -24,18 +24,74 @@
 #include "sensor/sensor.h"
 #include "LEOP/LEOP_Fetcher.h"
 #include "Memory/Spiffs.h"
+#include "Cache/Cache.h"
+#include <stdlib.h>
+#include <time.h>
+#include "fake/fake_config.hpp"
+
 
 #define WIFI_PASS "rockyunit953"
 #define WIFI_SSID "NETGEAR49"
 
+
 static app_state_t app;
 
+// Handlers so we can get stack statistics per task
+static TaskHandle_t wifi_task_handle = NULL;
+static TaskHandle_t ui_task_handle = NULL;
+static TaskHandle_t uart_task_handle = NULL;
+static TaskHandle_t sensor_task_handle = NULL;
+static TaskHandle_t leop_task_handle = NULL;
+
+#define WIFI_STACK_SIZE     4096
+#define UI_STACK_SIZE       16384
+#define UART_STACK_SIZE     4096
+#define SENSOR_STACK_SIZE   4096
+#define LEOP_STACK_SIZE     4096
+
+
+// 
+void init_app_system_task_handlers(app_state_t* app) {
+    app->system_task_handlers.wifi_task.name = "WIFI_Work";
+    app->system_task_handlers.ui_task.name = "UI_Update";
+    app->system_task_handlers.uart_task.name = "UART";
+    app->system_task_handlers.sensor_task.name = "Sensor";
+    app->system_task_handlers.leop_task.name = "LEOP";
+
+    app->system_task_handlers.wifi_task.stack_size = WIFI_STACK_SIZE;
+    app->system_task_handlers.ui_task.stack_size = UI_STACK_SIZE;
+    app->system_task_handlers.uart_task.stack_size = UART_STACK_SIZE;
+    app->system_task_handlers.sensor_task.stack_size = SENSOR_STACK_SIZE;
+    app->system_task_handlers.leop_task.stack_size = LEOP_STACK_SIZE;
+}
+
+
 static const char *TAG = "main";
+
+const char *data =
+"{"
+"\"stad\": \"Göteborg\","
+"\"temperatur\": 12,"
+"\"enhet\": \"C\","
+"\"väder\": \"molnigt\","
+"\"vindstyrka\": 6,"
+"\"vind_enhet\": \"m/s\","
+"\"luftfuktighet\": 78,"
+"\"datum\": \"2026-06-02\""
+"}";
 
 // Main application function
 void app_main()
 {
-    // Sensor_Init(&app.sensor_data);
+    // Time stuff
+    setenv("TZ", "CET-1CEST,M3.5.0,M10.5.0/3", 1);
+    tzset();
+
+    // Inits with "fake" config data, should be used as a default fallback if settings from NVS can't be loaded
+    fake_config_data(&app.config_data);
+
+    // Init the name and stack sizes for our tasks
+    init_app_system_task_handlers(&app);    
 
     static esp_lcd_panel_handle_t panel_handle = NULL; // Declare a handle for the LCD panel
     static esp_lcd_touch_handle_t tp_handle = NULL;
@@ -54,13 +110,7 @@ void app_main()
 
     WiFi_Initialize();
 
-
-    static Spiffs_t spiffs;
-    Spiffs_Initialize(&spiffs, "test.txt");
-    Spiffs_WriteToFile(&spiffs, "Hej 123");
-    char buffer[128];
-    Spiffs_ReadFromFile(&spiffs, buffer, sizeof(buffer));
-    ESP_LOGE(TAG, "%s", buffer);
+    Spiffs_Initialize();
 
     // Lock the mutex due to the LVGL APIs are not thread-safe
     if (lvgl_port_lock(-1))
@@ -70,18 +120,28 @@ void app_main()
         lvgl_port_unlock();
     }
 
-    xTaskCreate(WiFi_Work, "WIFI_Work", 4096, NULL, 5, NULL);
+    xTaskCreate(WiFi_Work, &app.system_task_handlers.wifi_task.name, app.system_task_handlers.wifi_task.stack_size, NULL, 5, &wifi_task_handle);
 
-    xTaskCreate(ui_update_task, "UI_Update", 12288, NULL, 5, NULL);
+    xTaskCreate(ui_update_task, &app.system_task_handlers.wifi_task.name, app.system_task_handlers.wifi_task.stack_size, NULL, 5, &ui_task_handle);
 
-    xTaskCreate(UART_Work, "UART", 4096, &app, 4, NULL);
+    xTaskCreate(UART_Work, &app.system_task_handlers.wifi_task.name, app.system_task_handlers.wifi_task.stack_size, &app, 4, &uart_task_handle);
 
-    xTaskCreate(Sensor_Work, "Sensor", 4096, &app, 4, NULL);
+    xTaskCreate(Sensor_Work, &app.system_task_handlers.wifi_task.name, app.system_task_handlers.wifi_task.stack_size, &app, 4, &sensor_task_handle);
 
     static LEOPData leop_data;
 
     LEOPFetcher_Initialize(&leop_data, 3000);
+    leop_data.leop_conf.time_interval = &app.config_data.fetch_interval_minutes;
+    ESP_LOGI(TAG, "Leop data config time interval: %ld", *leop_data.leop_conf.time_interval);
 
-    xTaskCreate(LEOPFetcher_Work, "LEOP", 4096, &leop_data, 4, NULL);
+    //xTaskCreate(LEOPFetcher_Work, "LEOP", LEOP_STACK_SIZE, &leop_data, 4, NULL);
+    xTaskCreate(LEOPFetcher_Work, &app.system_task_handlers.leop_task.name, app.system_task_handlers.leop_task.stack_size, &leop_data, 4, &leop_task_handle);
     //  ESP_ERROR_CHECK(WiFi_Dispose());
+
+    // Set the task handles after the tasks has been started, so we actually store info/data instead of NULL
+    app.system_task_handlers.wifi_task.handle = wifi_task_handle;
+    app.system_task_handlers.ui_task.handle = ui_task_handle;
+    app.system_task_handlers.uart_task.handle = uart_task_handle;
+    app.system_task_handlers.sensor_task.handle = sensor_task_handle;
+    app.system_task_handlers.leop_task.handle = leop_task_handle;
 }

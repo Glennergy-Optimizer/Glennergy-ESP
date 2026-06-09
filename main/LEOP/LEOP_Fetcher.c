@@ -4,7 +4,14 @@
 
 static const char *TAG = "LEOP";
 
-QueueHandle_t leop_queue = NULL;
+#define LEOP_SERVER_URL "http://31.59.105.197"
+#define LEOP_RECOMMENDATION_ENDPOINT LEOP_SERVER_URL "/id=2?recommendation"
+#define LEOP_WEATHER_ENDPOINT LEOP_SERVER_URL "/id=2?weather"
+#define LEOP_PRICE_ENDPOINT LEOP_SERVER_URL "/id=2?price"
+
+QueueHandle_t recommendation_queue = NULL;
+QueueHandle_t weather_queue = NULL;
+QueueHandle_t price_queue = NULL;
 
 int LEOPFetcher_Initialize(LEOPData *leop_data, uint32_t interval)
 {
@@ -19,18 +26,31 @@ int LEOPFetcher_Initialize(LEOPData *leop_data, uint32_t interval)
     Weather_Initialize(&leop_data->weather);
     Price_Initialize(&leop_data->price_list);
 
-    leop_data->leop_conf.time_interval = interval;
+    //leop_data->leop_conf.time_interval = interval;
 
-    leop_data->leop_status.electricity_fetched = false;
-    leop_data->leop_status.recommendation_fetched = false;
-    leop_data->leop_status.weather_fetched = false;
 
-    leop_queue = xQueueCreate(1, sizeof(LEOPData *));
+    recommendation_queue = xQueueCreate(1, sizeof(RecommendationList));
 
-    if (leop_queue == NULL)
+    if (recommendation_queue == NULL)
     {
-        ESP_LOGW(TAG, "Failed to create LEOP queue");
+        ESP_LOGW(TAG, "Failed to create recommendation queue");
         return -1;
+    }
+
+    weather_queue = xQueueCreate(1, sizeof(WeatherList ));
+
+    if (weather_queue == NULL)
+    {
+        ESP_LOGW(TAG, "Failed to create weather queue");
+        return -2;
+    }
+
+    price_queue = xQueueCreate(1, sizeof(PriceList));
+
+    if (price_queue == NULL)
+    {
+        ESP_LOGW(TAG, "Failed to create price queue");
+        return -3;
     }
 
     return 0;
@@ -48,27 +68,55 @@ void LEOPFetcher_Work(void *arg)
         if (WiFi_IsConnected())
         {
 
-            leop_data->leop_status.recommendation_fetched =
-                (Recommendation_Fetch("http://10.0.0.3:8080/id=2?recommendation", &leop_data->recommendations) == 0);
+            leop_data->recommendations.status.recommendation_fetched =
+                (Recommendation_Fetch(LEOP_RECOMMENDATION_ENDPOINT, &leop_data->recommendations) == 0);
 
-            leop_data->leop_status.weather_fetched =
-                (Weather_Fetch("http://10.0.0.3:8080/id=2?weather", &leop_data->weather) == 0);
+            leop_data->weather.status.weather_fetched =
+                (Weather_Fetch(LEOP_WEATHER_ENDPOINT, &leop_data->weather) == 0);
 
-            leop_data->leop_status.electricity_fetched =
-                (Price_Fetch("http://10.0.0.3:8080/id=2?price", &leop_data->price_list) == 0);
+            leop_data->price_list.status.electricity_fetched =
+                (Price_Fetch(LEOP_PRICE_ENDPOINT, &leop_data->price_list) == 0);
 
-            if (xQueueSend(leop_queue, &leop_data, 0) != pdPASS)
-            {
-                ESP_LOGW(TAG, "Failed to send data to leop queue");
-            }
+            if (xQueueSend(recommendation_queue, &leop_data->recommendations, 0) != pdPASS)
+                ESP_LOGW(TAG, "Failed to send data to recommendation queue");
+
+            if (xQueueSend(weather_queue, &leop_data->weather, 0) != pdPASS)
+                ESP_LOGW(TAG, "Failed to send data to weather queue");
+
+            if (xQueueSend(price_queue, &leop_data->price_list, 0) != pdPASS)
+                ESP_LOGW(TAG, "Failed to send data to price queue");
+
         }
         else
         {
-            ESP_LOGI(TAG, "WiFi is not connected, waiting 3 seconds until retrying");
+            ESP_LOGI(TAG, "WiFi is not connected, waiting 3 seconds until retrying, loading cached data:");
+
+            leop_data->recommendations.status.recommendation_fetched =
+                (Recommendation_FetchCache(&leop_data->recommendations) == 0);
+
+            leop_data->weather.status.weather_fetched =
+                (Weather_FetchCache(&leop_data->weather) == 0);
+
+            leop_data->price_list.status.electricity_fetched =
+                (Price_FetchCache(&leop_data->price_list) == 0);
+
+
+
+            if (xQueueSend(recommendation_queue, &leop_data->recommendations, 0) != pdPASS)
+                ESP_LOGW(TAG, "Failed to send data to recommendation queue");
+
+            if (xQueueSend(weather_queue, &leop_data->weather, 0) != pdPASS)
+                ESP_LOGW(TAG, "Failed to send data to weather queue");
+
+            if (xQueueSend(price_queue, &leop_data->price_list, 0) != pdPASS)
+                ESP_LOGW(TAG, "Failed to send data to price queue");
+
             vTaskDelay(pdMS_TO_TICKS(3000));
             continue;
         }
 
-        vTaskDelay(pdMS_TO_TICKS(leop_data->leop_conf.time_interval));
+        // Delay by our fetch time interval in minutes.
+        // From MS, * 1000 to get S, * 60 to get M
+        vTaskDelay(pdMS_TO_TICKS((*leop_data->leop_conf.time_interval * 1000 * 60)));
     }
 }

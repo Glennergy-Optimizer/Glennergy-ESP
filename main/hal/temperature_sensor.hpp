@@ -3,13 +3,15 @@
 
 #include <stdint.h>
 #include "Hal_classes.h"
+#include <time.h>
 
 
 namespace hal {
-    // float: celcius, uint32_t: timestamp.
+    // float: celcius, uint32_t: monotonic_timestamp.
     struct TemperatureReading { 
         float celcius;
-        uint32_t timestamp;
+        uint32_t monotonic_timestamp;
+        time_t unix_timestamp;
     };
 
     // 0 is used as OK/it works

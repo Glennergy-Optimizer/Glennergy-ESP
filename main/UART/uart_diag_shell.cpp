@@ -11,6 +11,14 @@
 #include "esp_heap_caps.h"
 #include "../app_types.h"
 #include "UART.hpp"
+#include <ctime>
+
+#include "../LEOP/Price.h"
+#include "../LEOP/Recommendation.h"
+#include "../LEOP/Weather.h"
+#include "../LEOP/LEOP_Fetcher.h"
+
+
 
 static const char *TAG = "UART_DIAG_SHELL.CPP";
 
@@ -18,7 +26,7 @@ void handle_sensor(app_state_t *state);
 void handle_status(app_state_t *state);
 void handle_leop(app_state_t *state);
 void handle_config(std::vector<std::string> tokens, app_state_t *state);
-void handle_diag();
+void handle_diag(app_state_t *state);
 void print_config(app_state_t *state);
 
 void handle_help(bool wait_for_enter);
@@ -57,6 +65,16 @@ const char *ok_text(bool value)
     return value ? "OK" : "Not OK";
 }
 
+static void print_local_time(time_t& time) {
+    struct tm local_time;
+    localtime_r(&time, &local_time);
+
+    char buffer[32];
+    strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", &local_time);
+    std::cout << "Last updated local time: " << buffer << std::endl;
+}
+
+
 // Takes in a std::string,
 // .c_str() converts to C-style char*,
 // so std::strtol:
@@ -70,7 +88,6 @@ bool parse_int(const std::string &str, int &out)
 {
     char *end;
     // Reads string from start to end. "val" is the number it managed to read, "end" is where it stopped reading
-    //
     long val = std::strtol(str.c_str(), &end, 10);
 
     if (*end != '\0')
@@ -124,7 +141,7 @@ void handle_input(const std::string &input, app_state_t *state)
     }
     else if (cmd == "diag")
     {
-        handle_diag();
+        handle_diag(state);
     }
     else
     {
@@ -132,9 +149,6 @@ void handle_input(const std::string &input, app_state_t *state)
     }
 }
 
-// TODO - Only sensor is mocked right now
-// TODO - "Status" systemtillstånd som Wifi, LEOP anslutning, sensor, uptime osv
-// Status - Mer face-value till user, tex "är wifi ok"
 // Todo - Update counter currently throttled to once a second. Disable this?
 void handle_status(app_state_t* state)
 {
@@ -154,7 +168,14 @@ void handle_sensor(app_state_t *state)
         return;
     }
 
-    std::cout << "Last updated time: " << state->sensor_data.last_update_seconds << std::endl;
+    std::cout << "Last updated monotinic time: " << state->sensor_data.last_update_seconds << std::endl;
+    // If we have synced our local clock to SNTP via wifi and have a valid unix time, we print that to user
+    if (state->sensor_data.wall_time_valid) {
+        print_local_time(state->sensor_data.last_unix_time);
+    }
+    else {
+        std::cout << "Last updated local time: not synced yet" << std::endl;
+    }
     std::cout << "Temperature - " << state->sensor_data.temperature << std::endl;
     std::cout << "Pressure    - " << state->sensor_data.pressure << std::endl;
     std::cout << "Humidity    - " << state->sensor_data.humidity << std::endl;
@@ -179,13 +200,16 @@ void handle_config(std::vector<std::string> tokens, app_state_t *state)
     const std::string &value = tokens[2];
     if (key == "fetch_interval_minutes")
     {
-        // production TODO - set a minimum and maximum value? 15min, 24h?
+        // production TODO - Fetch interval can be set by any value from 1min to 24h. In production change this to 15min?
         int int_value;
         // Use helper function to see if we can parse something as int
-        if (parse_int(value, int_value))
+        if (parse_int(value, int_value) && int_value > 1 && int_value <= 1440)
         {            
             std::cout << "Now setting \"fetch_interval_minutes\" to \"" << int_value << "\"." << std::endl;
             state->config_data.fetch_interval_minutes = int_value;
+        }
+        else { 
+            std::cout << "You must enter a int value between 1(1 minute) and 1440 minutes(1 day)." << std::endl;
         }
     }
     else if (key == "sensor_interval_ms")
@@ -228,9 +252,23 @@ void handle_config(std::vector<std::string> tokens, app_state_t *state)
 
 void handle_leop(app_state_t *app)
 {
-    leop_data_t &leop = app->leop_data;
+    if (app == NULL) {
+        ESP_LOGE(TAG, "app is null in handle_leop");
+    }
+    LEOPData &leop = app->leop_data;
+    uint32_t total_entries = leop.recommendations.count;
+    std::cout << "--- Latest leop data --- " << std::endl;
+    std::cout << "Number of entries: " << total_entries << std::endl;
+    std::cout << "Now printing entries  recommendation and timestamp" << std::endl;
+    for (int i = 0; i < total_entries; i++)
+    {
+        std::cout << leop.recommendations.rec[i].recommendation << ", " << leop.recommendations.rec[i].timestamp << std::endl;
+    }
+    
+    /*
+    //leop_data_t &leop = app->leop_data;
     uint32_t total_entries = leop.entry_count;
-    std::cout << "Latest leop data: " << std::endl;
+    std::cout << "--- Latest leop data --- " << std::endl;
     std::cout << "ID: " << leop.id << std::endl;
     std::cout << "Number of entries: " << total_entries << std::endl;
     std::cout << "Now printing entries timestamp, normalized recommendation and recommendation type" << std::endl;
@@ -238,13 +276,27 @@ void handle_leop(app_state_t *app)
     {
         std::cout << leop.entries[i].timestamp << ", " << leop.entries[i].recommendation << ", " << leop.entries[i].recommendation_type << std::endl;
     }
+    */
 }
 
-// We could easily create a summary of the app-state, which would be a summarized version of all other help commands?
-// Later on, we could add stuff like task statistics, stack usage, heap usage?
-// If something is wrong, show the latest successful update times from LEOP or something?
-// Mer fokus på detaljer om varför något är ok eller inte?
-void handle_diag()
+
+// Diagnostics helper function - prints info about a task
+void print_task_stack(const char* name, TaskHandle_t handle, uint32_t stack_size)
+{
+    if (handle == NULL)
+    {
+        std::cout << name << ": no handle: " << std::endl;
+        return;
+    }
+
+    UBaseType_t free = uxTaskGetStackHighWaterMark(handle);
+    uint32_t used = stack_size - free;
+    uint32_t used_percent = (used * 100) / stack_size;
+
+    std::cout << name << ": used " << used << "/" << stack_size << " {" << used_percent << "%), min free " << free << std::endl;
+}
+
+void handle_diag(app_state_t *app)
 {
     // Mirkoseconds since boot, then converted to seconds and divide by matching type (unsigned long long)
     uint64_t uptime_seconds = esp_timer_get_time() / 1000000ULL;
@@ -261,6 +313,13 @@ void handle_diag()
     std::cout << "Free Heap: " << free_heap << " bytes. " << std::endl;
     std::cout << "Minimum free heap: " << min_free_heap << " bytes." << std::endl;
     std::cout << "Task count: " << task_count << std::endl;
+
+    // New helper stuff
+    print_task_stack(app->system_task_handlers.wifi_task.name, app->system_task_handlers.wifi_task.handle, app->system_task_handlers.wifi_task.stack_size);
+    print_task_stack(app->system_task_handlers.ui_task.name, app->system_task_handlers.ui_task.handle, app->system_task_handlers.ui_task.stack_size);
+    print_task_stack(app->system_task_handlers.sensor_task.name, app->system_task_handlers.sensor_task.handle, app->system_task_handlers.sensor_task.stack_size);
+    print_task_stack(app->system_task_handlers.uart_task.name, app->system_task_handlers.uart_task.handle, app->system_task_handlers.uart_task.stack_size);
+    print_task_stack(app->system_task_handlers.leop_task.name, app->system_task_handlers.leop_task.handle, app->system_task_handlers.leop_task.stack_size);
 }
 
 // *** HELP helper functions ***

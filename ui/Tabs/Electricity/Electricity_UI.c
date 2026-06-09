@@ -75,10 +75,10 @@ void create_time_axis_container()
     }
 }
 
-void Electricity_Update_TimeAxis(const LEOPData *data)
+void Electricity_Update_TimeAxis(const RecommendationList *data)
 {
     int start_hour =
-        get_hour(data->recommendations.rec[0].timestamp);
+        get_hour(data->rec[0].timestamp);
 
     for (int i = 0; i < 24; i++)
     {
@@ -125,25 +125,27 @@ void Electricity_UI_Initialize()
 
 void Electricity_UI_Update(void)
 {
-    static LEOPData *leop_data;
-    if (leop_queue != NULL && xQueueReceive(leop_queue, &leop_data, 0) == pdPASS)
+    static RecommendationList rec_list;
+    if (recommendation_queue != NULL && xQueueReceive(recommendation_queue, &rec_list, 0) == pdPASS)
     {
-
-        for (int i = 0; i < 96; i++)
+        if (rec_list.status.recommendation_fetched)
         {
-            float value = leop_data->recommendations.rec[i].recommendation;
+            for (int i = 0; i < 96; i++)
+            {
+                float value = rec_list.rec[i].recommendation;
 
-            if (value < 0.0f)
-                value = 0.0f;
+                if (value < 0.0f)
+                    value = 0.0f;
 
-            if (value > 1.0f)
-                value = 1.0f;
+                if (value > 1.0f)
+                    value = 1.0f;
 
-            ESP_LOGI(TAG, "value: %.f", value);
+                // ESP_LOGI(TAG, "value: %.f", value);
 
-            electricity_chart_data[i] = (lv_coord_t)(value * 100.0f);
+                electricity_chart_data[i] = (lv_coord_t)(value * 100.0f);
+            }
+            Electricity_Update_TimeAxis(&rec_list);
+            lv_chart_refresh(electricity_ui.ui_Chart_Electricity);
         }
-        Electricity_Update_TimeAxis(leop_data);
-        lv_chart_refresh(electricity_ui.ui_Chart_Electricity);
     }
 }

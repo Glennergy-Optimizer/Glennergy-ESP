@@ -18,6 +18,7 @@
 //#include "../app_types.h"
 
 static constexpr char* TAG = "Sensor.cpp";
+static constexpr time_t MIN_VALID_UNIX_TIME = 1704067200; // 2024-01-01 00:00:00 UTC
 static bool fake_mode = false;
 
 QueueHandle_t Sensor_Queue = NULL;
@@ -50,6 +51,8 @@ void Sensor_Init_v2(app_state_t* app)
 {
     app->sensor_data.valid = false;
     app->sensor_data.last_update_seconds = 0;
+    app->sensor_data.last_unix_time = 0;
+    app->sensor_data.wall_time_valid = false;
     app->sensor_data.temperature = 0;
     app->sensor_data.pressure = 0;
     app->sensor_data.humidity = 0;
@@ -116,6 +119,10 @@ bool Sensor_Read_v2(sensor_data_t* sensor, hal::BME280Sensor& environment_sensor
     sensor->valid = true;
     // Todo - Låta read skicka temperatur?
     sensor->last_update_seconds = esp_timer_get_time() / 1000000ULL;
+    sensor->last_unix_time = temperatur.unix_timestamp;
+    sensor->wall_time_valid = sensor->last_unix_time >= MIN_VALID_UNIX_TIME;
+    //uint32_t time_test = _gettimeofday_r();
+    //uint32_t time_test2 = gettimeday
 
     sensor_data_t sensor_snapshot = *sensor;
     xQueueOverwrite(Sensor_Queue, &sensor_snapshot);
@@ -133,7 +140,7 @@ void Sensor_Work(void* parameter) {
     app_state_t* app = (app_state_t*)parameter;
     // Todo - ska default-config värden, om inget existerar i caches, 
     // skapas/initeras här(där respektive modul initieras de värden som är relevanta) eller i main?
-    app->config_data.sensor_interval_ms = 1000; 
+    //app->config_data.sensor_interval_ms = 1000; 
     uint32_t sensor_read_interval;
 
     Sensor_Init_v2(app);
