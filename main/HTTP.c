@@ -62,14 +62,29 @@ void HTTPClient_GET(const char *url, HTTPResponse *http_response)
 
     if (WiFi_IsConnected())
     {
+        ESP_LOGI(TAG, "HTTP GET: %s", url);
+
         esp_http_client_handle_t http_client = esp_http_client_init(&http_config);
-        esp_http_client_perform(http_client);
+        if (http_client == NULL)
+        {
+            ESP_LOGE(TAG, "Failed to initialize HTTP client");
+            return;
+        }
+
+        esp_err_t err = esp_http_client_perform(http_client);
+        if (err != ESP_OK)
+        {
+            ESP_LOGE(TAG, "HTTP GET failed: %s", esp_err_to_name(err));
+        }
+        else
+        {
+            int status_code = esp_http_client_get_status_code(http_client);
+            int content_length = esp_http_client_get_content_length(http_client);
+
+            ESP_LOGI(TAG, "HTTP status=%d, content_length=%d", status_code, content_length);
+        }
+
         esp_http_client_cleanup(http_client);
-    }
-    else
-    {
-        ESP_LOGW(TAG, "WiFi is not connected, couldnt fetch data");
-        return;
     }
 }
 

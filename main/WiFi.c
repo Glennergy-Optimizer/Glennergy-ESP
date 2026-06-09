@@ -41,15 +41,25 @@ static void ip_event_cb(void *arg, esp_event_base_t event_base, int32_t event_id
     ESP_LOGI(TAG, "Handling IP event, event code 0x%" PRIx32, event_id);
     switch (event_id)
     {
-    case (IP_EVENT_STA_GOT_IP):
-        esp_err_t time_result = TimeSync_Start();
+        case (IP_EVENT_STA_GOT_IP):
         ip_event_got_ip_t *event_ip = (ip_event_got_ip_t *)event_data;
         ESP_LOGI(TAG, "Got IP: " IPSTR, IP2STR(&event_ip->ip_info.ip));
+
+        w_state.is_connected = true;
         wifi_retry_count = 0;
         xEventGroupSetBits(wifi_event_group, WIFI_CONNECTED_BIT);
+
+        esp_err_t time_result = TimeSync_Start();
         break;
+        // esp_err_t time_result = TimeSync_Start();
+        // ip_event_got_ip_t *event_ip = (ip_event_got_ip_t *)event_data;
+        // ESP_LOGI(TAG, "Got IP: " IPSTR, IP2STR(&event_ip->ip_info.ip));
+        // wifi_retry_count = 0;
+        // xEventGroupSetBits(wifi_event_group, WIFI_CONNECTED_BIT);
+        // break;
     case (IP_EVENT_STA_LOST_IP):
         ESP_LOGI(TAG, "Lost IP");
+        w_state.is_connected = false;
         break;
     case (IP_EVENT_GOT_IP6):
         ip_event_got_ip6_t *event_ip6 = (ip_event_got_ip6_t *)event_data;
@@ -94,6 +104,7 @@ static void wifi_event_cb(void *arg, esp_event_base_t event_base, int32_t event_
         break;
     case (WIFI_EVENT_STA_DISCONNECTED):
         ESP_LOGI(TAG, "Wi-Fi disconnected");
+        w_state.is_connected = false;
         status = WIFI_STATUS_DISCONNECTED;
         xQueueSend(event_queue, &status, portMAX_DELAY);
         break;
@@ -244,7 +255,7 @@ void WiFi_Work(void *arg)
                 {
                     if (status == WIFI_STATUS_CONNECTED)
                     {
-                        w_state.is_connected = true;
+                        //w_state.is_connected = true;
                         w_data.status = status;
                         //esp_err_t time_sync = TimeSync_Start();
                         xQueueSend(wifi_result_queue, &w_data, 0);

@@ -67,13 +67,15 @@ void LEOPFetcher_Work(void *arg)
     {
         if (WiFi_IsConnected())
         {
-
+            ESP_LOGI(TAG, "Fetching %s", LEOP_RECOMMENDATION_ENDPOINT);
             leop_data->recommendations.status.recommendation_fetched =
                 (Recommendation_Fetch(LEOP_RECOMMENDATION_ENDPOINT, &leop_data->recommendations) == 0);
 
+            ESP_LOGI(TAG, "Fetching %s", LEOP_WEATHER_ENDPOINT);
             leop_data->weather.status.weather_fetched =
                 (Weather_Fetch(LEOP_WEATHER_ENDPOINT, &leop_data->weather) == 0);
-
+            
+                ESP_LOGI(TAG, "Fetching %s", LEOP_PRICE_ENDPOINT);
             leop_data->price_list.status.electricity_fetched =
                 (Price_Fetch(LEOP_PRICE_ENDPOINT, &leop_data->price_list) == 0);
 

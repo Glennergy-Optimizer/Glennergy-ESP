@@ -99,7 +99,7 @@ hal::SensorError hal::BME280Sensor::read(hal::TemperatureReading& reading) {
     reading.monotonic_timestamp = esp_timer_get_time() / 1000000ULL;
     reading.unix_timestamp = clock_unix_time();
 
-    ESP_LOGI(TAG, "BME280 temperature: %.f C", reading.celcius);
+    //ESP_LOGI(TAG, "BME280 temperature: %.f C", reading.celcius);
     return hal::SensorError::Ok;
 }
 
@@ -149,7 +149,7 @@ hal::SensorError hal::BME280Sensor::read(hal::HumidityReading& reading) {
     reading.monotonic_timestamp = esp_timer_get_time() / 1000000ULL;    
     reading.unix_timestamp = clock_unix_time();
 
-    ESP_LOGI(TAG, "BME280 humidity: %2.1f%%", reading.humidity);
+    //ESP_LOGI(TAG, "BME280 humidity: %2.1f%%", reading.humidity);
 
     return hal::SensorError::Ok;
 }
@@ -200,7 +200,7 @@ hal::SensorError hal::BME280Sensor::read(hal::PressureReading& reading) {
     reading.monotonic_timestamp = esp_timer_get_time() / 1000000ULL;
     reading.unix_timestamp = clock_unix_time();
 
-    ESP_LOGI(TAG, "BME280: %.f pHa", reading.pressure);
+    //ESP_LOGI(TAG, "BME280: %.f pHa", reading.pressure);
 
     return hal::SensorError::Ok;
 }
