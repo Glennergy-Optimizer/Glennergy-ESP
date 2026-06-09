@@ -6,62 +6,27 @@
 
 | Supported TOUCH Controller    | GT911 |
 | ----------------------------| -------|
-## How to use the example
 
 ## ESP-IDF Required
+To build and run this software you are required to have the following ESP-IDF version
+* ESP-IDF v5.3.5
+
 
 ### Hardware Required
-
 * An Waveshare ESP32-S3-Touch-LCD-4.3 development board
+* BME280 Sensor
 
 ### Hardware Connection
 
-The connection between ESP Board and the LCD is as follows:
-
-```
-       ESP Board                           RGB  Panel
-+-----------------------+              +-------------------+
-|                   GND +--------------+GND                |
-|                       |              |                   |
-|                   3V3 +--------------+VCC                |
-|                       |              |                   |
-|                   PCLK+--------------+PCLK               |
-|                       |              |                   |
-|             DATA[15:0]+--------------+DATA[15:0]         |
-|                       |              |                   |
-|                  HSYNC+--------------+HSYNC              |
-|                       |              |                   |
-|                  VSYNC+--------------+VSYNC              |
-|                       |              |                   |
-|                     DE+--------------+DE                 |
-|                       |              |                   |
-|               BK_LIGHT+--------------+BLK                |
-       ESP Board                             TOUCH  
-+-----------------------+              +-------------------+
-|                    GND+--------------+GND                |
-|                       |              |                   |
-|                    3V3+--------------+VCC                |
-|                       |              |                   |
-|                  GPIO8+--------------+SDA                |
-|                       |              |                   |
-|                  GPIO9+--------------+SCL                |
-|                       |              |                   |
-       ESP Board                                LED
-+-----------------------+              +-------------------+
-|                   GND +--------------+GND                |
-|                       |              |                   |
-|                   3V3 +--------------+VCC                |
-|                       |              |                   |
-|                    AD +--------------+LED                |
-+-----------------------+              |                   |
-|                       |              |                   |
-       IO EXTENSION.EXIO1+--------------+TP_RST            |
-|                       |              |                   |
-       IO EXTENSION.EXIO2+--------------+DISP_EN           |          
-                                       +-------------------+
-```
-
-* Create a button using LVGL to control an external LED
+        BME280 Sensor                  ESP32-S3-Touch-LCD-4.3
+      ┌─────────────────┐            ┌──────────────────────────┐
+      │                 │            │                          │
+      │ VIN   ──────────┼──────────► │ 3V3 (3.3V Power)        │
+      │ GND   ──────────┼──────────► │ GND                     │
+      │ SDA   ──────────┼──────────► │ GPIO (I2C SDA)         │
+      │ SCL   ──────────┼──────────► │ GPIO (I2C SCL)         │
+      │                 │            │                          │
+      └─────────────────┘            └──────────────────────────┘
 
 ### Configure the Project
 
@@ -69,14 +34,14 @@ The connection between ESP Board and the LCD is as follows:
 
 Run `idf.py set-target esp32s3` to select the target chip.
 
-Run `idf.py -p PORT build flash monitor` to build, flash and monitor the project. A fancy animation will show up on the LCD as expected.
+Run `idf.py -p PORT build flash monitor` to build, flash and monitor the project.
 
-The first time you run `idf.py` for the example will cost extra time.
+Finding the correct port:
+-Windows: Go to device manager and scroll down to the "Ports(COM and LPT)" look for the port that appears/dissapears when you plug/unplug the Esp32s3.
+-Linux: Run the following command "dmesg -w" after running the command, plug in the Esp32s3 and the port should appear.
+
+The first time you run `idf.py` it will take extra time.
 
 (To exit the serial monitor, type ``Ctrl-]``.)
 
-See the [Getting Started Guide](https://docs.espressif.com/projects/esp-idf/en/latest/get-started/index.html) for full steps to configure and use ESP-IDF to build projects.
 
-## Troubleshooting
-
-For any technical queries, please open an https://service.waveshare.com/. We will get back to you soon.
