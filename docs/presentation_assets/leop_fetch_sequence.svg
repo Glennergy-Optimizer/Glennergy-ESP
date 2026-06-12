@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="920" viewBox="0 0 1500 920">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#263238"/>
+    </marker>
+    <style>
+      .title{font:700 34px Arial,sans-serif;fill:#1f2933}
+      .head{fill:#e3f2fd;stroke:#1565c0;stroke-width:2.4;rx:10}
+      .alt{fill:#f8fafc;stroke:#90a4ae;stroke-width:1.8;rx:8}
+      .label{font:700 17px Arial,sans-serif;fill:#1f2933}
+      .small{font:14px Arial,sans-serif;fill:#37474f}
+      .life{stroke:#90a4ae;stroke-width:2;stroke-dasharray:7 7}
+      .msg{stroke:#263238;stroke-width:2.2;marker-end:url(#arrow)}
+      .ret{stroke:#607d8b;stroke-width:2.1;stroke-dasharray:7 6;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect width="1500" height="920" fill="#fff"/>
+  <text x="60" y="60" class="title">LEOP Fetch Sequence</text>
+
+  <g id="participants">
+    <rect x="70" y="105" width="170" height="55" class="head"/><text x="155" y="139" text-anchor="middle" class="label">LEOP fetcher</text>
+    <rect x="280" y="105" width="170" height="55" class="head"/><text x="365" y="139" text-anchor="middle" class="label">WiFi state</text>
+    <rect x="490" y="105" width="170" height="55" class="head"/><text x="575" y="139" text-anchor="middle" class="label">HTTP client</text>
+    <rect x="700" y="105" width="170" height="55" class="head"/><text x="785" y="139" text-anchor="middle" class="label">LEOP server</text>
+    <rect x="910" y="105" width="170" height="55" class="head"/><text x="995" y="139" text-anchor="middle" class="label">SPIFFS cache</text>
+    <rect x="1120" y="105" width="170" height="55" class="head"/><text x="1205" y="139" text-anchor="middle" class="label">DataParser</text>
+    <rect x="1330" y="105" width="130" height="55" class="head"/><text x="1395" y="139" text-anchor="middle" class="label">UI queues</text>
+  </g>
+
+  <line x1="155" y1="160" x2="155" y2="850" class="life"/>
+  <line x1="365" y1="160" x2="365" y2="850" class="life"/>
+  <line x1="575" y1="160" x2="575" y2="850" class="life"/>
+  <line x1="785" y1="160" x2="785" y2="850" class="life"/>
+  <line x1="995" y1="160" x2="995" y2="850" class="life"/>
+  <line x1="1205" y1="160" x2="1205" y2="850" class="life"/>
+  <line x1="1395" y1="160" x2="1395" y2="850" class="life"/>
+
+  <rect x="55" y="185" width="1405" height="665" class="alt"/>
+  <text x="75" y="212" class="label">loop: every fetch_interval_minutes</text>
+
+  <line x1="155" y1="250" x2="365" y2="250" class="msg"/><text x="202" y="238" class="small">check WiFi state</text>
+
+  <rect x="75" y="285" width="1385" height="235" class="alt"/>
+  <text x="95" y="312" class="label">alt: WiFi connected</text>
+  <line x1="155" y1="345" x2="575" y2="345" class="msg"/><text x="250" y="333" class="small">GET recommendation/weather/price</text>
+  <line x1="575" y1="390" x2="785" y2="390" class="msg"/><text x="624" y="378" class="small">HTTP GET</text>
+  <line x1="785" y1="435" x2="575" y2="435" class="ret"/><text x="625" y="423" class="small">JSON array</text>
+  <line x1="575" y1="480" x2="155" y2="480" class="ret"/><text x="285" y="468" class="small">HTTPResponse.data</text>
+  <line x1="155" y1="510" x2="995" y2="510" class="msg"/><text x="455" y="498" class="small">cache live JSON files</text>
+
+  <rect x="75" y="545" width="1385" height="145" class="alt"/>
+  <text x="95" y="572" class="label">else: WiFi disconnected</text>
+  <line x1="155" y1="615" x2="995" y2="615" class="msg"/><text x="420" y="603" class="small">load cached JSON files</text>
+  <line x1="995" y1="660" x2="155" y2="660" class="ret"/><text x="455" y="648" class="small">cached JSON</text>
+
+  <line x1="155" y1="735" x2="1205" y2="735" class="msg"/><text x="520" y="723" class="small">parse raw or cached JSON</text>
+  <line x1="1205" y1="780" x2="155" y2="780" class="ret"/><text x="575" y="768" class="small">typed lists</text>
+  <line x1="155" y1="825" x2="1395" y2="825" class="msg"/><text x="555" y="813" class="small">publish lists to queues; failed fetches keep status=false</text>
+</svg>

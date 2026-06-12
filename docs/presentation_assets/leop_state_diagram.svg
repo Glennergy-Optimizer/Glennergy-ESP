@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#263238"/>
+    </marker>
+    <style>
+      .title{font:700 34px Arial,sans-serif;fill:#1f2933}
+      .state{fill:#e8f5e9;stroke:#2e7d32;stroke-width:2.6;rx:14}
+      .error{fill:#ffebee;stroke:#c62828;stroke-width:2.6;rx:14}
+      .label{font:700 21px Arial,sans-serif;fill:#1f2933}
+      .small{font:15px Arial,sans-serif;fill:#37474f}
+      .line{stroke:#263238;stroke-width:2.4;fill:none;marker-end:url(#arrow)}
+      .dot{fill:#263238}
+    </style>
+  </defs>
+  <rect width="1200" height="760" fill="#fff"/>
+  <text x="60" y="60" class="title">LEOP Fetcher State Diagram</text>
+
+  <circle cx="110" cy="155" r="18" class="dot"/>
+  <rect x="190" y="115" width="165" height="80" class="state"/><text x="272" y="163" text-anchor="middle" class="label">Wait</text>
+  <rect x="455" y="115" width="165" height="80" class="state"/><text x="537" y="163" text-anchor="middle" class="label">Check WiFi</text>
+
+  <rect x="720" y="80" width="175" height="80" class="state"/><text x="807" y="128" text-anchor="middle" class="label">Fetch HTTP</text>
+  <rect x="720" y="245" width="175" height="80" class="state"/><text x="807" y="293" text-anchor="middle" class="label">Load Cache</text>
+
+  <rect x="455" y="430" width="175" height="80" class="state"/><text x="542" y="478" text-anchor="middle" class="label">Parse JSON</text>
+  <rect x="190" y="430" width="190" height="80" class="state"/><text x="285" y="478" text-anchor="middle" class="label">Publish Queues</text>
+  <rect x="720" y="555" width="175" height="80" class="error"/><text x="807" y="603" text-anchor="middle" class="label">No New Data</text>
+
+  <path d="M128 155 L190 155" class="line"/>
+  <path d="M355 155 L455 155" class="line"/><text x="370" y="139" class="small">interval elapsed</text>
+  <path d="M620 148 L720 125" class="line"/><text x="641" y="113" class="small">connected</text>
+  <path d="M620 172 L720 278" class="line"/><text x="640" y="245" class="small">disconnected</text>
+  <path d="M895 120 C1015 180 1010 500 895 595" class="line"/><text x="952" y="300" class="small">HTTP failed</text>
+  <path d="M720 120 C610 150 585 330 565 430" class="line"/><text x="585" y="315" class="small">HTTP body OK</text>
+  <path d="M720 300 C650 330 590 385 555 430" class="line"/><text x="610" y="368" class="small">cache found</text>
+  <path d="M455 470 L380 470" class="line"/><text x="392" y="456" class="small">valid JSON</text>
+  <path d="M285 430 C255 340 245 260 265 195" class="line"/><text x="205" y="340" class="small">published</text>
+  <path d="M895 595 C1045 520 1030 175 620 155" class="line"/><text x="930" y="410" class="small">retry later</text>
+  <path d="M630 485 C725 515 760 540 790 555" class="line"/><text x="680" y="535" class="small">parse failed</text>
+  <path d="M895 285 C1010 305 1035 540 895 595" class="line"/><text x="980" y="438" class="small">no cache</text>
+</svg>

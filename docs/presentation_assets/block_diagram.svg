@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="760" viewBox="0 0 1400 760">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#263238"/>
+    </marker>
+    <style>
+      .title{font:700 34px Arial,sans-serif;fill:#1f2933}
+      .box{fill:#f8fafc;stroke:#263238;stroke-width:2.5;rx:12}
+      .core{fill:#e8f5e9;stroke:#2e7d32;stroke-width:3;rx:14}
+      .label{font:700 22px Arial,sans-serif;fill:#1f2933}
+      .sub{font:16px Arial,sans-serif;fill:#455a64}
+      .line{stroke:#263238;stroke-width:2.5;fill:none;marker-end:url(#arrow)}
+      .bi{stroke:#263238;stroke-width:2.5;fill:none;marker-start:url(#arrow);marker-end:url(#arrow)}
+      .note{font:15px Arial,sans-serif;fill:#37474f}
+    </style>
+  </defs>
+
+  <rect width="1400" height="760" fill="#ffffff"/>
+  <text x="60" y="62" class="title">Glennergy ESP32 - System Block Diagram</text>
+
+  <rect x="555" y="250" width="290" height="150" class="core"/>
+  <text x="700" y="312" text-anchor="middle" class="label">ESP32-S3</text>
+  <text x="700" y="342" text-anchor="middle" class="sub">FreeRTOS application</text>
+  <text x="700" y="368" text-anchor="middle" class="sub">WiFi, UI, Sensor, LEOP tasks</text>
+
+  <rect x="80" y="130" width="250" height="105" class="box"/>
+  <text x="205" y="176" text-anchor="middle" class="label">LEOP Server</text>
+  <text x="205" y="205" text-anchor="middle" class="sub">HTTP JSON endpoints</text>
+
+  <rect x="80" y="440" width="250" height="105" class="box"/>
+  <text x="205" y="486" text-anchor="middle" class="label">BME280</text>
+  <text x="205" y="515" text-anchor="middle" class="sub">Temperature / humidity / pressure</text>
+
+  <rect x="1030" y="105" width="260" height="105" class="box"/>
+  <text x="1160" y="151" text-anchor="middle" class="label">7 inch RGB LCD</text>
+  <text x="1160" y="180" text-anchor="middle" class="sub">1024 x 600 display</text>
+
+  <rect x="1030" y="285" width="260" height="105" class="box"/>
+  <text x="1160" y="331" text-anchor="middle" class="label">GT911 Touch</text>
+  <text x="1160" y="360" text-anchor="middle" class="sub">I2C touch controller</text>
+
+  <rect x="1030" y="465" width="260" height="105" class="box"/>
+  <text x="1160" y="511" text-anchor="middle" class="label">IO Expander</text>
+  <text x="1160" y="540" text-anchor="middle" class="sub">Backlight and resets</text>
+
+  <rect x="555" y="590" width="290" height="90" class="box"/>
+  <text x="700" y="631" text-anchor="middle" class="label">SPIFFS Cache</text>
+  <text x="700" y="657" text-anchor="middle" class="sub">Latest JSON files</text>
+
+  <rect x="80" y="590" width="250" height="90" class="box"/>
+  <text x="205" y="631" text-anchor="middle" class="label">UART Terminal</text>
+  <text x="205" y="657" text-anchor="middle" class="sub">Diagnostics and config</text>
+
+  <path d="M330 182 C440 182 465 290 555 302" class="bi"/>
+  <text x="405" y="205" class="note">WiFi / TCP-IP</text>
+
+  <path d="M330 492 C440 492 455 365 555 355" class="bi"/>
+  <text x="392" y="463" class="note">I2C GPIO8/9</text>
+
+  <path d="M845 300 C930 255 950 160 1030 158" class="line"/>
+  <text x="915" y="205" class="note">RGB parallel</text>
+
+  <path d="M1030 338 C950 338 930 338 845 338" class="bi"/>
+  <text x="902" y="323" class="note">I2C + INT GPIO4</text>
+
+  <path d="M1030 518 C945 518 920 388 845 375" class="bi"/>
+  <text x="906" y="480" class="note">I2C addr 0x24</text>
+
+  <path d="M700 400 L700 590" class="bi"/>
+  <text x="720" y="505" class="note">JSON cache</text>
+
+  <path d="M330 635 L555 635" class="bi"/>
+  <text x="385" y="620" class="note">UART0 115200</text>
+</svg>
