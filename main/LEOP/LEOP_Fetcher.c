@@ -1,3 +1,10 @@
+/**
+ * @file LEOP_Fetcher.c
+ * @brief Implementation of the LEOP fetcher module.
+ *
+ * @ingroup LEOP_FETCHER
+ */
+
 #include "LEOP_Fetcher.h"
 #include "../WiFi.h"
 #include "esp_log.h"
@@ -13,6 +20,11 @@ QueueHandle_t recommendation_queue = NULL;
 QueueHandle_t weather_queue = NULL;
 QueueHandle_t price_queue = NULL;
 
+/**
+ * @brief Implementation of LEOPFetcher_Initialize.
+ *
+ * See header for full contract documentation.
+ */
 int LEOPFetcher_Initialize(LEOPData *leop_data, uint32_t interval)
 {
 
@@ -56,6 +68,11 @@ int LEOPFetcher_Initialize(LEOPData *leop_data, uint32_t interval)
     return 0;
 }
 
+/**
+ * @brief Implementation of LEOPFetcher_Work.
+ *
+ * See header for full contract documentation.
+ */
 void LEOPFetcher_Work(void *arg)
 {
     LEOPData *leop_data = (LEOPData *)arg;
