@@ -1,4 +1,17 @@
-/*****************************************************************************
+/**
+ * @file main.c
+ * @brief Application entry point for system bring-up and task startup.
+ *
+ * @ingroup APP
+ *
+ * Initializes board peripherals, configures the UI stack, starts the worker
+ * tasks, and wires shared application state used by the background modules.
+ *
+ * @note This file is orchestration code rather than a reusable API module.
+ * @warning Startup order matters because display, touch, storage, and task
+ *          setup depend on earlier initialization steps.
+ */
+ /*****************************************************************************
  * | File       :   main.c
  * | Author     :   Waveshare team
  * | Function   :   Main function
@@ -50,7 +63,11 @@ static TaskHandle_t leop_task_handle = NULL;
 #define LEOP_STACK_SIZE     4096
 
 
-// 
+/**
+ * @brief Initializes task name and stack-size metadata in the application state.
+ *
+ * @param[in,out] app Application state that receives the task metadata.
+ */
 void init_app_system_task_handlers(app_state_t* app) {
     app->system_task_handlers.wifi_task.name = "WIFI_Work";
     app->system_task_handlers.ui_task.name = "UI_Update";
@@ -80,7 +97,12 @@ const char *data =
 "\"datum\": \"2026-06-02\""
 "}";
 
-// Main application function
+/**
+ * @brief Application entry point.
+ *
+ * Performs time-zone setup, loads fallback configuration, initializes board
+ * peripherals, and starts the worker tasks used by the application.
+ */
 void app_main()
 {
     // Time stuff

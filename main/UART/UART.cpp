@@ -1,3 +1,10 @@
+/**
+ * @file UART.cpp
+ * @brief UART shell worker and helper utilities for the UART module.
+ *
+ * @ingroup UART
+ */
+
 #include <string>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -14,14 +21,27 @@
 
 
 static const char* TAG = "UART";
-// Helper function to read max 1 byte via UART, exposed so "help immersive" command has easy access  
+
+/**
+ * @brief Reads a single byte from the UART driver.
+ *
+ * @param[out] byte Destination for the received byte.
+ * @param[in] timeout Read timeout in FreeRTOS ticks.
+ *
+ * @return `true` if a byte was read, otherwise `false`.
+ */
 bool UART_ReadByte(uint8_t* byte, TickType_t timeout)
 {
     return uart_read_bytes(UART_PORT, byte, 1, timeout) > 0;
 }
 
-// Helper function - std::tolower can work to handle inputs while being case-insensitive, but may not work well when dealing with negative char values.
-// This helper function is future proof
+/**
+ * @brief Returns a lowercase copy of a string.
+ *
+ * @param str Input string.
+ *
+ * @return Lowercase copy of `str`.
+ */
 std::string to_lower_copy(std::string str)
 {
     for (char& c : str){
@@ -30,6 +50,13 @@ std::string to_lower_copy(std::string str)
     return str;
 }
 
+/**
+ * @brief Returns a trimmed copy of a string.
+ *
+ * @param str Input string.
+ *
+ * @return Copy of `str` with leading and trailing whitespace removed.
+ */
 std::string trim_copy(const std::string& str)
 {
     const char* whitespace = " \t\r\n";
@@ -44,7 +71,12 @@ std::string trim_copy(const std::string& str)
     return str.substr(start, end - start + 1);
 }
 
-
+/**
+ * @brief Configures the UART peripheral used by the shell worker.
+ *
+ * Initializes UART0 with the module baud rate and installs the driver with a
+ * blocking RX path for console input.
+ */
 void UART_Init_new(void)
 {
     const uart_config_t uart_config = {
@@ -78,7 +110,17 @@ void UART_Init_new(void)
     ESP_LOGI(TAG, "UART%d initialized at %d baud", UART_PORT, UART_BAUD);
 }
 
-
+/**
+ * @brief UART worker task entry point.
+ *
+ * Runs in task context, initializes the UART driver, and then waits for input
+ * bytes to assemble and forward shell commands to the parser.
+ *
+ * @param parameter Pointer to `app_state_t`.
+ *
+ * @note This function blocks on `uart_read_bytes()` and yields with
+ * `vTaskDelay()` when no data is received.
+ */
 extern "C" void UART_Work(void* parameter) {
     app_state_t* app = (app_state_t*)parameter;
 

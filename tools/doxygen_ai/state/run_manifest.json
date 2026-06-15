@@ -3,25 +3,91 @@
   "test_label": "",
   "files": [
     {
-      "path": "main/HTTP.h",
+      "path": "main/UART/UART.cpp",
       "status": "updated",
       "model": "gpt-5.4-mini-2026-03-17",
-      "input_tokens": 4782,
-      "output_tokens": 319,
-      "total_tokens": 5101,
-      "estimated_cost_usd": 0.0018335,
-      "estimated_cost_sek": 0.016867851635,
+      "input_tokens": 5425,
+      "output_tokens": 1166,
+      "total_tokens": 6591,
+      "estimated_cost_usd": 0.0036882499999999997,
+      "estimated_cost_sek": 0.033931199232499994,
       "details": "Documentation updated"
     },
     {
-      "path": "main/HTTP.c",
+      "path": "main/UART/uart_diag_shell.cpp",
+      "status": "rejected",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 8105,
+      "output_tokens": 4436,
+      "total_tokens": 12541,
+      "estimated_cost_usd": 0.0,
+      "estimated_cost_sek": 0.0,
+      "details": "Non-comment code changed after retry=True; saved to tools/doxygen_ai/rejected/main__UART__uart_diag_shell.cpp.rejected.txt"
+    },
+    {
+      "path": "main/app_types.h",
       "status": "updated",
       "model": "gpt-5.4-mini-2026-03-17",
-      "input_tokens": 5101,
-      "output_tokens": 790,
-      "total_tokens": 5891,
-      "estimated_cost_usd": 0.00285525,
-      "estimated_cost_sek": 0.0262677575025,
+      "input_tokens": 4869,
+      "output_tokens": 952,
+      "total_tokens": 5821,
+      "estimated_cost_usd": 0.00312125,
+      "estimated_cost_sek": 0.028714906962499998,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "main/hal/bme280_sensor.cpp",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 6921,
+      "output_tokens": 2553,
+      "total_tokens": 9474,
+      "estimated_cost_usd": 0.00683625,
+      "estimated_cost_sek": 0.0628922011125,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "main/hal/bme280_sensor.hpp",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 7137,
+      "output_tokens": 849,
+      "total_tokens": 7986,
+      "estimated_cost_usd": 0.00348225,
+      "estimated_cost_sek": 0.0320360383725,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "main/main.c",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 5624,
+      "output_tokens": 1540,
+      "total_tokens": 7164,
+      "estimated_cost_usd": 0.0044859999999999995,
+      "estimated_cost_sek": 0.04127034765999999,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "main/sensor/sensor.cpp",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 5429,
+      "output_tokens": 1235,
+      "total_tokens": 6664,
+      "estimated_cost_usd": 0.00382725,
+      "estimated_cost_sek": 0.0352099728225,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "main/sensor/sensor.h",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 5591,
+      "output_tokens": 172,
+      "total_tokens": 5763,
+      "estimated_cost_usd": 0.0017417499999999998,
+      "estimated_cost_sek": 0.0160237690675,
       "details": "Documentation updated"
     }
   ]
