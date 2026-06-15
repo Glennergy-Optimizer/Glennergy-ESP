@@ -239,6 +239,8 @@ You must obey these rules:
 - Only add or update Doxygen comments and normal comments.
 - Do not change code logic, control flow, initialization, signatures, includes, ordering, or formatting unless required to insert comments.
 - Do not change line endings, indentation, spacing, or formatting-only details unless required to place comments.
+- Do not add new declarations, forward declarations, helper prototypes, variables, includes, macros, or any other non-comment lines.
+- Do not move existing declarations or introduce new prototypes to make documentation placement easier.
 - Do not change debug/log statements such as `printf`, `ESP_LOG*`, `ESP_ERROR_CHECK`, or similar runtime diagnostics.
 - Do not change string literals, identifiers, macro names, enum values, struct field names, function names, JSON keys, URLs, constants, or any other code tokens.
 - Treat all existing code tokens as immutable, including case-sensitive text inside string literals.
@@ -488,6 +490,9 @@ Do not alter any code tokens, including:
 - constants
 - URLs
 - macro names
+- forward declarations
+- helper prototypes
+- any other non-comment lines
 
 Normalized code diff excerpt from the rejected attempt:
 {diff_excerpt}
