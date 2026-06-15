@@ -1,0 +1,189 @@
+name: Doxygen Batch Campaign
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_ref:
+        description: "Branch or ref to check out for the campaign run"
+        required: false
+        default: "dev"
+      model:
+        description: "OpenAI model to use for this campaign"
+        required: false
+        default: "gpt-5.4-mini"
+      campaign_label:
+        description: "Optional label used in branch names, summaries, and PR titles"
+        required: false
+        default: ""
+      batch_file:
+        description: "Path to the batch list file inside the repository"
+        required: false
+        default: "tools/doxygen_ai/batches_manual.txt"
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: read
+
+jobs:
+  run-batches:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      OPENAI_MODEL: ${{ github.event.inputs.model }}
+      TARGET_REF: ${{ github.event.inputs.target_ref }}
+      CAMPAIGN_LABEL: ${{ github.event.inputs.campaign_label }}
+      BATCH_FILE: ${{ github.event.inputs.batch_file }}
+      MAX_FILES_PER_RUN: "20"
+      MAX_CHARS_PER_FILE: "18000"
+      OPENAI_MAX_OUTPUT_TOKENS: "150000"
+    steps:
+      - name: Derive PR metadata
+        run: |
+          if [ -n "${CAMPAIGN_LABEL}" ]; then
+            SAFE_LABEL=$(printf '%s' "${CAMPAIGN_LABEL}" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9._-]/-/g' | sed 's/-\{2,\}/-/g' | sed 's/^-//' | sed 's/-$//')
+          else
+            SAFE_LABEL="campaign-${GITHUB_RUN_ID}"
+          fi
+
+          if [ -z "${SAFE_LABEL}" ]; then
+            SAFE_LABEL="campaign-${GITHUB_RUN_ID}"
+          fi
+
+          echo "PR_BRANCH=docs/doxygen-campaign-${SAFE_LABEL}" >> "$GITHUB_ENV"
+          echo "PR_TITLE=[skip-doxygen] docs: Doxygen batch campaign ${SAFE_LABEL}" >> "$GITHUB_ENV"
+          echo "SAFE_LABEL=${SAFE_LABEL}" >> "$GITHUB_ENV"
+
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.inputs.target_ref }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run batch campaign
+        id: campaign
+        shell: bash
+        run: |
+          set -u
+
+          if [ ! -f "${BATCH_FILE}" ]; then
+            echo "Batch file not found: ${BATCH_FILE}" >&2
+            exit 1
+          fi
+
+          mkdir -p tools/doxygen_ai/state tools/doxygen_ai/rejected
+          results_file="tools/doxygen_ai/state/campaign_results.txt"
+          : > "${results_file}"
+
+          success_count=0
+          failure_count=0
+          batch_index=0
+
+          while IFS= read -r batch_line || [ -n "${batch_line}" ]; do
+            batch_trimmed="$(printf '%s' "${batch_line}" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')"
+            if [ -z "${batch_trimmed}" ]; then
+              continue
+            fi
+            case "${batch_trimmed}" in
+              \#*) continue ;;
+            esac
+
+            batch_index=$((batch_index + 1))
+            manifest_path="tools/doxygen_ai/state/campaign_manifest_${batch_index}.json"
+            batch_label="${SAFE_LABEL}-batch-${batch_index}"
+
+            {
+              echo "## Campaign Batch ${batch_index}"
+              echo
+              echo "\`${batch_trimmed}\`"
+              echo
+            } >> "$GITHUB_STEP_SUMMARY"
+
+            if python tools/doxygen_ai/update_docs.py \
+              --files "${batch_trimmed}" \
+              --manifest "${manifest_path}" \
+              --model "${OPENAI_MODEL}" \
+              --test-label "${batch_label}" \
+              --max-files 20; then
+              success_count=$((success_count + 1))
+              printf '%s|success|%s\n' "${batch_index}" "${batch_trimmed}" >> "${results_file}"
+            else
+              IFS=',' read -ra batch_paths <<< "${batch_trimmed}"
+              for raw_path in "${batch_paths[@]}"; do
+                path="$(printf '%s' "${raw_path}" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')"
+                if [ -n "${path}" ]; then
+                  git restore --worktree --source=HEAD -- "${path}" || true
+                fi
+              done
+              failure_count=$((failure_count + 1))
+              printf '%s|failed|%s\n' "${batch_index}" "${batch_trimmed}" >> "${results_file}"
+            fi
+          done < "${BATCH_FILE}"
+
+          {
+            echo "## Campaign Summary"
+            echo
+            echo "- Target ref: ${TARGET_REF}"
+            echo "- Requested model: ${OPENAI_MODEL}"
+            echo "- Batch file: \`${BATCH_FILE}\`"
+            echo "- Successful batches: ${success_count}"
+            echo "- Failed batches: ${failure_count}"
+            echo
+            echo "### Batch Results"
+            while IFS='|' read -r idx status batch; do
+              echo "- Batch ${idx} [${status}]: \`${batch}\`"
+            done < "${results_file}"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          echo "success_count=${success_count}" >> "$GITHUB_OUTPUT"
+          echo "failure_count=${failure_count}" >> "$GITHUB_OUTPUT"
+          echo "results_file=${results_file}" >> "$GITHUB_OUTPUT"
+
+      - name: Upload rejected outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: doxygen-batch-campaign-rejected-${{ github.run_id }}
+          path: tools/doxygen_ai/rejected
+          if-no-files-found: ignore
+
+      - name: Upload campaign state
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: doxygen-batch-campaign-state-${{ github.run_id }}
+          path: tools/doxygen_ai/state
+          if-no-files-found: ignore
+
+      - name: Create draft pull request with successful batch updates
+        if: always() && steps.campaign.outputs.success_count != '0'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "[skip-doxygen] docs: apply Doxygen batch campaign"
+          branch: ${{ env.PR_BRANCH }}
+          delete-branch: true
+          title: ${{ env.PR_TITLE }}
+          body: |
+            This draft PR contains successful documentation updates from a Doxygen batch campaign.
+
+            Requested model: `${{ env.OPENAI_MODEL }}`
+            Target ref: `${{ env.TARGET_REF }}`
+            Campaign label: `${{ env.CAMPAIGN_LABEL || env.SAFE_LABEL }}`
+            Batch file: `${{ env.BATCH_FILE }}`
+            Successful batches: `${{ steps.campaign.outputs.success_count }}`
+            Failed batches: `${{ steps.campaign.outputs.failure_count }}`
+
+            Notes:
+            - successful batches are included in this PR
+            - failed batches were skipped so the campaign could continue
+            - files from failed batches were restored, so only successful batches are included
+            - review the uploaded artifacts for rejected outputs and batch manifests
+          draft: true
+          base: ${{ env.TARGET_REF }}
