@@ -32,6 +32,7 @@ int Price_Fetch(const char *url, PriceList *p_list)
         return 1;
     }
 
+    //Dumps raw response data to SPIFFS for caching
     int res = Cache_WriteFileJSON(&p_list->cache, http_response.data, "Price.json");
 
     if (res != 0)
@@ -46,10 +47,11 @@ int Price_Fetch(const char *url, PriceList *p_list)
         return 2;
     }
 
+    /*
     for (int i = 0; i < p_list->count; i++)
     {
         //ESP_LOGI(TAG, "%lf", p_list->price[i].current_prices);
-    }
+    }*/
 
     HTTPClient_Dispose(&http_response);
 
