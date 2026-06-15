@@ -8,22 +8,21 @@
  * @file HTTP.h
  * @brief Public API for the HTTP client module.
  *
- * Provides helpers for issuing HTTP GET requests and storing the response
- * payload in a dynamically allocated buffer.
+ * Provides helpers for issuing HTTP GET requests and storing response data in
+ * a dynamically allocated buffer.
  *
  * @defgroup HTTP HTTP
  * @brief HTTP client helpers for fetching response data.
  *
- * The module performs network I/O through ESP-IDF's HTTP client and relies on
- * Wi-Fi connectivity before requests are issued.
+ * Uses ESP-IDF HTTP client APIs and requires Wi-Fi connectivity before
+ * requests are attempted.
  * @{
  */
 
 /**
  * @brief HTTP response buffer owned by the caller.
  *
- * The response data is accumulated in a heap buffer and tracked with its byte
- * length.
+ * Response data is accumulated in a heap buffer and tracked by byte length.
  */
 typedef struct
 {
