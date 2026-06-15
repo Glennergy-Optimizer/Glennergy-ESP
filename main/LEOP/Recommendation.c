@@ -1,3 +1,10 @@
+/**
+ * @file Recommendation.c
+ * @brief Implementation of the recommendation list module.
+ *
+ * @ingroup Recommendation
+ */
+
 #include "Recommendation.h"
 #include "../HTTP.h"
 #include "../JSONParser/DataParser.h"
@@ -21,6 +28,15 @@ static const char* http_mock = "[
 
 static const char *TAG = "Recommendation";
 
+/**
+ * @brief Initializes the recommendation list state.
+ *
+ * Clears the list, resets fetch status, and initializes the backing cache.
+ *
+ * @param r_list Pointer to the recommendation list instance.
+ *
+ * @return Always returns 0.
+ */
 int Recommendation_Initialize(RecommendationList *r_list)
 {
     r_list->count = 0;
@@ -36,6 +52,20 @@ int Recommendation_Initialize(RecommendationList *r_list)
     return 0;
 }
 
+/**
+ * @brief Fetches recommendation data from the network and parses it.
+ *
+ * Uses the HTTP client in normal builds or the built-in test payload when
+ * `RECOMMENDATION_TEST` is defined.
+ *
+ * @param url Request URL.
+ * @param r_list Pointer to the recommendation list instance.
+ *
+ * @return
+ * - `0` on success
+ * - `1` if the HTTP response is invalid
+ * - `2` if parsing fails
+ */
 int Recommendation_Fetch(const char *url, RecommendationList *r_list)
 {
     HTTPResponse http_response = {0};
@@ -78,6 +108,16 @@ int Recommendation_Fetch(const char *url, RecommendationList *r_list)
     return 0;
 }
 
+/**
+ * @brief Loads cached recommendation data and parses it.
+ *
+ * @param r_list Pointer to the recommendation list instance.
+ *
+ * @return
+ * - `0` on success
+ * - `1` if the cache file cannot be loaded
+ * - `2` if parsing cached data fails
+ */
 int Recommendation_FetchCache(RecommendationList *r_list)
 {
     int res = Cache_LoadFileJSON(&r_list->cache, "Recommendations.json");
@@ -106,6 +146,13 @@ int Recommendation_FetchCache(RecommendationList *r_list)
     return 0;
 }
 
+/**
+ * @brief Releases recommendation list state.
+ *
+ * Resets the stored entries and count. Cache ownership is not modified here.
+ *
+ * @param r_list Pointer to the recommendation list instance.
+ */
 void Recommendation_Dispose(RecommendationList *r_list)
 {
     r_list->count = 0;

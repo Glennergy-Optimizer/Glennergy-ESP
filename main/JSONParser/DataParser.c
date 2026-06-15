@@ -1,3 +1,10 @@
+/**
+ * @file DataParser.c
+ * @brief Implementation of the JSON parsing helpers for recommendation, weather, and price data.
+ *
+ * @ingroup JSONParser
+ */
+
 #include "DataParser.h"
 #include <string.h>
 #include "jansson.h"
@@ -5,6 +12,11 @@
 
 static const char *TAG = "DataParser";
 
+/**
+ * @brief Parses recommendation data from a JSON array.
+ *
+ * See header for full contract documentation.
+ */
 int DataParser_ParseRecommendation(const char *raw_data, RecommendationList *r_list)
 {
     json_error_t error;
@@ -55,6 +67,11 @@ int DataParser_ParseRecommendation(const char *raw_data, RecommendationList *r_l
     return 0;
 }
 
+/**
+ * @brief Parses weather data from a JSON array.
+ *
+ * See header for full contract documentation.
+ */
 int DataParser_ParseWeather(const char *raw_data, WeatherList *w_list)
 {
     json_error_t error;
@@ -107,6 +124,11 @@ int DataParser_ParseWeather(const char *raw_data, WeatherList *w_list)
     return 0;
 }
 
+/**
+ * @brief Parses price data from a JSON array.
+ *
+ * See header for full contract documentation.
+ */
 int DataParser_ParsePrice(const char *raw_data, PriceList *p_list)
 {
     json_error_t error;

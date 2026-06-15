@@ -1,3 +1,11 @@
+/**
+ * @file main/test/main/test_dataparser_weather.c
+ * @brief Unity test cases for DataParser weather JSON parsing.
+ *
+ * Exercises valid, invalid, non-array, and empty-array inputs for the weather
+ * parser.
+ */
+
 #include "unity.h"
 #include "../../JSONParser/DataParser.h"
 
@@ -13,11 +21,17 @@ static const char *not_array_json = "{\"id\":1}";
 
 static const char *empty_array_json = "[]";
 
+/**
+ * @brief Forces the linker to include the weather parser test object.
+ */
 void force_link_dataparser_weather(void)
 {
 
 }
 
+/**
+ * @brief Verifies that valid weather JSON is parsed successfully.
+ */
 TEST_CASE("DataParser weather valid", "[DataParser]")
 {
     WeatherList list = {0};
@@ -33,6 +47,9 @@ TEST_CASE("DataParser weather valid", "[DataParser]")
     TEST_ASSERT_EQUAL_STRING("2026-01-01", list.weather[0].timestamp);
 }
 
+/**
+ * @brief Verifies that invalid weather JSON is rejected.
+ */
 TEST_CASE("DataParser weather invalid", "[DataParser]")
 {
     WeatherList list = {0};
@@ -42,6 +59,9 @@ TEST_CASE("DataParser weather invalid", "[DataParser]")
     TEST_ASSERT_EQUAL_INT(1, result);
 }
 
+/**
+ * @brief Verifies that non-array weather JSON is rejected.
+ */
 TEST_CASE("DataParser weather not array", "[DataParser]")
 {
     WeatherList list = {0};
@@ -51,6 +71,9 @@ TEST_CASE("DataParser weather not array", "[DataParser]")
     TEST_ASSERT_EQUAL_INT(2, result);
 }
 
+/**
+ * @brief Verifies that an empty weather array is rejected.
+ */
 TEST_CASE("DataParser weather empty array", "[DataParser]")
 {
     WeatherList list = {0};
@@ -59,4 +82,3 @@ TEST_CASE("DataParser weather empty array", "[DataParser]")
 
     TEST_ASSERT_EQUAL_INT(3, result);
 }
-

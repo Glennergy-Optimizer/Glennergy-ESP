@@ -1,3 +1,10 @@
+/**
+ * @file LEOP_Fetcher.c
+ * @brief Implementation of the LEOP fetcher task and queue setup.
+ *
+ * @ingroup LEOP
+ */
+
 #include "LEOP_Fetcher.h"
 #include "../WiFi.h"
 #include "esp_log.h"
@@ -13,6 +20,11 @@ QueueHandle_t recommendation_queue = NULL;
 QueueHandle_t weather_queue = NULL;
 QueueHandle_t price_queue = NULL;
 
+/**
+ * @brief Initializes LEOP fetcher state, queues, and dependent data lists.
+ *
+ * See header for full contract documentation.
+ */
 int LEOPFetcher_Initialize(LEOPData *leop_data, uint32_t interval)
 {
 
@@ -56,6 +68,12 @@ int LEOPFetcher_Initialize(LEOPData *leop_data, uint32_t interval)
     return 0;
 }
 
+/**
+ * @brief Background worker that fetches LEOP data and publishes it to queues.
+ *
+ * Runs in task context, polls Wi-Fi state, and blocks with task delays between
+ * fetch attempts.
+ */
 void LEOPFetcher_Work(void *arg)
 {
     LEOPData *leop_data = (LEOPData *)arg;

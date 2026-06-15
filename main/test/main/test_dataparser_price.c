@@ -1,3 +1,10 @@
+/**
+ * @file test_dataparser_price.c
+ * @brief Unity tests for DataParser price parsing.
+ *
+ * @ingroup DataParser
+ */
+
 #include "unity.h"
 #include "../../JSONParser/DataParser.h"
 
@@ -12,11 +19,17 @@ static const char *not_array_json = "{\"id\":1}";
 
 static const char *empty_array_json = "[]";
 
+/**
+ * @brief Keeps the test object linked into the final binary.
+ */
 void force_link_dataparser_price(void)
 {
 
 }
 
+/**
+ * @brief Verifies that valid price JSON is parsed into the expected list entries.
+ */
 TEST_CASE("DataParser price valid", "[DataParser]")
 {
     PriceList list = {0};
@@ -33,6 +46,9 @@ TEST_CASE("DataParser price valid", "[DataParser]")
     TEST_ASSERT_EQUAL_STRING("2026-01-02", list.price[1].timestamp);
 }
 
+/**
+ * @brief Verifies that invalid JSON is rejected by the price parser.
+ */
 TEST_CASE("DataParser price invalid", "[DataParser]")
 {
     PriceList list = {0};
@@ -42,6 +58,9 @@ TEST_CASE("DataParser price invalid", "[DataParser]")
     TEST_ASSERT_EQUAL_INT(1, result);
 }
 
+/**
+ * @brief Verifies that non-array JSON is rejected by the price parser.
+ */
 TEST_CASE("DataParser price not array", "[DataParser]")
 {
     PriceList list = {0};
@@ -50,4 +69,3 @@ TEST_CASE("DataParser price not array", "[DataParser]")
 
     TEST_ASSERT_EQUAL_INT(2, result);
 }
-

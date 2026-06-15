@@ -1,3 +1,10 @@
+/**
+ * @file Price.c
+ * @brief Implementation of the Price module.
+ *
+ * @ingroup LEOP
+ */
+
 #include "Price.h"
 #include "../HTTP.h"
 #include "../JSONParser/DataParser.h"
@@ -5,6 +12,12 @@
 
 static const char *TAG = "Price";
 
+/**
+ * @brief Initializes the price list state.
+ *
+ * Resets the cached entries, clears the fetch status, and initializes the
+ * backing cache object.
+ */
 int Price_Initialize(PriceList *p_list)
 {
     p_list->count = 0;
@@ -20,6 +33,11 @@ int Price_Initialize(PriceList *p_list)
     return 0;
 }
 
+/**
+ * @brief Fetches price data from the given URL.
+ *
+ * See header for full contract documentation.
+ */
 int Price_Fetch(const char *url, PriceList *p_list)
 {
     HTTPResponse http_response = {0};
@@ -58,6 +76,11 @@ int Price_Fetch(const char *url, PriceList *p_list)
     return 0;
 }
 
+/**
+ * @brief Loads cached price data from storage.
+ *
+ * See header for full contract documentation.
+ */
 int Price_FetchCache(PriceList *p_list)
 {
     int res = Cache_LoadFileJSON(&p_list->cache, "Price.json");
@@ -81,6 +104,9 @@ int Price_FetchCache(PriceList *p_list)
     return 0;
 }
 
+/**
+ * @brief Clears the current price list contents.
+ */
 void Price_Dispose(PriceList *p_list)
 {
     p_list->count = 0;
