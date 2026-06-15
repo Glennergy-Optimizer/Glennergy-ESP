@@ -177,6 +177,7 @@ Public function implementations in source files should usually use one of these 
    `See header for full contract documentation.`
 
 Do not repeat full public API contracts in `.c` or `.cpp` files when the header already documents them.
+For public non-static functions with a documented paired header, prefer the default source-file pattern: `@brief Implementation of <function>.` followed by `See header for full contract documentation.`
 
 Internal or `static` helper functions in source files must be documented, but briefly.
 
@@ -193,6 +194,7 @@ Prefer ordinary `//` comments for local implementation steps inside function bod
 Do not add Doxygen mini-blocks for local steps in a function body unless a local declaration genuinely needs API-style documentation.
 
 If two versions are both correct, prefer the more concise one.
+If an existing Doxygen block is already sufficiently aligned with this standard, prefer leaving it unchanged over rewriting it for minor wording differences alone.
 
 ---
 
@@ -499,3 +501,4 @@ You are required to:
 - Prefer ordinary comments over Doxygen inside function bodies
 - Make embedded runtime constraints clear when they are real and supported by the code
 - Prefer useful clarity over exhaustive repetition
+

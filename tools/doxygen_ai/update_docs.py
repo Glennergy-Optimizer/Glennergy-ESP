@@ -228,6 +228,7 @@ def build_prompt(
    * See header for full contract documentation.
    */
 - Do not repeat @param, @return, @note, @warning, @pre, or @post blocks for public source-file functions unless they describe implementation-specific behavior that is not already documented in the header.
+- If a public source-file function can be documented correctly with `@brief Implementation of <function>.` and `See header for full contract documentation.`, prefer that simpler form.
 - Repeating header-level public API contract details in source files is undesirable output.
 - Internal or static helper functions may include additional tags, but only when they add meaningful, non-obvious information.
 """
@@ -271,15 +272,17 @@ Paired module file context:
 Path: {path.relative_to(REPO_ROOT).as_posix()}
 
 Interpret the task mode as follows:
-- update_existing_docs: bring the file's documentation up to the repository standard, while preserving existing comments and code. This includes simplifying or trimming existing documentation when it is more verbose than the repository's target style examples.
+- update_existing_docs: bring the file's documentation up to the repository standard, while preserving existing comments and code. This includes simplifying or trimming existing documentation when it is more verbose than the repository's target style examples. If the existing Doxygen is already sufficiently aligned with the repository standard, prefer no meaningful change over minor wording-only rewrites.
 - document_full_file: add complete repository-standard Doxygen coverage for the file, while preserving existing comments and code.
 
 Before finalizing internally, validate that:
 - every required file/function/struct tag is present
 - the documentation matches the repository rules
 - the documentation style matches the target style examples, including reducing unnecessary boilerplate where appropriate
+- if the file is already sufficiently aligned with the standard, avoid minor synonym-only or cosmetic rewrites and prefer no meaningful change
 - simple debug/print helper declarations in headers stay lightweight by default, usually using only `@brief` and `@param` when applicable
 - do not expand simple debug/print helper declarations into full contract-style blocks unless extra tags add real value
+- for public source-file functions with a documented paired header, prefer the brief + see-header pattern unless implementation-specific notes are genuinely needed
 - struct field comments stay short by default unless a field is subtle or safety-critical
 - prefer short inline field comments over full multi-line field documentation blocks for ordinary struct fields
 - keep most explanatory detail at the struct level instead of repeating mini-sections for each field
@@ -877,5 +880,6 @@ if __name__ == "__main__":
     except Exception as exc:  # noqa: BLE001
         print(f"ERROR: {exc}", file=sys.stderr)
         raise SystemExit(1)
+
 
 
