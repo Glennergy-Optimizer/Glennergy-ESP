@@ -1,3 +1,10 @@
+/**
+ * @file UART.cpp
+ * @brief UART console worker and helper functions.
+ *
+ * @ingroup UART
+ */
+
 #include <string>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -14,14 +21,26 @@
 
 
 static const char* TAG = "UART";
-// Helper function to read max 1 byte via UART, exposed so "help immersive" command has easy access  
+/**
+ * @brief Reads up to one byte from the UART console.
+ *
+ * @param[out] byte Destination for the received byte.
+ * @param[in] timeout Read timeout in FreeRTOS ticks.
+ *
+ * @return `true` if a byte was read, otherwise `false`.
+ */
 bool UART_ReadByte(uint8_t* byte, TickType_t timeout)
 {
     return uart_read_bytes(UART_PORT, byte, 1, timeout) > 0;
 }
 
-// Helper function - std::tolower can work to handle inputs while being case-insensitive, but may not work well when dealing with negative char values.
-// This helper function is future proof
+/**
+ * @brief Converts a string to lowercase.
+ *
+ * @param str Input string.
+ *
+ * @return Lowercase copy of the input string.
+ */
 std::string to_lower_copy(std::string str)
 {
     for (char& c : str){
@@ -30,6 +49,13 @@ std::string to_lower_copy(std::string str)
     return str;
 }
 
+/**
+ * @brief Trims leading and trailing ASCII whitespace from a string.
+ *
+ * @param str Input string.
+ *
+ * @return Trimmed copy of the input string.
+ */
 std::string trim_copy(const std::string& str)
 {
     const char* whitespace = " \t\r\n";
@@ -45,6 +71,11 @@ std::string trim_copy(const std::string& str)
 }
 
 
+/**
+ * @brief Configures the UART console for the worker task.
+ *
+ * Sets up UART0 with the built-in console pins and a blocking RX driver.
+ */
 void UART_Init_new(void)
 {
     const uart_config_t uart_config = {
@@ -78,7 +109,14 @@ void UART_Init_new(void)
     ESP_LOGI(TAG, "UART%d initialized at %d baud", UART_PORT, UART_BAUD);
 }
 
-
+/**
+ * @brief UART worker task entry point.
+ *
+ * Runs in task context, initializes the UART console, and blocks while waiting
+ * for input bytes from the RX driver.
+ *
+ * @param parameter Pointer to the application state passed to the task.
+ */
 extern "C" void UART_Work(void* parameter) {
     app_state_t* app = (app_state_t*)parameter;
 
