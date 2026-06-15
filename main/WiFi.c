@@ -1,3 +1,10 @@
+/**
+ * @file WiFi.c
+ * @brief Implementation of the Wi-Fi module.
+ *
+ * @ingroup WIFI
+ */
+
 #include "WiFi.h"
 
 #include <string.h>
@@ -36,6 +43,14 @@ esp_err_t WiFi_Connect(wifi_data *w_info);
 esp_err_t WiFi_Dispose(void);
 esp_err_t WiFi_Disconnect(void);
 
+/**
+ * @brief Handles IP events from the ESP-IDF event loop.
+ *
+ * Updates the shared Wi-Fi state and signals the worker through the event
+ * group when the station receives or loses an address.
+ *
+ * @warning Keep callback work short and avoid blocking operations.
+ */
 static void ip_event_cb(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data)
 {
     ESP_LOGI(TAG, "Handling IP event, event code 0x%" PRIx32, event_id);
@@ -73,6 +88,13 @@ static void ip_event_cb(void *arg, esp_event_base_t event_base, int32_t event_id
     }
 }
 
+/**
+ * @brief Handles Wi-Fi events from the ESP-IDF event loop.
+ *
+ * Forwards status changes to the worker task through the event queue.
+ *
+ * @warning Keep callback work short and avoid blocking operations.
+ */
 static void wifi_event_cb(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data)
 {
     ESP_LOGI(TAG, "Handling Wi-Fi event, event code 0x%" PRIx32, event_id);
@@ -117,6 +139,12 @@ static void wifi_event_cb(void *arg, esp_event_base_t event_base, int32_t event_
     }
 }
 
+/**
+ * @brief Creates the module queues used by the Wi-Fi worker path.
+ *
+ * The queues are created with depth 1 and are used for command, result, and
+ * event handoff between the task and the ESP-IDF callbacks.
+ */
 void WiFi_CreateQueues()
 {
     event_queue = xQueueCreate(1, sizeof(wifi_status));
@@ -141,6 +169,11 @@ void WiFi_CreateQueues()
     }
 }
 
+/**
+ * @brief Implementation of WiFi_Initialize.
+ *
+ * See header for full contract documentation.
+ */
 esp_err_t WiFi_Initialize()
 {
     esp_err_t ret_value = nvs_flash_init();
@@ -186,6 +219,16 @@ esp_err_t WiFi_Initialize()
     return ESP_OK;
 }
 
+/**
+ * @brief Scans for nearby access points and stores up to 10 results.
+ *
+ * The scan is started synchronously and the results are copied into the
+ * provided buffer.
+ *
+ * @param[in,out] w_data Scan request and result storage.
+ *
+ * @return `ESP_OK` on success, or an ESP-IDF error code on failure.
+ */
 esp_err_t WiFi_Scan(wifi_data *w_data)
 {
     ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
@@ -226,6 +269,11 @@ esp_err_t WiFi_Scan(wifi_data *w_data)
     return ESP_OK;
 }
 
+/**
+ * @brief Implementation of WiFi_Work.
+ *
+ * See header for full contract documentation.
+ */
 void WiFi_Work(void *arg)
 {
     wifi_status status;
@@ -285,6 +333,11 @@ void WiFi_Work(void *arg)
     }
 }
 
+/**
+ * @brief Implementation of WiFi_Connect.
+ *
+ * See header for full contract documentation.
+ */
 esp_err_t WiFi_Connect(wifi_data *w_data)
 {
     wifi_config_t wifi_config = {0};
@@ -302,11 +355,21 @@ esp_err_t WiFi_Connect(wifi_data *w_data)
     return ESP_OK;
 }
 
+/**
+ * @brief Returns whether the station is marked connected by the module state.
+ *
+ * @return `true` when connected, otherwise `false`.
+ */
 bool WiFi_IsConnected()
 {
     return w_state.is_connected;
 }
 
+/**
+ * @brief Implementation of WiFi_Disconnect.
+ *
+ * See header for full contract documentation.
+ */
 esp_err_t WiFi_Disconnect(void)
 {
     if (wifi_event_group)
@@ -317,6 +380,11 @@ esp_err_t WiFi_Disconnect(void)
     return esp_wifi_disconnect();
 }
 
+/**
+ * @brief Implementation of WiFi_Dispose.
+ *
+ * See header for full contract documentation.
+ */
 esp_err_t WiFi_Dispose(void)
 {
     esp_err_t ret_value = esp_wifi_stop();
