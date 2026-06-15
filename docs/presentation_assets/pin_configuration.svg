@@ -1,124 +1,115 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
-  <title id="title">Glennergy ESP32 Pin Configuration</title>
-  <desc id="desc">Presentation diagram showing ESP32-S3 pin configuration for RGB LCD, I2C devices, touch interrupt and UART diagnostics.</desc>
+  <title id="title">Glennergy ESP32-S3-Touch-LCD-7B Pin Configuration</title>
+  <desc id="desc">Pin configuration diagram for the Waveshare ESP32-S3-Touch-LCD-7B with Waveshare BME280 environmental sensor, based on the project GPIO definitions.</desc>
   <defs>
     <style>
-      .bg { fill: #f7f8fb; }
-      .panel { fill: #ffffff; stroke: #cfd6e3; stroke-width: 2; }
-      .chip { fill: #172033; }
-      .chipText { fill: #ffffff; font: 700 38px Arial, sans-serif; }
-      .subtitle { fill: #d7e0f2; font: 500 18px Arial, sans-serif; }
-      .title { fill: #152033; font: 700 44px Arial, sans-serif; }
-      .small { fill: #5c667a; font: 500 20px Arial, sans-serif; }
-      .sectionTitle { fill: #152033; font: 700 28px Arial, sans-serif; }
-      .label { fill: #1d2637; font: 700 22px Arial, sans-serif; }
-      .text { fill: #334155; font: 500 20px Arial, sans-serif; }
-      .muted { fill: #64748b; font: 500 17px Arial, sans-serif; }
-      .pin { fill: #eef2f8; stroke: #c7d0dd; stroke-width: 1.5; }
-      .pinText { fill: #1d2637; font: 700 18px Arial, sans-serif; }
-      .busBlue { stroke: #2563eb; }
-      .busGreen { stroke: #059669; }
-      .busRed { stroke: #dc2626; }
-      .busAmber { stroke: #d97706; }
-      .busSlate { stroke: #475569; }
+      .bg { fill: #f5f7fb; }
+      .board { fill: #172033; stroke: #35445d; stroke-width: 3; }
+      .boardText { fill: #ffffff; font: 700 28px Arial, sans-serif; }
+      .boardSub { fill: #cbd5e1; font: 500 18px Arial, sans-serif; }
+      .title { fill: #142033; font: 700 42px Arial, sans-serif; }
+      .subtitle { fill: #526174; font: 500 20px Arial, sans-serif; }
+      .card { fill: #ffffff; stroke: #cbd5e1; stroke-width: 2; }
+      .cardTitle { fill: #142033; font: 700 25px Arial, sans-serif; }
+      .text { fill: #334155; font: 500 19px Arial, sans-serif; }
+      .small { fill: #64748b; font: 500 16px Arial, sans-serif; }
+      .mono { fill: #1f2937; font: 700 17px Consolas, monospace; }
+      .pin { fill: #eef2f7; stroke: #c3ccda; stroke-width: 1.5; }
+      .pinText { fill: #1f2937; font: 700 17px Arial, sans-serif; }
+      .i2c { stroke: #059669; }
+      .rgb { stroke: #2563eb; }
+      .touch { stroke: #dc2626; }
+      .storage { stroke: #7c3aed; }
+      .field { stroke: #d97706; }
+      .local { stroke: #64748b; }
       .line { fill: none; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
-      .thin { fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
-      .boxBlue { fill: #eff6ff; stroke: #93c5fd; stroke-width: 2; }
-      .boxGreen { fill: #ecfdf5; stroke: #86efac; stroke-width: 2; }
-      .boxRed { fill: #fef2f2; stroke: #fca5a5; stroke-width: 2; }
-      .boxAmber { fill: #fffbeb; stroke: #fcd34d; stroke-width: 2; }
-      .boxSlate { fill: #f8fafc; stroke: #cbd5e1; stroke-width: 2; }
-      .mono { fill: #334155; font: 700 18px Consolas, monospace; }
+      .thin { fill: none; stroke-width: 2.5; stroke-linecap: round; }
+      .tagI2c { fill: #ecfdf5; stroke: #86efac; }
+      .tagRgb { fill: #eff6ff; stroke: #93c5fd; }
+      .tagTouch { fill: #fef2f2; stroke: #fca5a5; }
+      .tagStorage { fill: #f5f3ff; stroke: #c4b5fd; }
+      .tagField { fill: #fffbeb; stroke: #fcd34d; }
+      .tagLocal { fill: #f8fafc; stroke: #cbd5e1; }
     </style>
-    <marker id="arrowBlue" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
-      <path d="M2,2 L10,6 L2,10 Z" fill="#2563eb"/>
-    </marker>
-    <marker id="arrowGreen" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
-      <path d="M2,2 L10,6 L2,10 Z" fill="#059669"/>
-    </marker>
-    <marker id="arrowRed" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
-      <path d="M2,2 L10,6 L2,10 Z" fill="#dc2626"/>
-    </marker>
-    <marker id="arrowAmber" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
-      <path d="M2,2 L10,6 L2,10 Z" fill="#d97706"/>
-    </marker>
-    <marker id="arrowSlate" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
-      <path d="M2,2 L10,6 L2,10 Z" fill="#475569"/>
-    </marker>
+    <marker id="arrowI2c" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M2,2 L10,6 L2,10 Z" fill="#059669"/></marker>
+    <marker id="arrowRgb" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M2,2 L10,6 L2,10 Z" fill="#2563eb"/></marker>
+    <marker id="arrowTouch" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M2,2 L10,6 L2,10 Z" fill="#dc2626"/></marker>
+    <marker id="arrowStorage" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M2,2 L10,6 L2,10 Z" fill="#7c3aed"/></marker>
+    <marker id="arrowField" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M2,2 L10,6 L2,10 Z" fill="#d97706"/></marker>
+    <marker id="arrowLocal" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M2,2 L10,6 L2,10 Z" fill="#64748b"/></marker>
   </defs>
 
-  <rect class="bg" x="0" y="0" width="1600" height="900"/>
-  <text class="title" x="80" y="78">Pin Configuration</text>
-  <text class="small" x="80" y="112">Glennergy ESP32-S3 terminal, based on project GPIO definitions</text>
+  <rect class="bg" width="1600" height="900"/>
+  <text class="title" x="70" y="72">Pin Configuration</text>
+  <text class="subtitle" x="70" y="106">Waveshare ESP32-S3-Touch-LCD-7B + Waveshare BME280, matched to the Glennergy firmware</text>
 
-  <rect class="chip" x="585" y="185" width="430" height="530" rx="22"/>
-  <text class="chipText" x="704" y="295">ESP32-S3</text>
-  <text class="subtitle" x="671" y="330">Glennergy Terminal</text>
+  <rect class="board" x="570" y="168" width="460" height="560" rx="18"/>
+  <text class="boardText" x="660" y="258">ESP32-S3-Touch-LCD-7B</text>
+  <text class="boardSub" x="690" y="289">ESP32-S3-WROOM-1-N16R8</text>
 
-  <rect class="pin" x="610" y="385" width="185" height="36" rx="8"/>
-  <text class="pinText" x="633" y="409">I2C0 SDA GPIO8</text>
-  <rect class="pin" x="610" y="431" width="185" height="36" rx="8"/>
-  <text class="pinText" x="635" y="455">I2C0 SCL GPIO9</text>
-  <rect class="pin" x="610" y="477" width="185" height="36" rx="8"/>
-  <text class="pinText" x="636" y="501">Touch INT GPIO4</text>
+  <rect class="pin" x="600" y="352" width="190" height="34" rx="7"/>
+  <text class="pinText" x="624" y="375">GPIO8  SDA / TP_SDA</text>
+  <rect class="pin" x="600" y="394" width="190" height="34" rx="7"/>
+  <text class="pinText" x="624" y="417">GPIO9  SCL / TP_SCL</text>
+  <rect class="pin" x="600" y="436" width="190" height="34" rx="7"/>
+  <text class="pinText" x="625" y="459">GPIO4  TP_IRQ</text>
+  <rect class="pin" x="600" y="478" width="190" height="34" rx="7"/>
+  <text class="pinText" x="625" y="501">GPIO6  user LED</text>
 
-  <rect class="pin" x="805" y="385" width="185" height="36" rx="8"/>
-  <text class="pinText" x="828" y="409">RGB control pins</text>
-  <rect class="pin" x="805" y="431" width="185" height="36" rx="8"/>
-  <text class="pinText" x="836" y="455">RGB data pins</text>
-  <rect class="pin" x="805" y="477" width="185" height="36" rx="8"/>
-  <text class="pinText" x="833" y="501">UART0 default</text>
+  <rect class="pin" x="810" y="334" width="190" height="34" rx="7"/>
+  <text class="pinText" x="832" y="357">RGB control pins</text>
+  <rect class="pin" x="810" y="376" width="190" height="34" rx="7"/>
+  <text class="pinText" x="836" y="399">RGB data pins</text>
+  <rect class="pin" x="810" y="418" width="190" height="34" rx="7"/>
+  <text class="pinText" x="836" y="441">TF card pins</text>
+  <rect class="pin" x="810" y="460" width="190" height="34" rx="7"/>
+  <text class="pinText" x="835" y="483">CAN / RS485 pins</text>
 
-  <rect class="boxGreen" x="80" y="190" width="400" height="188" rx="12"/>
-  <text class="sectionTitle" x="112" y="236">Shared I2C Bus</text>
-  <text class="text" x="112" y="278">SDA: GPIO8</text>
-  <text class="text" x="112" y="310">SCL: GPIO9</text>
-  <text class="muted" x="112" y="346">I2C0 at 100 kHz</text>
+  <rect class="card tagI2c" x="70" y="165" width="405" height="180" rx="10"/>
+  <text class="cardTitle" x="100" y="210">External BME280 on I2C0</text>
+  <text class="text" x="100" y="250">ESP GPIO8  -> BME280 SDA/MOSI</text>
+  <text class="text" x="100" y="281">ESP GPIO9  -> BME280 SCL/SCK</text>
+  <text class="mono" x="100" y="315">100 kHz, tries 0x77 then 0x76</text>
 
-  <rect class="boxGreen" x="80" y="410" width="400" height="215" rx="12"/>
-  <text class="sectionTitle" x="112" y="456">I2C Devices</text>
-  <text class="text" x="112" y="499">BME280 environment sensor</text>
-  <text class="mono" x="112" y="530">address 0x77</text>
-  <text class="text" x="112" y="568">GT911 touch controller</text>
-  <text class="mono" x="112" y="599">address 0x5D, backup 0x14</text>
+  <rect class="card tagI2c" x="70" y="380" width="405" height="175" rx="10"/>
+  <text class="cardTitle" x="100" y="425">Same I2C Bus On Board</text>
+  <text class="text" x="100" y="466">GT911 touch: GPIO8 SDA, GPIO9 SCL</text>
+  <text class="text" x="100" y="497">IO expander and board controls share I2C</text>
+  <text class="small" x="100" y="529">The BME280 shares these physical I2C lines.</text>
 
-  <rect class="boxAmber" x="80" y="655" width="400" height="142" rx="12"/>
-  <text class="sectionTitle" x="112" y="701">IO Expander</text>
-  <text class="text" x="112" y="742">I2C address 0x24</text>
-  <text class="muted" x="112" y="773">Backlight, LCD reset, touch reset</text>
+  <rect class="card tagLocal" x="70" y="590" width="405" height="130" rx="10"/>
+  <text class="cardTitle" x="100" y="635">Local GPIO</text>
+  <text class="text" x="100" y="676">GPIO4  -> GT911 INT pin</text>
+  <text class="text" x="100" y="706">GPIO6  -> project LED define</text>
 
-  <rect class="boxBlue" x="1120" y="165" width="400" height="350" rx="12"/>
-  <text class="sectionTitle" x="1152" y="211">RGB LCD, 1024 x 600</text>
-  <text class="label" x="1152" y="253">Control</text>
-  <text class="mono" x="1152" y="285">VSYNC GPIO3   HSYNC GPIO46</text>
-  <text class="mono" x="1152" y="316">DE    GPIO5   PCLK  GPIO7</text>
-  <text class="label" x="1152" y="365">Color Data</text>
-  <text class="mono" x="1152" y="397">B3-B7: GPIO14,38,18,17,10</text>
-  <text class="mono" x="1152" y="428">G2-G7: GPIO39,0,45,48,47,21</text>
-  <text class="mono" x="1152" y="459">R3-R7: GPIO1,2,42,41,40</text>
+  <rect class="card tagRgb" x="1125" y="142" width="405" height="300" rx="10"/>
+  <text class="cardTitle" x="1155" y="187">RGB LCD, not SPI</text>
+  <text class="mono" x="1155" y="227">VSYNC GPIO3    HSYNC GPIO46</text>
+  <text class="mono" x="1155" y="258">DE    GPIO5    PCLK  GPIO7</text>
+  <text class="mono" x="1155" y="302">B3-B7: 14,38,18,17,10</text>
+  <text class="mono" x="1155" y="333">G2-G7: 39,0,45,48,47,21</text>
+  <text class="mono" x="1155" y="364">R3-R7: 1,2,42,41,40</text>
+  <text class="small" x="1155" y="404">Backlight and reset are handled through board circuitry.</text>
 
-  <rect class="boxRed" x="1120" y="555" width="400" height="116" rx="12"/>
-  <text class="sectionTitle" x="1152" y="601">Touch Interrupt</text>
-  <text class="mono" x="1152" y="637">GT911 INT: GPIO4</text>
+  <rect class="card tagStorage" x="1125" y="478" width="405" height="130" rx="10"/>
+  <text class="cardTitle" x="1155" y="523">TF Card Interface</text>
+  <text class="mono" x="1155" y="563">GPIO12 SCK, GPIO11 MOSI/CMD</text>
+  <text class="mono" x="1155" y="592">GPIO13 MISO/D0, EXIO4 CS</text>
 
-  <rect class="boxSlate" x="1120" y="710" width="400" height="96" rx="12"/>
-  <text class="sectionTitle" x="1152" y="751">UART Diagnostics</text>
-  <text class="mono" x="1152" y="782">UART0, 115200 baud, default pins</text>
+  <rect class="card tagField" x="1125" y="645" width="405" height="145" rx="10"/>
+  <text class="cardTitle" x="1155" y="690">Field Interfaces</text>
+  <text class="mono" x="1155" y="730">CAN:   TX GPIO20, RX GPIO19</text>
+  <text class="mono" x="1155" y="761">RS485: TX GPIO15, RX GPIO16</text>
 
-  <path class="line busGreen" d="M480 284 C520 284 540 403 610 403" marker-end="url(#arrowGreen)"/>
-  <path class="line busGreen" d="M480 520 C540 520 552 449 610 449" marker-end="url(#arrowGreen)"/>
-  <path class="line busAmber" d="M480 725 C552 725 552 449 610 449" marker-end="url(#arrowAmber)"/>
-  <path class="line busBlue" d="M990 403 C1050 403 1050 285 1120 285" marker-end="url(#arrowBlue)"/>
-  <path class="line busBlue" d="M990 449 C1050 449 1050 415 1120 415" marker-end="url(#arrowBlue)"/>
-  <path class="line busRed" d="M990 495 C1050 495 1050 628 1120 628" marker-end="url(#arrowRed)"/>
-  <path class="line busSlate" d="M990 495 C1050 495 1050 772 1120 772" marker-end="url(#arrowSlate)"/>
+  <path class="line i2c" d="M475 252 C525 252 540 369 600 369" marker-end="url(#arrowI2c)"/>
+  <path class="line i2c" d="M475 466 C530 466 540 411 600 411" marker-end="url(#arrowI2c)"/>
+  <path class="line touch" d="M475 676 C535 676 540 453 600 453" marker-end="url(#arrowTouch)"/>
+  <path class="line local" d="M475 706 C535 706 540 495 600 495" marker-end="url(#arrowLocal)"/>
+  <path class="line rgb" d="M1000 351 C1060 351 1060 258 1125 258" marker-end="url(#arrowRgb)"/>
+  <path class="line rgb" d="M1000 393 C1060 393 1060 333 1125 333" marker-end="url(#arrowRgb)"/>
+  <path class="line storage" d="M1000 435 C1060 435 1060 563 1125 563" marker-end="url(#arrowStorage)"/>
+  <path class="line field" d="M1000 477 C1060 477 1060 730 1125 730" marker-end="url(#arrowField)"/>
 
-  <line class="thin busGreen" x1="92" y1="840" x2="148" y2="840"/>
-  <text class="muted" x="160" y="846">I2C</text>
-  <line class="thin busBlue" x1="230" y1="840" x2="286" y2="840"/>
-  <text class="muted" x="298" y="846">RGB LCD</text>
-  <line class="thin busRed" x1="430" y1="840" x2="486" y2="840"/>
-  <text class="muted" x="498" y="846">Interrupt</text>
-  <line class="thin busSlate" x1="650" y1="840" x2="706" y2="840"/>
-  <text class="muted" x="718" y="846">UART</text>
+  <text class="small" x="70" y="835">Fact-check note: the old SPI-display labels are not correct for the 7B board. GPIO11/12/13 are TF-card signals here, and GPIO10 is RGB B7.</text>
+  <text class="small" x="70" y="862">BME280 I2C pins are correct for the firmware. The Waveshare BME280 address is 0x77 by default, or 0x76 when ADDR is low.</text>
 </svg>
