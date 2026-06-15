@@ -36,7 +36,7 @@
 
   <path d="M280 150 L390 150" class="line"/>
   <path d="M700 150 L810 150" class="line"/>
-  <path d="M810 255 L700 255" class="line"/>
+  <path d="M915 185 L915 255 L700 255" class="line"/>
   <path d="M390 255 L280 180" class="line"/>
 
   <path d="M280 390 L390 390" class="line"/>

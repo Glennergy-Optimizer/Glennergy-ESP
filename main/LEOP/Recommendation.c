@@ -3,6 +3,22 @@
 #include "../JSONParser/DataParser.h"
 #include "esp_log.h"
 
+#ifdef RECOMMENDATION_TEST
+static const char* http_mock = "[
+    {
+        "id": 2,
+        "type": 0.0,
+        "timestamp": "2026-06-10T14:45:00+02:00",
+        "temp": 16.200000762939453
+    },
+    {
+        "id": 2,
+        "type": 0.0010183617495829668,
+        "timestamp": "2026-06-10T15:00:00+02:00",
+        "temp": 16.299999237060547
+}]";
+#endif
+
 static const char *TAG = "Recommendation";
 
 int Recommendation_Initialize(RecommendationList *r_list)
@@ -24,8 +40,12 @@ int Recommendation_Fetch(const char *url, RecommendationList *r_list)
 {
     HTTPResponse http_response = {0};
 
+    #ifdef RECOMMENDATION_TEST
+    http_response.data = http_mock;
+    #else
     HTTPClient_GET(url, &http_response);
-
+    #endif
+    
     if (http_response.data == NULL)
     {
         ESP_LOGW(TAG, "HTTP response is invalid");
@@ -44,6 +64,7 @@ int Recommendation_Fetch(const char *url, RecommendationList *r_list)
 
     if (ret != 0)
     {
+        HTTPClient_Dispose(&http_response);
         return 2;
     }
 

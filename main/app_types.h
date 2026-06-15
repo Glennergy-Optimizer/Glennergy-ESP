@@ -26,20 +26,6 @@ typedef struct {
     recommendation_type_t recommendation_type; // BUY/HOLD/SELL//INVALID/ERROR
 } leop_entry_t;
 
-// Senaste LEOP datan,
-// Många fel:
-// - Stack överflow, troligtvis en mix av följande anledningar:
-// - 3 separata arrayer istället för en array av 128 entries, SoA vs AoS
-// - std::string tar mycket, kan köra med char eller enum?
-// - float tar mindre än double
-// typedef struct {
-//     int id;
-//     double recommendation[128]; // Normaliserad data 0-1
-//     std::string recommendation_type[128]; // BUY/HOLD/SELL
-//     std::string time[128];  //Timestamp string (YYYY-MM-DD HH:MM)
-// } leop_data_t;
-
-
 // Senaste LEOP data
 typedef struct {
     int id;
@@ -85,12 +71,6 @@ typedef struct {
 } task_info_t;
 
 
-/*
-    Task Handle references, contains:
-    - char* name
-    - TaskHandle_t handle
-    - uint32_t stack_size
-*/ 
 typedef struct {
     task_info_t wifi_task;
     task_info_t ui_task;
@@ -107,27 +87,10 @@ typedef struct {
 // Then the leop-part should update leop_data_t, the sensor part should update sensor_data_t etc
 typedef struct {
     LEOPData leop_data;
-    //leop_data_t leop_data;
     sensor_data_t sensor_data;
     config_data_t config_data;
     system_status_t system_status;
     system_task_handlers_t system_task_handlers;
 } app_state_t;
-
-// *** HAL structs ***
-
-// todo - Lägga till timestamp
-typedef struct {
-    float celcius;
-} TemperatureReadingInC;
-
-// todo - Lägga till timestamp
-typedef struct {
-    float humidity;
-} HumidityReadingInC;
-
-typedef struct {
-    float pressure;
-} PressureReadingInC;
 
 #endif

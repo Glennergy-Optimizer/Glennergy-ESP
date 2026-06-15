@@ -28,6 +28,7 @@ int DataParser_ParseRecommendation(const char *raw_data, RecommendationList *r_l
     if(array_size <= 0)
     {
         ESP_LOGW(TAG, "array is empty");
+        json_decref(root);
         return 3;
     }
 
@@ -77,6 +78,7 @@ int DataParser_ParseWeather(const char *raw_data, WeatherList *w_list)
     if(array_size <= 0)
     {
         ESP_LOGW(TAG, "array is empty");
+        json_decref(root);
         return 3;
     }
 
@@ -128,6 +130,7 @@ int DataParser_ParsePrice(const char *raw_data, PriceList *p_list)
     if(array_size <= 0)
     {
         ESP_LOGW(TAG, "array is empty");
+        json_decref(root);
         return 3;
     }
 

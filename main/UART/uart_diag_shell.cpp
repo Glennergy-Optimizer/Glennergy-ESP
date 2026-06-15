@@ -265,20 +265,7 @@ void handle_leop(app_state_t *app)
         std::cout << leop.recommendations.rec[i].recommendation << ", " << leop.recommendations.rec[i].timestamp << std::endl;
     }
     
-    /*
-    //leop_data_t &leop = app->leop_data;
-    uint32_t total_entries = leop.entry_count;
-    std::cout << "--- Latest leop data --- " << std::endl;
-    std::cout << "ID: " << leop.id << std::endl;
-    std::cout << "Number of entries: " << total_entries << std::endl;
-    std::cout << "Now printing entries timestamp, normalized recommendation and recommendation type" << std::endl;
-    for (int i = 0; i < total_entries; i++)
-    {
-        std::cout << leop.entries[i].timestamp << ", " << leop.entries[i].recommendation << ", " << leop.entries[i].recommendation_type << std::endl;
-    }
-    */
 }
-
 
 // Diagnostics helper function - prints info about a task
 void print_task_stack(const char* name, TaskHandle_t handle, uint32_t stack_size)

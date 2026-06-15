@@ -32,26 +32,13 @@ void hal::BME280Sensor::increment_read_failure() {
 }
 
 
-// void hal::BME280Sensor::clock_unix_time_public() {
-    
-// }
-
 static time_t clock_unix_time() {
     time_t now;
     time(&now);
 
     return now;
-    // struct tm local_time;
-    // localtime_r(&now, &local_time);
-    // return local_time;
 }
 
-// TODO - Antingen använda pekare med namn temperature_sensor, humidity_sensor som i vårt fall alla pekar till samma sensor.
-// Sean kalla temperature_sensor.read.
-// Alternativt att bme280 sensor har tre olika funktionsnamn, temperature_read, humidity_read och pressure_read
-// Jag testar med första alternativet.
-// Kommer skapa overloading för "read" så vi kan skicka in TemperatureReading, HumidityReading eller PressureReading
-// TODO - Reconnect logic som funkar oavsett om man läser från en eller tre grejer
 hal::SensorError hal::BME280Sensor::read(hal::TemperatureReading& reading) {
 
     if (!this->bme280_ready || this->bme280 == NULL) {
@@ -68,13 +55,9 @@ hal::SensorError hal::BME280Sensor::read(hal::TemperatureReading& reading) {
         return hal::SensorError::CommunicationFailure;
     }
 
-    //float temperature = 0.0f;
-
     esp_err_t temp_result = bme280_read_temperature(this->bme280, &reading.celcius);
 
     if (temp_result != ESP_OK) {
-        //this->bme280_read_failures++;
-
         ESP_LOGW(TAG, "BME280 read failed %u/%u: temp=%s",
             this->bme280_read_failures,
             BME280_MAX_READ_FAILURES,     
@@ -93,13 +76,8 @@ hal::SensorError hal::BME280Sensor::read(hal::TemperatureReading& reading) {
     }
     
     this->bme280_read_failures = 0;
-    
-    //bme280_read_temperature(this->bme280, &reading.celcius);
-
     reading.monotonic_timestamp = esp_timer_get_time() / 1000000ULL;
     reading.unix_timestamp = clock_unix_time();
-
-    //ESP_LOGI(TAG, "BME280 temperature: %.f C", reading.celcius);
     return hal::SensorError::Ok;
 }
 
@@ -119,19 +97,14 @@ hal::SensorError hal::BME280Sensor::read(hal::HumidityReading& reading) {
         }
         return hal::SensorError::CommunicationFailure;
     }
-    //float humidity = 0.0f;
-
     esp_err_t humidity_result = bme280_read_humidity(this->bme280, &reading.humidity);
 
     if (humidity_result != ESP_OK) {
-        //this->bme280_read_failures++;
-
         ESP_LOGW(TAG, "BME280 read failed %u/%u: humidity=%s",
             this->bme280_read_failures,
             BME280_MAX_READ_FAILURES,     
             esp_err_to_name(humidity_result)
         );
-
         if (this->bme280_read_failures >= BME280_MAX_READ_FAILURES) {
             ESP_LOGW(TAG, "BME280 marked disconnected after repeated read failures. Please restart application.");
             this->bme280_ready = false;
@@ -144,12 +117,8 @@ hal::SensorError hal::BME280Sensor::read(hal::HumidityReading& reading) {
     }
     
     this->bme280_read_failures = 0;
-    
-    //bme280_read_humidity(this->bme280, &reading.humidity);
     reading.monotonic_timestamp = esp_timer_get_time() / 1000000ULL;    
     reading.unix_timestamp = clock_unix_time();
-
-    //ESP_LOGI(TAG, "BME280 humidity: %2.1f%%", reading.humidity);
 
     return hal::SensorError::Ok;
 }
@@ -170,13 +139,10 @@ hal::SensorError hal::BME280Sensor::read(hal::PressureReading& reading) {
         }
         return hal::SensorError::CommunicationFailure;
     }
-    //float pressure = 0.0f;
 
     esp_err_t pressure_result = bme280_read_pressure(this->bme280, &reading.pressure);
 
     if (pressure_result != ESP_OK) {
-        //this->bme280_read_failures++;
-
         ESP_LOGW(TAG, "BME280 read failed %u/%u: pressure=%s",
             this->bme280_read_failures,
             BME280_MAX_READ_FAILURES,     
@@ -195,12 +161,8 @@ hal::SensorError hal::BME280Sensor::read(hal::PressureReading& reading) {
     }
     
     this->bme280_read_failures = 0;
-    
-    //bme280_read_pressure(this->bme280, &reading.pressure);
     reading.monotonic_timestamp = esp_timer_get_time() / 1000000ULL;
     reading.unix_timestamp = clock_unix_time();
-
-    //ESP_LOGI(TAG, "BME280: %.f pHa", reading.pressure);
 
     return hal::SensorError::Ok;
 }
@@ -210,7 +172,6 @@ hal::SensorError hal::BME280Sensor::read(hal::PressureReading& reading) {
 hal::BME280Sensor::BME280Sensor()
 {
     BME280Sensor_init_i2c_config();
-    //bme280_sensor_init();
 }
 
 bool hal::BME280Sensor::bme280_init_at_address(uint8_t address)
@@ -256,16 +217,6 @@ bool hal::BME280Sensor::bme280_sensor_init() {
             return false;
         }
     }
-    /* TODO - Printa ut 0x77 och 0x76 istället för att skanna igenom ALLA i2c adresser
-    // Debugging only so we know what connections we have
-    uint8_t found_devices[8] = {};
-    uint8_t device_count = i2c_bus_scan(this->bme280_bus, found_devices, sizeof(found_devices));
-    ESP_LOGI(TAG, "I2C scan found %u device(s)", device_count);
-    
-    for (uint8_t i = 0; i < device_count && i < sizeof(found_devices); i++) {
-        ESP_LOGI(TAG, "I2C device found at address 0x%02X", found_devices[i]);
-    }
-    */
 
     // Waveshare BME280 defaults to 0x77 when ADDR is left unconnected.
     if (bme280_init_at_address(BME280_WAVESHARE_DEFAULT_ADDRESS)) {

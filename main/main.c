@@ -126,9 +126,8 @@ void app_main()
 
     xTaskCreate(UART_Work, &app.system_task_handlers.wifi_task.name, app.system_task_handlers.wifi_task.stack_size, &app, 4, &uart_task_handle);
 
-    xTaskCreate(Sensor_Work, &app.system_task_handlers.wifi_task.name, app.system_task_handlers.wifi_task.stack_size, &app, 4, &sensor_task_handle);
+    xTaskCreate(Sensor_Work, &app.system_task_handlers.sensor_task.name, app.system_task_handlers.sensor_task.stack_size, &app, 4, &sensor_task_handle);
 
-    //static LEOPData leop_data;
 
     // Använd appens leop_data istället för en statisk lokal här.
     // TODO - Behöver dock lägga till mutex så småningom efter både UART och LEOP har access till samma resurs

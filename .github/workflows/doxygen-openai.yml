@@ -1,4 +1,4 @@
-name: Doxygen AI
+﻿name: Doxygen AI
 
 on:
   push:
@@ -34,14 +34,17 @@ permissions:
 
 jobs:
   update-doxygen:
-    if: github.actor != 'github-actions[bot]'
+    if: >
+      github.actor != 'github-actions[bot]' &&
+      (github.event_name != 'push' || !contains(github.event.head_commit.message, '[skip-doxygen]')) &&
+      (github.event_name != 'push' || github.ref == 'refs/heads/dev')
     runs-on: ubuntu-latest
     env:
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       OPENAI_MODEL: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.model || 'gpt-5.4-mini' }}
       MAX_FILES_PER_RUN: "10"
       MAX_CHARS_PER_FILE: "18000"
-      OPENAI_MAX_OUTPUT_TOKENS: "50000"
+      OPENAI_MAX_OUTPUT_TOKENS: "100000"
       GITHUB_EVENT_BEFORE: ${{ github.event.before }}
       TARGET_REF: ${{ github.event.inputs.target_ref }}
       RERUN_MODE: ${{ github.event.inputs.rerun_mode }}
@@ -57,11 +60,11 @@ jobs:
               SAFE_LABEL="test-${GITHUB_RUN_ID}"
             fi
             echo "PR_BRANCH=docs/doxygen-ai-${SAFE_LABEL}" >> "$GITHUB_ENV"
-            echo "PR_TITLE=docs: AI Doxygen updates [${TEST_LABEL}]" >> "$GITHUB_ENV"
+            echo "PR_TITLE=[skip-doxygen] docs: AI Doxygen updates [${TEST_LABEL}]" >> "$GITHUB_ENV"
             echo "PR_KEY=${SAFE_LABEL}" >> "$GITHUB_ENV"
           else
             echo "PR_BRANCH=docs/doxygen-ai" >> "$GITHUB_ENV"
-            echo "PR_TITLE=docs: AI Doxygen updates" >> "$GITHUB_ENV"
+            echo "PR_TITLE=[skip-doxygen] docs: AI Doxygen updates" >> "$GITHUB_ENV"
             echo "PR_KEY=default" >> "$GITHUB_ENV"
           fi
 
@@ -184,7 +187,7 @@ jobs:
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "docs: update doxygen comments"
+          commit-message: "[skip-doxygen] docs: update doxygen comments"
           branch: ${{ env.PR_BRANCH }}
           delete-branch: true
           title: ${{ env.PR_TITLE }}
@@ -202,4 +205,5 @@ jobs:
             - edit wording if needed before merge
           draft: true
           base: dev
+
 

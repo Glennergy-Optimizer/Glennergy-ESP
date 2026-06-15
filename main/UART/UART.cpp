@@ -1,4 +1,3 @@
-//#include <iostream>
 #include <string>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -103,6 +102,7 @@ extern "C" void UART_Work(void* parameter) {
 
         if (len > 0) {
             if (byte == '\n' || byte == '\r') {
+                uart_write_bytes(UART_PORT, "\r\n", 2);
                 line[line_pos] = '\0';
                 ESP_LOGI(TAG, "Complete msg: %s", line);
                 // trim and lowercase input.
@@ -114,6 +114,7 @@ extern "C" void UART_Work(void* parameter) {
             else {
                 if (line_pos < sizeof(line) -1) {
                     line[line_pos++] = byte;
+                    uart_write_bytes(UART_PORT, (const char*)&byte, 1);
                 }
             }
         }
