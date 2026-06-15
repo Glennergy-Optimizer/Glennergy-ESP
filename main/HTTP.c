@@ -1,3 +1,10 @@
+/**
+ * @file HTTP.c
+ * @brief Implementation of the HTTP client module.
+ *
+ * @ingroup HTTP
+ */
+
 #include "HTTP.h"
 #include <stdlib.h>
 // #include <string.h>
@@ -9,6 +16,18 @@
 
 static const char *TAG = "HTTPClient";
 
+/**
+ * @brief Handles HTTP client events and accumulates response data.
+ *
+ * Runs in the ESP-IDF HTTP client event callback context. Response bytes are
+ * appended to the caller-owned buffer during the data callback.
+ *
+ * @param[in] event HTTP client event handle provided by ESP-IDF.
+ *
+ * @return `ESP_OK` on success or `ESP_FAIL` if response buffer allocation fails.
+ *
+ * @warning Keep this callback non-blocking.
+ */
 esp_err_t HTTPClient_EventHandler(esp_http_client_event_handle_t event)
 {
     HTTPResponse *resp = (HTTPResponse *)event->user_data;
@@ -51,6 +70,14 @@ esp_err_t HTTPClient_EventHandler(esp_http_client_event_handle_t event)
     return ESP_OK;
 }
 
+/**
+ * @brief Performs an HTTP GET request when Wi-Fi is connected.
+ *
+ * See header for full contract documentation.
+ *
+ * @param[in] url Request URL.
+ * @param[out] http_response Response storage used by the HTTP client.
+ */
 void HTTPClient_GET(const char *url, HTTPResponse *http_response)
 {
     esp_http_client_config_t http_config = {0};
@@ -88,6 +115,11 @@ void HTTPClient_GET(const char *url, HTTPResponse *http_response)
     }
 }
 
+/**
+ * @brief Releases the response buffer owned by an HTTPResponse.
+ *
+ * @param[in,out] http_response Response object whose data buffer should be freed.
+ */
 void HTTPClient_Dispose(HTTPResponse *http_response)
 {
     if (http_response != NULL && http_response->data != NULL)
