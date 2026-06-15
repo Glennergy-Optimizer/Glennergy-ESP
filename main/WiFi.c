@@ -1,3 +1,10 @@
+/**
+ * @file WiFi.c
+ * @brief Implementation of the Wi-Fi module.
+ *
+ * @ingroup WIFI
+ */
+
 #include "WiFi.h"
 
 #include <string.h>
@@ -36,6 +43,14 @@ esp_err_t WiFi_Connect(wifi_data *w_info);
 esp_err_t WiFi_Dispose(void);
 esp_err_t WiFi_Disconnect(void);
 
+/**
+ * @brief Handles IP events from the ESP-IDF event loop.
+ *
+ * Updates Wi-Fi connection state and starts time synchronization after the
+ * station obtains an address.
+ *
+ * @warning Keep callback work short and avoid blocking.
+ */
 static void ip_event_cb(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data)
 {
     ESP_LOGI(TAG, "Handling IP event, event code 0x%" PRIx32, event_id);
@@ -73,6 +88,13 @@ static void ip_event_cb(void *arg, esp_event_base_t event_base, int32_t event_id
     }
 }
 
+/**
+ * @brief Handles Wi-Fi events from the ESP-IDF event loop.
+ *
+ * Forwards connection and scan status updates to the internal event queue.
+ *
+ * @warning Keep callback work short and avoid blocking.
+ */
 static void wifi_event_cb(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data)
 {
     ESP_LOGI(TAG, "Handling Wi-Fi event, event code 0x%" PRIx32, event_id);
@@ -117,6 +139,12 @@ static void wifi_event_cb(void *arg, esp_event_base_t event_base, int32_t event_
     }
 }
 
+/**
+ * @brief Creates the internal Wi-Fi queues.
+ *
+ * The queues are used for command dispatch, result delivery, and event
+ * handoff between callbacks and the worker task.
+ */
 void WiFi_CreateQueues()
 {
     event_queue = xQueueCreate(1, sizeof(wifi_status));
@@ -141,6 +169,11 @@ void WiFi_CreateQueues()
     }
 }
 
+/**
+ * @brief Implementation of WiFi_Initialize.
+ *
+ * See header for full contract documentation.
+ */
 esp_err_t WiFi_Initialize()
 {
     esp_err_t ret_value = nvs_flash_init();
@@ -186,6 +219,11 @@ esp_err_t WiFi_Initialize()
     return ESP_OK;
 }
 
+/**
+ * @brief Scans for nearby Wi-Fi access points.
+ *
+ * Populates the provided result buffer with up to 10 scan records.
+ */
 esp_err_t WiFi_Scan(wifi_data *w_data)
 {
     ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
@@ -226,6 +264,16 @@ esp_err_t WiFi_Scan(wifi_data *w_data)
     return ESP_OK;
 }
 
+/**
+ * @brief Wi-Fi worker task.
+ *
+ * Waits for commands on the Wi-Fi command queue and forwards results after
+ * scan, connect, or disconnect operations complete.
+ *
+ * @param[in] arg Task context pointer supplied by the creator.
+ *
+ * @note Runs in task context and blocks on queues and delays.
+ */
 void WiFi_Work(void *arg)
 {
     wifi_status status;
@@ -285,6 +333,18 @@ void WiFi_Work(void *arg)
     }
 }
 
+/**
+ * @brief Connects to a Wi-Fi access point.
+ *
+ * Copies the SSID and password into the station configuration and starts the
+ * ESP-IDF connection attempt.
+ *
+ * @param[in] w_data Connection data containing the credentials.
+ *
+ * @return
+ * - `ESP_OK` on success
+ * - `ESP_FAIL` if the connection request cannot be started
+ */
 esp_err_t WiFi_Connect(wifi_data *w_data)
 {
     wifi_config_t wifi_config = {0};
@@ -302,11 +362,25 @@ esp_err_t WiFi_Connect(wifi_data *w_data)
     return ESP_OK;
 }
 
+/**
+ * @brief Returns the current Wi-Fi connection state.
+ *
+ * @return `true` when connected, otherwise `false`.
+ */
 bool WiFi_IsConnected()
 {
     return w_state.is_connected;
 }
 
+/**
+ * @brief Disconnects the station from the access point.
+ *
+ * Deletes the Wi-Fi event group before requesting disconnect from ESP-IDF.
+ *
+ * @return
+ * - `ESP_OK` on success
+ * - an ESP-IDF error code on failure
+ */
 esp_err_t WiFi_Disconnect(void)
 {
     if (wifi_event_group)
@@ -317,6 +391,16 @@ esp_err_t WiFi_Disconnect(void)
     return esp_wifi_disconnect();
 }
 
+/**
+ * @brief Releases Wi-Fi resources.
+ *
+ * Stops the Wi-Fi stack, unregisters event handlers, clears the default
+ * driver, and destroys the network interface.
+ *
+ * @return
+ * - `ESP_OK` on success
+ * - an ESP-IDF error code on failure
+ */
 esp_err_t WiFi_Dispose(void)
 {
     esp_err_t ret_value = esp_wifi_stop();

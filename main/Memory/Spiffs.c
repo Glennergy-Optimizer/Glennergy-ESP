@@ -1,3 +1,10 @@
+/**
+ * @file Spiffs.c
+ * @brief Implementation of the SPIFFS storage module.
+ *
+ * @ingroup SPIFFS
+ */
+
 #include "Spiffs.h"
 #include "esp_log.h"
 #include "jansson.h"
@@ -6,6 +13,11 @@ static const char *TAG = "Spiffs";
 
 static esp_vfs_spiffs_conf_t spiffs_config;
 
+/**
+ * @brief Implementation of Spiffs_Initialize.
+ *
+ * See header for full contract documentation.
+ */
 int Spiffs_Initialize()
 {
     spiffs_config.base_path = "/spiffs";
@@ -24,6 +36,11 @@ int Spiffs_Initialize()
     return 0;
 }
 
+/**
+ * @brief Implementation of Spiffs_WriteToFileJSON.
+ *
+ * See header for full contract documentation.
+ */
 int Spiffs_WriteToFileJSON(const char *file_name, const char *raw_data)
 {
     json_error_t error;
@@ -52,6 +69,11 @@ int Spiffs_WriteToFileJSON(const char *file_name, const char *raw_data)
     return 0;
 }
 
+/**
+ * @brief Implementation of Spiffs_ReadFromFileJSON.
+ *
+ * See header for full contract documentation.
+ */
 char *Spiffs_ReadFromFileJSON(const char *file_name)
 {
 
@@ -75,6 +97,11 @@ char *Spiffs_ReadFromFileJSON(const char *file_name)
     return dump;
 }
 
+/**
+ * @brief Implementation of Spiffs_WriteToFile.
+ *
+ * See header for full contract documentation.
+ */
 int Spiffs_WriteToFile(const char *file_name, const char *content)
 {
     char filepath[50];
@@ -94,6 +121,11 @@ int Spiffs_WriteToFile(const char *file_name, const char *content)
     return 0;
 }
 
+/**
+ * @brief Implementation of Spiffs_ReadFromFile.
+ *
+ * See header for full contract documentation.
+ */
 int Spiffs_ReadFromFile(const char *file_name, char *buffer, size_t buffer_size)
 {
     char filepath[50];
@@ -127,4 +159,3 @@ int Spiffs_ReadFromFile(const char *file_name, char *buffer, size_t buffer_size)
 
     return 0;
 }
-

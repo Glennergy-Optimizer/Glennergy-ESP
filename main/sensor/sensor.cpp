@@ -1,3 +1,10 @@
+/**
+ * @file sensor.cpp
+ * @brief Implementation of the sensor worker module.
+ *
+ * @ingroup SENSOR
+ */
+
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/queue.h"
@@ -7,13 +14,20 @@
 #include "../app_queues.h"
 #include "../hal/bme280_sensor.hpp"
 
+/**
+ * @brief Module tag used for ESP-IDF logging.
+ */
 static constexpr char* TAG = "Sensor.cpp";
 static constexpr time_t MIN_VALID_UNIX_TIME = 1704067200; // 2024-01-01 00:00:00 UTC
 static bool fake_mode = false;
 
 QueueHandle_t Sensor_Queue = NULL;
 
-
+/**
+ * @brief Initializes sensor state and the sensor update queue.
+ *
+ * @param[in,out] app Application state to reset before sensor updates begin.
+ */
 void Sensor_Init_v2(app_state_t* app) 
 {
     app->sensor_data.valid = false;
@@ -33,8 +47,16 @@ void Sensor_Init_v2(app_state_t* app)
 
 }
 
-// Todo as of 2026-05-25 - Let's not overabstract since we only have a single bme280 sensor for now.
-// 
+/**
+ * @brief Reads the BME280 sensor and publishes a snapshot to the queue.
+ *
+ * Updates the application sensor state only when all sensor reads succeed.
+ *
+ * @param[in,out] sensor Sensor state to update with the latest measurement.
+ * @param[in,out] environment_sensor BME280 sensor wrapper used for hardware access.
+ *
+ * @return `true` when all readings succeed, otherwise `false`.
+ */
 bool Sensor_Read_v2(sensor_data_t* sensor, hal::BME280Sensor& environment_sensor)
 {
     hal::TemperatureReading temperatur = hal::TemperatureReading();
@@ -73,6 +95,16 @@ bool Sensor_Read_v2(sensor_data_t* sensor, hal::BME280Sensor& environment_sensor
     return true;
 }
 
+/**
+ * @brief Sensor worker task.
+ *
+ * Initializes the BME280 wrapper, then periodically reads the sensor and
+ * stores the latest snapshot in the shared application state.
+ *
+ * @param[in] parameter Pointer to the application state passed to the task.
+ *
+ * @note Runs in task context and blocks with `vTaskDelay()`.
+ */
 void Sensor_Work(void* parameter) {
     app_state_t* app = (app_state_t*)parameter;
     // Todo - ska default-config värden, om inget existerar i caches, 

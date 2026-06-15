@@ -1,3 +1,9 @@
+/**
+ * @file WiFi_UI.c
+ * @brief Implementation of the Wi-Fi settings UI module.
+ *
+ * @ingroup WIFI_UI
+ */
 
 #include "WiFi_UI.h"
 #include "../../main/WiFi.h"
@@ -15,8 +21,18 @@ static WiFi_UI wifi_ui = {
     .status_label_sta = NULL,
 };
 
+/**
+ * @brief Registers LVGL callbacks for the Wi-Fi settings widgets.
+ *
+ * Assumes the widgets have already been created by WiFi_UI_Initialize().
+ */
 void WiFi_UI_Set_Callbacks(void);
 
+/**
+ * @brief Implementation of WiFi_UI_Initialize.
+ *
+ * See header for full contract documentation.
+ */
 void WiFi_UI_Initialize()
 {
 
@@ -102,6 +118,11 @@ void WiFi_UI_Initialize()
     WiFi_UI_Set_Callbacks();
 }
 
+/**
+ * @brief Sends a Wi-Fi scan request from the scan button event.
+ *
+ * @param[in] _Event LVGL event object.
+ */
 void WiFi_UI_Scan_cb(lv_event_t *_Event)
 {
     wifi_data w_data;
@@ -109,6 +130,11 @@ void WiFi_UI_Scan_cb(lv_event_t *_Event)
     xQueueSend(wifi_cmd_queue, &w_data, 0);
 }
 
+/**
+ * @brief Handles password entry keyboard events for Wi-Fi connection.
+ *
+ * @param[in] _Event LVGL event object.
+ */
 void WiFi_UI_Keyboard_cb(lv_event_t *_Event)
 {
     lv_event_code_t code = lv_event_get_code(_Event);
@@ -135,6 +161,11 @@ void WiFi_UI_Keyboard_cb(lv_event_t *_Event)
     }
 }
 
+/**
+ * @brief Opens an on-screen keyboard for the password text area.
+ *
+ * @param[in] _Event LVGL event object.
+ */
 void WiFi_UI_TextArea_cb(lv_event_t *_Event)
 {
     lv_obj_t *ta = lv_event_get_target(_Event);
@@ -147,6 +178,11 @@ void WiFi_UI_TextArea_cb(lv_event_t *_Event)
     lv_obj_add_event_cb(kb, WiFi_UI_Keyboard_cb, LV_EVENT_ALL, ta);
 }
 
+/**
+ * @brief Updates the selected SSID from the dropdown selection.
+ *
+ * @param[in] _Event LVGL event object.
+ */
 void WiFi_UI_Dropdown_cb(lv_event_t *_Event)
 {
 
@@ -155,6 +191,11 @@ void WiFi_UI_Dropdown_cb(lv_event_t *_Event)
     lv_dropdown_get_selected_str(obj, wifi_ui.selected_ssid, sizeof(wifi_ui.selected_ssid));
 }
 
+/**
+ * @brief Polls Wi-Fi results and updates the UI state.
+ *
+ * See header for full contract documentation.
+ */
 void WiFi_UI_Update(void)
 {
     wifi_data w_data;
@@ -186,6 +227,11 @@ void WiFi_UI_Update(void)
     }
 }
 
+/**
+ * @brief Registers event callbacks for the Wi-Fi settings widgets.
+ *
+ * Assumes the widgets have already been created by WiFi_UI_Initialize().
+ */
 void WiFi_UI_Set_Callbacks(void)
 {
     lv_obj_add_event_cb(wifi_ui.network_dropdown_dyn, WiFi_UI_Dropdown_cb, LV_EVENT_VALUE_CHANGED, NULL);

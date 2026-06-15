@@ -1,3 +1,10 @@
+/**
+ * @file Main_UI.c
+ * @brief Implementation of the main LVGL screen setup.
+ *
+ * @ingroup UI
+ */
+
 #include "../ui.h"
 #include "Main_UI.h"
 
@@ -13,6 +20,11 @@ lv_obj_t *ui_TabPage_Settings = NULL;
 lv_obj_t *ui_Group_Settings = NULL;
 lv_obj_t *ui_TabPage_WiFi = NULL;
 
+/**
+ * @brief Implementation of Main_UI_Initialize.
+ *
+ * See header for full contract documentation.
+ */
 void Main_UI_Initialize()
 {
     ui_Screen1 = lv_obj_create(NULL);

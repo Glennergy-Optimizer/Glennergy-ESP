@@ -12,134 +12,410 @@ extern "C" {
 
 #include "ui.h"
 
+/**
+ * @file ui_helpers.h
+ * @brief Helper functions used by the generated LVGL UI.
+ *
+ * Provides utility declarations for property updates, screen transitions,
+ * animation callbacks, and text helpers used by the SquareLine-generated UI.
+ *
+ * @defgroup UI_HELPERS UI Helpers
+ * @brief Helper routines for generated LVGL UI objects and animations.
+ *
+ * These helpers operate on LVGL objects created by the generated interface and
+ * are intended for UI-task context.
+ * @{
+ */
+
 #define _UI_TEMPORARY_STRING_BUFFER_SIZE 32
 #define _UI_BAR_PROPERTY_VALUE 0
 #define _UI_BAR_PROPERTY_VALUE_WITH_ANIM 1
+/**
+ * @brief Sets a bar property by generated property identifier.
+ *
+ * @param target Target LVGL object.
+ * @param id Property identifier.
+ * @param val Property value.
+ */
 void _ui_bar_set_property(lv_obj_t * target, int id, int val);
 
 #define _UI_BASIC_PROPERTY_POSITION_X 0
 #define _UI_BASIC_PROPERTY_POSITION_Y 1
 #define _UI_BASIC_PROPERTY_WIDTH 2
 #define _UI_BASIC_PROPERTY_HEIGHT 3
+/**
+ * @brief Sets a basic object property by generated property identifier.
+ *
+ * @param target Target LVGL object.
+ * @param id Property identifier.
+ * @param val Property value.
+ */
 void _ui_basic_set_property(lv_obj_t * target, int id, int val);
 
 #define _UI_DROPDOWN_PROPERTY_SELECTED 0
+/**
+ * @brief Sets the selected dropdown option.
+ *
+ * @param target Target LVGL object.
+ * @param id Property identifier.
+ * @param val Property value.
+ */
 void _ui_dropdown_set_property(lv_obj_t * target, int id, int val);
 
 #define _UI_IMAGE_PROPERTY_IMAGE 0
+/**
+ * @brief Sets the image source.
+ *
+ * @param target Target LVGL object.
+ * @param id Property identifier.
+ * @param val Image source pointer.
+ */
 void _ui_image_set_property(lv_obj_t * target, int id, uint8_t * val);
 
 #define _UI_LABEL_PROPERTY_TEXT 0
+/**
+ * @brief Sets the label text.
+ *
+ * @param target Target LVGL object.
+ * @param id Property identifier.
+ * @param val Label text.
+ */
 void _ui_label_set_property(lv_obj_t * target, int id, const char * val);
 
 #define _UI_ROLLER_PROPERTY_SELECTED 0
 #define _UI_ROLLER_PROPERTY_SELECTED_WITH_ANIM 1
+/**
+ * @brief Sets the selected roller option.
+ *
+ * @param target Target LVGL object.
+ * @param id Property identifier.
+ * @param val Property value.
+ */
 void _ui_roller_set_property(lv_obj_t * target, int id, int val);
 
 #define _UI_SLIDER_PROPERTY_VALUE 0
 #define _UI_SLIDER_PROPERTY_VALUE_WITH_ANIM 1
+/**
+ * @brief Sets a slider value by generated property identifier.
+ *
+ * @param target Target LVGL object.
+ * @param id Property identifier.
+ * @param val Property value.
+ */
 void _ui_slider_set_property(lv_obj_t * target, int id, int val);
 
+/**
+ * @brief Loads a new screen and initializes it on demand.
+ *
+ * @param target Screen handle pointer.
+ * @param fademode LVGL screen load animation mode.
+ * @param spd Animation speed.
+ * @param delay Delay before the screen load, in milliseconds.
+ * @param target_init Screen initialization callback.
+ */
 void _ui_screen_change(lv_obj_t ** target, lv_scr_load_anim_t fademode, int spd, int delay, void (*target_init)(void));
 
+/**
+ * @brief Deletes a screen through its generated destroy callback.
+ *
+ * @param target Screen destroy callback.
+ */
 void _ui_screen_delete(void (*target)(void));
 
+/**
+ * @brief Increments an arc value and sends a value-changed event.
+ *
+ * @param target Target LVGL object.
+ * @param val Increment amount.
+ */
 void _ui_arc_increment(lv_obj_t * target, int val);
 
+/**
+ * @brief Increments a bar value.
+ *
+ * @param target Target LVGL object.
+ * @param val Increment amount.
+ * @param anm LVGL animation mode.
+ */
 void _ui_bar_increment(lv_obj_t * target, int val, int anm);
 
+/**
+ * @brief Increments a slider value and sends a value-changed event.
+ *
+ * @param target Target LVGL object.
+ * @param val Increment amount.
+ * @param anm LVGL animation mode.
+ */
 void _ui_slider_increment(lv_obj_t * target, int val, int anm);
 
+/**
+ * @brief Assigns a text area to an on-screen keyboard.
+ *
+ * @param keyboard Keyboard object.
+ * @param textarea Target text area object.
+ */
 void _ui_keyboard_set_target(lv_obj_t * keyboard, lv_obj_t * textarea);
 
 #define _UI_MODIFY_FLAG_ADD 0
 #define _UI_MODIFY_FLAG_REMOVE 1
 #define _UI_MODIFY_FLAG_TOGGLE 2
+/**
+ * @brief Modifies an LVGL object flag.
+ *
+ * @param target Target LVGL object.
+ * @param flag LVGL flag value.
+ * @param value Modification mode.
+ */
 void _ui_flag_modify(lv_obj_t * target, int32_t flag, int value);
 
 #define _UI_MODIFY_STATE_ADD 0
 #define _UI_MODIFY_STATE_REMOVE 1
 #define _UI_MODIFY_STATE_TOGGLE 2
+/**
+ * @brief Modifies an LVGL object state.
+ *
+ * @param target Target LVGL object.
+ * @param state LVGL state value.
+ * @param value Modification mode.
+ */
 void _ui_state_modify(lv_obj_t * target, int32_t state, int value);
 
 #define UI_MOVE_CURSOR_UP 0
 #define UI_MOVE_CURSOR_RIGHT 1
 #define UI_MOVE_CURSOR_DOWN 2
 #define UI_MOVE_CURSOR_LEFT 3
+/**
+ * @brief Moves the text area cursor and keeps the object focused.
+ *
+ * @param target Target LVGL object.
+ * @param val Cursor movement command.
+ */
 void _ui_textarea_move_cursor(lv_obj_t * target, int val)
 ;
 
 
+ /**
+ * @brief Screen unload callback that deletes the associated generated screen.
+ *
+ * @param e LVGL event pointer.
+ */
 void scr_unloaded_delete_cb(lv_event_t * e);
 
+/**
+ * @brief Sets the opacity style value for an LVGL object.
+ *
+ * @param target Target LVGL object.
+ * @param val Opacity value.
+ */
 void _ui_opacity_set(lv_obj_t * target, int val);
 
-/** Describes an animation*/
+/**
+ * @brief Animation user data used by generated callbacks.
+ *
+ * Stores the target object and optional image set metadata for animation
+ * callbacks.
+ */
 typedef struct _ui_anim_user_data_t {
-    lv_obj_t * target;
-    lv_img_dsc_t ** imgset;
-    int32_t imgset_size;
-    int32_t val;
+    lv_obj_t * target;       /**< Target LVGL object. */
+    lv_img_dsc_t ** imgset;  /**< Image set used by frame animations. */
+    int32_t imgset_size;     /**< Number of images in imgset. */
+    int32_t val;             /**< Cached animation value. */
 } ui_anim_user_data_t;
+
+/**
+ * @brief Releases animation callback user data.
+ *
+ * @param a Animation descriptor.
+ */
 void _ui_anim_callback_free_user_data(lv_anim_t * a);
 
+/**
+ * @brief Animation callback that sets the target X position.
+ *
+ * @param a Animation descriptor.
+ * @param v New value.
+ */
 void _ui_anim_callback_set_x(lv_anim_t * a, int32_t v);
 
+/**
+ * @brief Animation callback that sets the target Y position.
+ *
+ * @param a Animation descriptor.
+ * @param v New value.
+ */
 void _ui_anim_callback_set_y(lv_anim_t * a, int32_t v);
 
+/**
+ * @brief Animation callback that sets the target width.
+ *
+ * @param a Animation descriptor.
+ * @param v New value.
+ */
 void _ui_anim_callback_set_width(lv_anim_t * a, int32_t v);
 
+/**
+ * @brief Animation callback that sets the target height.
+ *
+ * @param a Animation descriptor.
+ * @param v New value.
+ */
 void _ui_anim_callback_set_height(lv_anim_t * a, int32_t v);
 
-
+/**
+ * @brief Animation callback that sets the target opacity.
+ *
+ * @param a Animation descriptor.
+ * @param v New value.
+ */
 void _ui_anim_callback_set_opacity(lv_anim_t * a, int32_t v);
 
-
+/**
+ * @brief Animation callback that sets the target image zoom.
+ *
+ * @param a Animation descriptor.
+ * @param v New value.
+ */
 void _ui_anim_callback_set_image_zoom(lv_anim_t * a, int32_t v);
 
-
+/**
+ * @brief Animation callback that sets the target image angle.
+ *
+ * @param a Animation descriptor.
+ * @param v New value.
+ */
 void _ui_anim_callback_set_image_angle(lv_anim_t * a, int32_t v);
 
-
+/**
+ * @brief Animation callback that sets the target image frame.
+ *
+ * @param a Animation descriptor.
+ * @param v New value.
+ */
 void _ui_anim_callback_set_image_frame(lv_anim_t * a, int32_t v);
 
-
+/**
+ * @brief Returns the target X position for an animation.
+ *
+ * @param a Animation descriptor.
+ *
+ * @return Current aligned X position.
+ */
 int32_t _ui_anim_callback_get_x(lv_anim_t * a);
 
+/**
+ * @brief Returns the target Y position for an animation.
+ *
+ * @param a Animation descriptor.
+ *
+ * @return Current aligned Y position.
+ */
 int32_t _ui_anim_callback_get_y(lv_anim_t * a);
 
+/**
+ * @brief Returns the target width for an animation.
+ *
+ * @param a Animation descriptor.
+ *
+ * @return Current width.
+ */
 int32_t _ui_anim_callback_get_width(lv_anim_t * a);
 
-
+/**
+ * @brief Returns the target height for an animation.
+ *
+ * @param a Animation descriptor.
+ *
+ * @return Current height.
+ */
 int32_t _ui_anim_callback_get_height(lv_anim_t * a);
 
-
+/**
+ * @brief Returns the target opacity for an animation.
+ *
+ * @param a Animation descriptor.
+ *
+ * @return Current opacity value.
+ */
 int32_t _ui_anim_callback_get_opacity(lv_anim_t * a);
 
-
+/**
+ * @brief Returns the target image zoom for an animation.
+ *
+ * @param a Animation descriptor.
+ *
+ * @return Current zoom value.
+ */
 int32_t _ui_anim_callback_get_image_zoom(lv_anim_t * a);
 
-
+/**
+ * @brief Returns the target image angle for an animation.
+ *
+ * @param a Animation descriptor.
+ *
+ * @return Current angle value.
+ */
 int32_t _ui_anim_callback_get_image_angle(lv_anim_t * a);
 
-
+/**
+ * @brief Returns the cached image frame for an animation.
+ *
+ * @param a Animation descriptor.
+ *
+ * @return Cached frame index.
+ */
 int32_t _ui_anim_callback_get_image_frame(lv_anim_t * a);
 
-
+/**
+ * @brief Updates a label with an arc value and optional text prefixes.
+ *
+ * @param trg Target label object.
+ * @param src Source arc object.
+ * @param prefix Text placed before the value.
+ * @param postfix Text placed after the value.
+ */
 void _ui_arc_set_text_value(lv_obj_t * trg, lv_obj_t * src, const char * prefix, const char * postfix);
 
+/**
+ * @brief Updates a label with a slider value and optional text prefixes.
+ *
+ * @param trg Target label object.
+ * @param src Source slider object.
+ * @param prefix Text placed before the value.
+ * @param postfix Text placed after the value.
+ */
 void _ui_slider_set_text_value(lv_obj_t * trg, lv_obj_t * src, const char * prefix, const char * postfix);
 
+/**
+ * @brief Updates a label based on whether the source object is checked.
+ *
+ * @param trg Target label object.
+ * @param src Source LVGL object.
+ * @param txt_on Text shown when checked.
+ * @param txt_off Text shown when not checked.
+ */
 void _ui_checked_set_text_value(lv_obj_t * trg, lv_obj_t * src, const char * txt_on, const char * txt_off);
 
+/**
+ * @brief Steps the spinbox value and sends a value-changed event.
+ *
+ * @param target Target LVGL object.
+ * @param val Step direction.
+ */
 void _ui_spinbox_step(lv_obj_t * target, int val)
 ;
 
 
+/**
+ * @brief Switches the active UI theme.
+ *
+ * @param val Theme selector value.
+ */
 void _ui_switch_theme(int val)
 ;
 
 
+
+/** @} */
 
 #ifdef __cplusplus
 } /*extern "C"*/

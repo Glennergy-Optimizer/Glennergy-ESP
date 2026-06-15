@@ -12,6 +12,25 @@
 #include "freertos/queue.h"
 #include <stdbool.h>
 
+/**
+ * @file WiFi.h
+ * @brief Public API for the Wi-Fi module.
+ *
+ * Provides the command, status, and data types used by the Wi-Fi worker
+ * task, along with the module lifecycle and connection control functions.
+ *
+ * @defgroup WIFI WiFi
+ * @brief Wi-Fi control and worker task interface.
+ *
+ * The module initializes the ESP-IDF Wi-Fi stack, owns the worker task
+ * command/result queues, and coordinates scan, connect, and disconnect
+ * operations.
+ *
+ * @note Functions in this module are intended for task context. The worker
+ * task blocks on queues and Wi-Fi operations may perform network I/O.
+ * @{
+ */
+
 extern QueueHandle_t wifi_cmd_queue;
 
 extern QueueHandle_t wifi_result_queue;
@@ -33,19 +52,33 @@ typedef enum
     WIFI_STATUS_DISCONNECTED,
 } wifi_status;
 
+/**
+ * @brief Shared Wi-Fi connection state.
+ *
+ * The structure currently exposes whether the station is connected to an AP.
+ */
 typedef struct 
 {
-    bool is_connected;
+    bool is_connected; /**< `true` when the station is connected. */
 }wifi_state;
 
 
 
+/**
+ * @brief Credentials used for Wi-Fi station connection.
+ */
 typedef struct
 {
-    char *ssid;
-    char *password;
+    char *ssid; /**< Pointer to the SSID string. */
+    char *password; /**< Pointer to the password string. */
 } wifi_info;
 
+/**
+ * @brief Command and result payload used by the Wi-Fi worker task.
+ *
+ * Contains the requested command, the resulting status, scan output storage,
+ * and the station credentials used for connection.
+ */
 typedef struct
 {
     wifi_cmd_t cmd;
@@ -55,16 +88,75 @@ typedef struct
     wifi_info wifi_info;
 } wifi_data;
 
+/**
+ * @brief Initializes the Wi-Fi module.
+ *
+ * Sets up NVS, the ESP-IDF network stack, the default event loop, the Wi-Fi
+ * station interface, queues, and event handlers.
+ *
+ * @return
+ * - `ESP_OK` on success
+ * - an ESP-IDF error code on failure
+ *
+ * @note Call from task context during system initialization.
+ * @warning Initialization order matters because the module depends on NVS,
+ * network stack, and event loop setup.
+ */
 esp_err_t WiFi_Initialize();
 
+/**
+ * @brief Wi-Fi worker task.
+ *
+ * Waits for commands on the Wi-Fi command queue and performs scan, connect,
+ * or disconnect operations before forwarding results.
+ *
+ * @param[in] arg Task context pointer supplied by the creator.
+ *
+ * @note Runs in task context and blocks on queues and delays.
+ */
 void WiFi_Work(void *arg);
 
+/**
+ * @brief Connects the station to an access point.
+ *
+ * @param[in] w_data Connection data containing the SSID and password.
+ *
+ * @return
+ * - `ESP_OK` on success
+ * - `ESP_FAIL` if the connection request cannot be started
+ */
 esp_err_t WiFi_Connect(wifi_data *w_data);
 
+/**
+ * @brief Returns the current Wi-Fi connection state.
+ *
+ * @return `true` when connected, otherwise `false`.
+ */
 bool WiFi_IsConnected();
 
+/**
+ * @brief Disconnects the station from the access point.
+ *
+ * @return
+ * - `ESP_OK` on success
+ * - an ESP-IDF error code on failure
+ */
 esp_err_t WiFi_Disconnect(void);
 
+/**
+ * @brief Releases Wi-Fi resources.
+ *
+ * Stops and deinitializes the Wi-Fi stack, removes handlers, and destroys the
+ * network interface.
+ *
+ * @return
+ * - `ESP_OK` on success
+ * - an ESP-IDF error code on failure
+ *
+ * @note Call after Wi-Fi activity has stopped.
+ */
 esp_err_t WiFi_Dispose(void);
+
+/** @} */
 
 #endif
