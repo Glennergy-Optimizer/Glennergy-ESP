@@ -81,6 +81,7 @@ void Sensor_Work(void* parameter) {
     uint32_t sensor_read_interval;
 
     Sensor_Init_v2(app);
+    vTaskDelay(pdMS_TO_TICKS(3000));
     hal::BME280Sensor environment_sensor = hal::BME280Sensor();
     environment_sensor.bme280_sensor_init();
     while (1) {
