@@ -1,16 +1,11 @@
-
-
-/*****************************************************************************
- * | File       :   lvgl_demo.c
- * | Author     :   Waveshare team
- * | Function   :   Cyberpunk LVGL GUI Demo
- * | Info       :   Futuristic dashboard with neon cyberpunk styling
- *----------------
- * | Version    :   V3.0
- * | Date       :   2024-12-07
- * | Info       :   Cyberpunk UI with glowing effects and neon colors
+/**
+ * @file lvgl_demo.c
+ * @brief Implementation of the LVGL demo UI.
  *
- ******************************************************************************/
+ * @ingroup LVGL_DEMO
+ *
+ * Builds and loads the demo screen used by the application.
+ */
 
 #include "lvgl_demo.h"
 #include "gpio.h"
@@ -18,20 +13,29 @@
 #include <math.h>
 #include <time.h>
 
+/**
+ * @brief Snapshot of demo sensor values used to populate the UI.
+ */
 typedef struct {
-    float temperature;
-    float humidity;
-    float pressure;
-    char weather[32];
+    float temperature; /**< Temperature value. */
+    float humidity;    /**< Humidity value. */
+    float pressure;    /**< Pressure value. */
+    char weather[32];  /**< Weather text. */
 } sensor_data_t;
 
+/**
+ * @brief Container for 24-point electricity samples.
+ */
 typedef struct {
-    float values[24];
+    float values[24]; /**< Sample values. */
 } electricity_data_t;
 
+/**
+ * @brief Container for 24-point forecast samples.
+ */
 typedef struct {
-    float prices[24];
-    float temp[24];
+    float prices[24]; /**< Forecast prices. */
+    float temp[24];   /**< Forecast temperatures. */
 } forecast_data_t;
 
 /* ================= GLOBAL ================= */
@@ -42,6 +46,9 @@ static lv_obj_t * screen;
 
 static lv_style_t style_bg, style_card, style_title, style_value;
 
+/**
+ * @brief Initializes the shared LVGL styles used by the demo screen.
+ */
 static void init_styles()
 {
     lv_style_init(&style_bg);
@@ -64,6 +71,11 @@ static void init_styles()
 
 /* ================= SIDEBAR ================= */
 
+/**
+ * @brief Creates the left-side navigation bar for the demo screen.
+ *
+ * @param parent Parent LVGL object that receives the sidebar container.
+ */
 static void create_sidebar(lv_obj_t * parent)
 {
     lv_obj_t * sidebar = lv_obj_create(parent);
@@ -88,6 +100,11 @@ static void create_sidebar(lv_obj_t * parent)
 
 /* ================= RADIAL ================= */
 
+/**
+ * @brief Creates the energy usage card with an arc gauge.
+ *
+ * @param parent Parent LVGL object that receives the card.
+ */
 static void create_energy_widget(lv_obj_t * parent)
 {
     lv_obj_t * card = lv_obj_create(parent);
@@ -118,6 +135,13 @@ static void create_energy_widget(lv_obj_t * parent)
 
 /* ================= SENSOR CARD ================= */
 
+/**
+ * @brief Creates a compact value card for sensor data.
+ *
+ * @param parent Parent LVGL object that receives the card.
+ * @param title_txt Text shown as the card title.
+ * @param value_txt Text shown as the card value.
+ */
 static void create_sensor_card(lv_obj_t * parent, const char * title_txt, const char * value_txt)
 {
     lv_obj_t * card = lv_obj_create(parent);
@@ -136,6 +160,13 @@ static void create_sensor_card(lv_obj_t * parent, const char * title_txt, const 
 
 /* ================= GRAPH ================= */
 
+/**
+ * @brief Creates a 24-point chart card with random demo values.
+ *
+ * @param parent Parent LVGL object that receives the chart card.
+ * @param title_txt Text shown as the chart title.
+ * @param color Series color used for the chart.
+ */
 static void create_graph(lv_obj_t * parent, const char * title_txt, lv_color_t color)
 {
     lv_obj_t * card = lv_obj_create(parent);
@@ -160,6 +191,11 @@ static void create_graph(lv_obj_t * parent, const char * title_txt, lv_color_t c
 
 /* ================= MAIN UI ================= */
 
+/**
+ * @brief Initializes and loads the LVGL demo screen.
+ *
+ * Builds the sidebar, summary cards, and charts, then makes the screen active.
+ */
 void gui_init(void)
 {
     init_styles();

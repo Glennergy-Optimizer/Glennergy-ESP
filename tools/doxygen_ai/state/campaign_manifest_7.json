@@ -1,0 +1,50 @@
+{
+  "requested_model": "gpt-5.4-mini",
+  "test_label": "campaign-27557482650-batch-7",
+  "files": [
+    {
+      "path": "main/UART/UART.hpp",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 5362,
+      "output_tokens": 235,
+      "total_tokens": 5597,
+      "estimated_cost_usd": 0.0018104999999999998,
+      "estimated_cost_sek": 0.016656256004999998,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "main/UART/UART.cpp",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 5599,
+      "output_tokens": 1152,
+      "total_tokens": 6751,
+      "estimated_cost_usd": 0.00370375,
+      "estimated_cost_sek": 0.0340737962875,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "main/UART/uart_diag_shell.hpp",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 7843,
+      "output_tokens": 215,
+      "total_tokens": 8058,
+      "estimated_cost_usd": 0.0023907499999999996,
+      "estimated_cost_sek": 0.021994445757499995,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "main/UART/uart_diag_shell.cpp",
+      "status": "rejected",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 8318,
+      "output_tokens": 4167,
+      "total_tokens": 12485,
+      "estimated_cost_usd": 0.0,
+      "estimated_cost_sek": 0.0,
+      "details": "Non-comment code changed after retry=True; saved to tools/doxygen_ai/rejected/main__UART__uart_diag_shell.cpp.rejected.txt"
+    }
+  ]
+}

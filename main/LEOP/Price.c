@@ -1,3 +1,10 @@
+/**
+ * @file Price.c
+ * @brief Implementation of the price cache and fetch module.
+ *
+ * @ingroup PRICE
+ */
+
 #include "Price.h"
 #include "../HTTP.h"
 #include "../JSONParser/DataParser.h"
@@ -5,6 +12,11 @@
 
 static const char *TAG = "Price";
 
+/**
+ * @brief Implementation of Price_Initialize.
+ *
+ * See header for full contract documentation.
+ */
 int Price_Initialize(PriceList *p_list)
 {
     p_list->count = 0;
@@ -20,6 +32,11 @@ int Price_Initialize(PriceList *p_list)
     return 0;
 }
 
+/**
+ * @brief Implementation of Price_Fetch.
+ *
+ * See header for full contract documentation.
+ */
 int Price_Fetch(const char *url, PriceList *p_list)
 {
     HTTPResponse http_response = {0};
@@ -58,6 +75,11 @@ int Price_Fetch(const char *url, PriceList *p_list)
     return 0;
 }
 
+/**
+ * @brief Implementation of Price_FetchCache.
+ *
+ * See header for full contract documentation.
+ */
 int Price_FetchCache(PriceList *p_list)
 {
     int res = Cache_LoadFileJSON(&p_list->cache, "Price.json");
@@ -81,6 +103,11 @@ int Price_FetchCache(PriceList *p_list)
     return 0;
 }
 
+/**
+ * @brief Implementation of Price_Dispose.
+ *
+ * See header for full contract documentation.
+ */
 void Price_Dispose(PriceList *p_list)
 {
     p_list->count = 0;

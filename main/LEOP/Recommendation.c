@@ -1,3 +1,10 @@
+/**
+ * @file Recommendation.c
+ * @brief Implementation of the recommendation module.
+ *
+ * @ingroup RECOMMENDATION
+ */
+
 #include "Recommendation.h"
 #include "../HTTP.h"
 #include "../JSONParser/DataParser.h"
@@ -21,6 +28,11 @@ static const char* http_mock = "[
 
 static const char *TAG = "Recommendation";
 
+/**
+ * @brief Implementation of Recommendation_Initialize.
+ *
+ * See header for full contract documentation.
+ */
 int Recommendation_Initialize(RecommendationList *r_list)
 {
     r_list->count = 0;
@@ -36,6 +48,11 @@ int Recommendation_Initialize(RecommendationList *r_list)
     return 0;
 }
 
+/**
+ * @brief Implementation of Recommendation_Fetch.
+ *
+ * See header for full contract documentation.
+ */
 int Recommendation_Fetch(const char *url, RecommendationList *r_list)
 {
     HTTPResponse http_response = {0};
@@ -78,6 +95,11 @@ int Recommendation_Fetch(const char *url, RecommendationList *r_list)
     return 0;
 }
 
+/**
+ * @brief Implementation of Recommendation_FetchCache.
+ *
+ * See header for full contract documentation.
+ */
 int Recommendation_FetchCache(RecommendationList *r_list)
 {
     int res = Cache_LoadFileJSON(&r_list->cache, "Recommendations.json");
@@ -106,6 +128,11 @@ int Recommendation_FetchCache(RecommendationList *r_list)
     return 0;
 }
 
+/**
+ * @brief Implementation of Recommendation_Dispose.
+ *
+ * See header for full contract documentation.
+ */
 void Recommendation_Dispose(RecommendationList *r_list)
 {
     r_list->count = 0;

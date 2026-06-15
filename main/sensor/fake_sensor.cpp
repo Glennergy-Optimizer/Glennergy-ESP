@@ -1,3 +1,10 @@
+/**
+ * @file fake_sensor.cpp
+ * @brief Implementation of the fake sensor test helper.
+ *
+ * @ingroup SENSOR
+ */
+
 #include "fake_sensor.hpp"
 #include "esp_timer.h"
 
@@ -8,7 +15,11 @@ static int counter = 0;
 static int temp_direction = 1;
 static int humidity_direction = 1;
 
-
+/**
+ * @brief Implementation of fake_sensor_fill.
+ *
+ * See header for full contract documentation.
+ */
 void fake_sensor_fill(sensor_data_t* sensor) {
     sensor->temperature = 5;
     sensor->humidity = 4;
@@ -17,6 +28,11 @@ void fake_sensor_fill(sensor_data_t* sensor) {
     sensor->last_update_seconds = 0;
 }
 
+/**
+ * @brief Implementation of fake_sensor_update.
+ *
+ * See header for full contract documentation.
+ */
 void fake_sensor_update(sensor_data_t* sensor) {
     counter += 1;
     sensor->temperature = sensor->temperature + 0.01 * temp_direction;

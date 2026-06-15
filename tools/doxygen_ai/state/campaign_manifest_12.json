@@ -1,0 +1,83 @@
+{
+  "requested_model": "gpt-5.4-mini",
+  "test_label": "campaign-27557482650-batch-12",
+  "files": [
+    {
+      "path": "ui/Tabs/Electricity/Electricity_UI.h",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 5900,
+      "output_tokens": 253,
+      "total_tokens": 6153,
+      "estimated_cost_usd": 0.001981,
+      "estimated_cost_sek": 0.01822482361,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "ui/Tabs/Electricity/Electricity_UI.c",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 6202,
+      "output_tokens": 1758,
+      "total_tokens": 7960,
+      "estimated_cost_usd": 0.0050665,
+      "estimated_cost_sek": 0.046610837365,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "ui/Tabs/Electricity/Price_UI.h",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 5044,
+      "output_tokens": 316,
+      "total_tokens": 5360,
+      "estimated_cost_usd": 0.001893,
+      "estimated_cost_sek": 0.017415240329999998,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "ui/Tabs/Electricity/Price_UI.c",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 5397,
+      "output_tokens": 722,
+      "total_tokens": 6119,
+      "estimated_cost_usd": 0.0027932499999999997,
+      "estimated_cost_sek": 0.025697369282499997,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "ui/Tabs/Settings/WiFi_UI.h",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 6656,
+      "output_tokens": 355,
+      "total_tokens": 7011,
+      "estimated_cost_usd": 0.002374,
+      "estimated_cost_sek": 0.021840348939999997,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "ui/Tabs/Settings/WiFi_UI.c",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 6995,
+      "output_tokens": 2471,
+      "total_tokens": 9466,
+      "estimated_cost_usd": 0.0066907500000000005,
+      "estimated_cost_sek": 0.0615536287575,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "ui/components/ui_comp_hook.c",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 4449,
+      "output_tokens": 103,
+      "total_tokens": 4552,
+      "estimated_cost_usd": 0.00131825,
+      "estimated_cost_sek": 0.0121276495325,
+      "details": "Documentation updated"
+    }
+  ]
+}

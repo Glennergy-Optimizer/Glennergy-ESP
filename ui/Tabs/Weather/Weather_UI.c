@@ -1,3 +1,10 @@
+/**
+ * @file Weather_UI.c
+ * @brief Implementation of the Weather UI module.
+ *
+ * @ingroup WEATHER_UI
+ */
+
 #include "Weather_UI.h"
 #include "lvgl_port.h"
 #include "../../screens/ui_Screen1.h"
@@ -7,6 +14,11 @@ static const char *TAG = "Weather_UI";
 
 static Weather_UI weather_ui;
 
+/**
+ * @brief Implementation of Weather_UI_Initialize.
+ *
+ * See header for full contract documentation.
+ */
 void Weather_UI_Initialize()
 {
     for (int i = 0; i < 24; i++)
@@ -35,6 +47,11 @@ void Weather_UI_Initialize()
     }
 }
 
+/**
+ * @brief Implementation of Weather_UI_Update.
+ *
+ * See header for full contract documentation.
+ */
 void Weather_UI_Update()
 {
     static WeatherList weather_list;
@@ -80,6 +97,9 @@ static lv_style_t style_temp;
 static lv_style_t style_info;
 static lv_style_t style_forecast_row;
 
+/**
+ * @brief Initializes the LVGL styles used by the weather dashboard.
+ */
 static void init_styles(void)
 {
     lv_style_init(&style_card);
@@ -133,6 +153,12 @@ LV_IMG_DECLARE(icons8_rain_50);
 LV_IMG_DECLARE(icons8_heavy_rain_50);
 LV_IMG_DECLARE(icons8_snow_50);
 
+/**
+ * @brief Selects the weather icon image for a forecast code.
+ *
+ * @param obj LVGL image object to update.
+ * @param weather_code Weather code reported by the forecast data.
+ */
 static void set_icon(lv_obj_t *obj, int weather_code)
 {
     switch (weather_code)
@@ -164,6 +190,13 @@ static void set_icon(lv_obj_t *obj, int weather_code)
     }
 }
 
+/**
+ * @brief Creates one forecast row widget set.
+ *
+ * @param parent Parent container for the row.
+ *
+ * @return The created forecast row widgets.
+ */
 static forecast_row_t create_forecast_row(lv_obj_t *parent)
 {
     forecast_row_t r;
@@ -195,6 +228,12 @@ static forecast_row_t create_forecast_row(lv_obj_t *parent)
  * MAIN SCREEN
  *********************/
 
+/**
+ * @brief Creates the weather dashboard view.
+ *
+ * Initializes the shared LVGL styles and builds the current-conditions card
+ * plus the 24-hour forecast list on the weather tab page.
+ */
 void weather_dashboard_create(void)
 {
     init_styles();
@@ -307,6 +346,13 @@ void weather_dashboard_create(void)
     }
 }
 
+/**
+ * @brief Returns a short text label for a weather code.
+ *
+ * @param code Weather code reported by the forecast data.
+ *
+ * @return Static text label for the weather code.
+ */
 static const char *weather_code_to_text(int code)
 {
     switch (code)
@@ -328,6 +374,11 @@ static const char *weather_code_to_text(int code)
     }
 }
 
+/**
+ * @brief Implementation of Weather_UI_Update_test.
+ *
+ * See header for full contract documentation.
+ */
 void Weather_UI_Update_test()
 {
     static WeatherList weather_list;

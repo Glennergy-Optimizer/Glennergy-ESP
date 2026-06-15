@@ -1,0 +1,50 @@
+{
+  "requested_model": "gpt-5.4-mini",
+  "test_label": "campaign-27557482650-batch-1",
+  "files": [
+    {
+      "path": "main/HTTP.h",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 5418,
+      "output_tokens": 320,
+      "total_tokens": 5738,
+      "estimated_cost_usd": 0.0019945,
+      "estimated_cost_sek": 0.018349021045,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "main/HTTP.c",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 5524,
+      "output_tokens": 760,
+      "total_tokens": 6284,
+      "estimated_cost_usd": 0.002901,
+      "estimated_cost_sek": 0.026688648809999996,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "main/WiFi.h",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 6976,
+      "output_tokens": 899,
+      "total_tokens": 7875,
+      "estimated_cost_usd": 0.003542,
+      "estimated_cost_sek": 0.03258572702,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "main/WiFi.c",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 7857,
+      "output_tokens": 2879,
+      "total_tokens": 10736,
+      "estimated_cost_usd": 0.00772225,
+      "estimated_cost_sek": 0.07104323277249999,
+      "details": "Documentation updated"
+    }
+  ]
+}

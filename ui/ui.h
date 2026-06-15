@@ -6,6 +6,16 @@
 #ifndef _SQUARELINE_PROJECT_UI_H
 #define _SQUARELINE_PROJECT_UI_H
 
+/**
+ * @file ui.h
+ * @brief Public UI entry points and generated screen declarations.
+ *
+ * This header exposes the generated LVGL objects and UI lifecycle functions
+ * used to initialize and destroy the SquareLine-generated interface.
+ *
+ * @ingroup UI
+ */
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -24,15 +34,22 @@ extern "C" {
 ///////////////////// VARIABLES ////////////////////
 
 
-// EVENTS
-
+/**
+ * @brief Generated initial action object used by the UI startup sequence.
+ */
 extern lv_obj_t * ui____initial_actions0;
 
 // IMAGES AND IMAGE SETS
 LV_IMG_DECLARE(ui_img_1286710220);    // assets/8e9fc233-7db3-4144-9197-476dcfcd7fda.png
 
-// UI INIT
+/**
+ * @brief Initializes the generated UI.
+ */
 void ui_init();
+
+/**
+ * @brief Destroys the generated UI.
+ */
 void ui_destroy(void);
 
 #ifdef __cplusplus

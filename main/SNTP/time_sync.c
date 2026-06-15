@@ -1,6 +1,17 @@
+/**
+ * @file time_sync.c
+ * @brief Implementation of the SNTP time synchronization module.
+ *
+ * @ingroup SNTP
+ */
 
 #include "time_sync.h"
 
+/**
+ * @brief Implementation of TimeSync_Start.
+ *
+ * See header for full contract documentation.
+ */
 esp_err_t TimeSync_Start() {
     // Init the default SNTP config 
     esp_sntp_config_t config = ESP_NETIF_SNTP_DEFAULT_CONFIG("pool.ntp.org");

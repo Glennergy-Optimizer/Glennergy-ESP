@@ -1,3 +1,10 @@
+/**
+ * @file Price_UI.c
+ * @brief Implementation of the electricity price UI tab.
+ *
+ * @ingroup Electricity
+ */
+
 #include "Price_UI.h"
 #include "lvgl_port.h"
 #include "../../screens/ui_Screen1.h"
@@ -7,6 +14,11 @@ static const char *TAG = "Price_UI";
 
 static Price_UI price_ui;
 
+/**
+ * @brief Implementation of Price_UI_Initialize.
+ *
+ * See header for full contract documentation.
+ */
 void Price_UI_Initialize()
 {
     /* Main panel */
@@ -53,7 +65,11 @@ void Price_UI_Initialize()
     }
 }
 
-
+/**
+ * @brief Implementation of Price_UI_Update.
+ *
+ * See header for full contract documentation.
+ */
 void Price_UI_Update()
 {
     static PriceList price_list;
