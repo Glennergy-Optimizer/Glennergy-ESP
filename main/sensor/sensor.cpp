@@ -6,16 +6,6 @@
 #include "esp_timer.h"
 #include "../app_queues.h"
 #include "../hal/bme280_sensor.hpp"
-// the C api is currently unused
-/*
-#include "../hal/temperature_sensor_c_api.h"
-#include "../hal/temperature_sensor.hpp"
-#include "../hal/humidity_sensor.hpp"
-#include "../hal/humidity_sensor_c_api.h"
-#include "../hal/pressure_sensor.hpp"
-#include "../hal/pressure_sensor_c_api.h"
-*/
-//#include "../app_types.h"
 
 static constexpr char* TAG = "Sensor.cpp";
 static constexpr time_t MIN_VALID_UNIX_TIME = 1704067200; // 2024-01-01 00:00:00 UTC
@@ -23,29 +13,6 @@ static bool fake_mode = false;
 
 QueueHandle_t Sensor_Queue = NULL;
 
-/*
-static void publish_temperature_data(TemperatureReadingInC* tempReadInC)
-{
-    if (Sensor_Queue != NULL) {
-        xQueueOverwrite(Sensor_Queue, tempReadInC);
-    }
-}
-
-static void publish_humidity_data(HumidityReadingInC* humidityReadingInC)
-{
-    if (Humidity_Queue != NULL) {
-        xQueueOverwrite(Humidity_Queue, humidityReadingInC);
-    }
-}
-
-static void publish_pressure_data(PressureReadingInC* pressureReadingInC)
-{
-    if (Pressure_Queue != NULL) {
-        xQueueOverwrite(Pressure_Queue, pressureReadingInC);
-    }
-}
-
-*/
 
 void Sensor_Init_v2(app_state_t* app) 
 {
@@ -64,18 +31,6 @@ void Sensor_Init_v2(app_state_t* app)
         ESP_LOGW(TAG, "Failed to create sensor queue!");
     }
 
-    /*
-    Humidity_Queue = xQueueCreate(1, sizeof(HumidityReadingInC));
-    if (Humidity_Queue == NULL)
-    {
-        ESP_LOGW(TAG, "Failed to create humidity queue!");
-    }
-
-    Pressure_Queue = xQueueCreate(1, sizeof(PressureReadingInC));
-    if (Pressure_Queue == NULL) {
-        ESP_LOGW(TAG, "Failed to create pressure queue!");
-    }
-    */
 }
 
 // Todo as of 2026-05-25 - Let's not overabstract since we only have a single bme280 sensor for now.
@@ -102,36 +57,18 @@ bool Sensor_Read_v2(sensor_data_t* sensor, hal::BME280Sensor& environment_sensor
         return false;
     }
 
-    // Todo - validation of SensorError code
-    TemperatureReadingInC Ctemperature;
-    Ctemperature.celcius = temperatur.celcius;
-
-    HumidityReadingInC Chumidity;
-    Chumidity.humidity = humidityReading.humidity;
-
-    PressureReadingInC Cpressure;
-    Cpressure.pressure = pressureReading.pressure;
-
-    sensor->temperature = Ctemperature.celcius;
-    sensor->humidity = Chumidity.humidity;
-    sensor->pressure = Cpressure.pressure;
+    sensor->temperature = temperatur.celcius;
+    sensor->humidity = humidityReading.humidity;
+    sensor->pressure = pressureReading.pressure;
     // Todo - använda SensorError enum och koppla till valid?
     sensor->valid = true;
     // Todo - Låta read skicka temperatur?
     sensor->last_update_seconds = esp_timer_get_time() / 1000000ULL;
     sensor->last_unix_time = temperatur.unix_timestamp;
     sensor->wall_time_valid = sensor->last_unix_time >= MIN_VALID_UNIX_TIME;
-    //uint32_t time_test = _gettimeofday_r();
-    //uint32_t time_test2 = gettimeday
 
     sensor_data_t sensor_snapshot = *sensor;
     xQueueOverwrite(Sensor_Queue, &sensor_snapshot);
-
-    /*
-    publish_temperature_data(&Ctemperature);
-    publish_humidity_data(&Chumidity);
-    publish_pressure_data(&Cpressure);
-    */
 
     return true;
 }

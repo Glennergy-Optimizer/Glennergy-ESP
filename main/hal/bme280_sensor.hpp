@@ -7,14 +7,7 @@
 #include "i2c_bus.h"
 #include "bme280.h"
 #include "freertos/FreeRTOS.h"
-//#include "freertos/task.h"
-//#include "fake_sensor.hpp"
 #include "freertos/queue.h"
-//#include "sensor.h"
-//#include "driver/gpio.h"  
-//#include "esp_err.h"
-//#include "esp_log.h"
-//#include "esp_timer.h"
 #include "../app_queues.h"
 
 namespace hal {
@@ -29,8 +22,6 @@ namespace hal {
 
             bool is_present() override;
             void increment_read_failure();
-            //void clock_unix_time_public();   
-            //void increment_read_failure_v2(hal::BME280Sensor& sensor);
 
             bool bme280_sensor_init();
         private:
@@ -44,8 +35,6 @@ namespace hal {
             i2c_config_t i2c_config;
             i2c_port_t i2c_port;
             uint8_t adress; 
-
-            //void clock_unix_time();
             
             void BME280Sensor_init_i2c_config();
             bool bme280_init_at_address(uint8_t address);
