@@ -1,0 +1,50 @@
+{
+  "requested_model": "gpt-5.4-mini",
+  "test_label": "campaign-27557482650-batch-14",
+  "files": [
+    {
+      "path": "ui/images/icons8-snow-50.c",
+      "status": "skipped",
+      "model": "",
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0,
+      "estimated_cost_usd": 0.0,
+      "estimated_cost_sek": 0.0,
+      "details": "File exceeds MAX_CHARS_PER_FILE"
+    },
+    {
+      "path": "ui/images/icons8-rain-50.c",
+      "status": "skipped",
+      "model": "",
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0,
+      "estimated_cost_usd": 0.0,
+      "estimated_cost_sek": 0.0,
+      "details": "File exceeds MAX_CHARS_PER_FILE"
+    },
+    {
+      "path": "ui/images/icons8-summer-50.c",
+      "status": "skipped",
+      "model": "",
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0,
+      "estimated_cost_usd": 0.0,
+      "estimated_cost_sek": 0.0,
+      "details": "File exceeds MAX_CHARS_PER_FILE"
+    },
+    {
+      "path": "ui/images/icons8-thermometer-50.c",
+      "status": "skipped",
+      "model": "",
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0,
+      "estimated_cost_usd": 0.0,
+      "estimated_cost_sek": 0.0,
+      "details": "File exceeds MAX_CHARS_PER_FILE"
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "requested_model": "gpt-5.4-mini",
+  "test_label": "campaign-27557482650-batch-9",
+  "files": [
+    {
+      "path": "main/LEOP/Price.h",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 4960,
+      "output_tokens": 463,
+      "total_tokens": 5423,
+      "estimated_cost_usd": 0.002166,
+      "estimated_cost_sek": 0.019926788459999997,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "main/LEOP/Price.c",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 5394,
+      "output_tokens": 618,
+      "total_tokens": 6012,
+      "estimated_cost_usd": 0.0025845,
+      "estimated_cost_sek": 0.023776908944999998,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "main/LEOP/Weather.h",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 4950,
+      "output_tokens": 525,
+      "total_tokens": 5475,
+      "estimated_cost_usd": 0.0022875,
+      "estimated_cost_sek": 0.021044565374999998,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "main/LEOP/Weather.c",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 5437,
+      "output_tokens": 596,
+      "total_tokens": 6033,
+      "estimated_cost_usd": 0.0025512499999999997,
+      "estimated_cost_sek": 0.023471015262499995,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "main/LEOP/Recommendation.h",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 5161,
+      "output_tokens": 511,
+      "total_tokens": 5672,
+      "estimated_cost_usd": 0.00231225,
+      "estimated_cost_sek": 0.021272260672499998,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "main/LEOP/Recommendation.c",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 5636,
+      "output_tokens": 813,
+      "total_tokens": 6449,
+      "estimated_cost_usd": 0.0030350000000000004,
+      "estimated_cost_sek": 0.027921423350000002,
+      "details": "Documentation updated"
+    }
+  ]
+}

@@ -1,3 +1,10 @@
+/**
+ * @file uart_diag_shell.cpp
+ * @brief Implementation of the UART diagnostic shell module.
+ *
+ * @ingroup UART
+ */
+
 #include "esp_log.h"
 #include <iostream>
 #include <cstdio>
@@ -22,21 +29,91 @@
 
 static const char *TAG = "UART_DIAG_SHELL.CPP";
 
+/**
+ * @brief Print current sensor values and timing state.
+ *
+ * @param[in,out] state Shared application state used by the shell.
+ */
 void handle_sensor(app_state_t *state);
+
+/**
+ * @brief Print current system status flags.
+ *
+ * @param[in,out] state Shared application state used by the shell.
+ */
 void handle_status(app_state_t *state);
+
+/**
+ * @brief Print the latest LEOP recommendation data.
+ *
+ * @param[in,out] state Shared application state used by the shell.
+ */
 void handle_leop(app_state_t *state);
+
+/**
+ * @brief Update runtime configuration from parsed shell tokens.
+ *
+ * @param[in] tokens Parsed command tokens.
+ * @param[in,out] state Shared application state used by the shell.
+ */
 void handle_config(std::vector<std::string> tokens, app_state_t *state);
+
+/**
+ * @brief Print runtime heap and task diagnostics.
+ *
+ * @param[in,out] state Shared application state used by the shell.
+ */
 void handle_diag(app_state_t *state);
+
+/**
+ * @brief Print the current runtime configuration values.
+ *
+ * @param[in,out] state Shared application state used by the shell.
+ */
 void print_config(app_state_t *state);
 
+/**
+ * @brief Print shell help text.
+ *
+ * @param[in] wait_for_enter When `true`, pauses between help lines.
+ */
 void handle_help(bool wait_for_enter);
+
 void print_help_line(const std::string message, bool wait_for_enter);
+
+/**
+ * @brief Print a message and wait for Enter on UART.
+ *
+ * @param[in] message Message shown before blocking for input.
+ */
 void print_and_wait_for_enter(const std::string);
 
+/**
+ * @brief Split a string using a delimiter character.
+ *
+ * @param[in] str Input string to split.
+ * @param[in] delimiter Delimiter character.
+ * @return Tokens extracted from the string.
+ */
 std::vector<std::string> split(const std::string &str, char delimiter);
+
+/**
+ * @brief Parse a decimal integer from a string.
+ *
+ * @param[in] str Input string to parse.
+ * @param[out] out Parsed integer value on success.
+ * @return `true` if the full string was parsed as an integer.
+ */
 bool parse_int(const std::string &str, int &out);
 
 // *** HELPER FUNCTIONS ***
+/**
+ * @brief Split a string using a delimiter character.
+ *
+ * @param[in] str Input string to split.
+ * @param[in] delimiter Delimiter character.
+ * @return Tokens extracted from the string.
+ */
 std::vector<std::string> split(const std::string &str, char delimiter)
 {
     std::vector<std::string> result;
@@ -50,21 +127,44 @@ std::vector<std::string> split(const std::string &str, char delimiter)
 }
 
 // todo - maybe change to enum instead of simple format helpers?
+/**
+ * @brief Return connection-state text for shell output.
+ *
+ * @param[in] value Connection state flag.
+ * @return `"Connected"` when `true`, otherwise `"Disconnected"`.
+ */
 const char *connected_text(bool value)
 {
     return value ? "Connected" : "Disconnected";
 }
 
+/**
+ * @brief Return enabled-state text for shell output.
+ *
+ * @param[in] value Enabled state flag.
+ * @return `"Enabled"` when `true`, otherwise `"Disabled"`.
+ */
 const char *enabled_text(bool value)
 {
     return value ? "Enabled" : "Disabled";
 }
 
+/**
+ * @brief Return generic status text for shell output.
+ *
+ * @param[in] value Status flag.
+ * @return `"OK"` when `true`, otherwise `"Not OK"`.
+ */
 const char *ok_text(bool value)
 {
     return value ? "OK" : "Not OK";
 }
 
+/**
+ * @brief Print a Unix timestamp as local wall-clock time.
+ *
+ * @param[in,out] time Unix time value to format.
+ */
 static void print_local_time(time_t& time) {
     struct tm local_time;
     localtime_r(&time, &local_time);
@@ -84,6 +184,13 @@ static void print_local_time(time_t& time) {
 // 10 is the number base we working with(10 gives us the usual 0-9 numbers).
 // If it stopped reading before a null-terminator, then our string includes characters that could not be converted to long.
 // But if no issues, then the number can be parsed as int.
+/**
+ * @brief Parse a decimal integer from a string.
+ *
+ * @param[in] str Input string to parse.
+ * @param[out] out Parsed integer value on success.
+ * @return `true` if the full string was parsed as an integer.
+ */
 bool parse_int(const std::string &str, int &out)
 {
     char *end;
@@ -99,6 +206,11 @@ bool parse_int(const std::string &str, int &out)
 }
 
 // *** MAIN FUNCTIONS ***
+/**
+ * @brief Implementation of handle_input.
+ *
+ * See header for full contract documentation.
+ */
 void handle_input(const std::string &input, app_state_t *state)
 {
     int msg_len = input.length();
@@ -150,6 +262,11 @@ void handle_input(const std::string &input, app_state_t *state)
 }
 
 // Todo - Update counter currently throttled to once a second. Disable this?
+/**
+ * @brief Print current system status flags.
+ *
+ * @param[in,out] state Shared application state used by the shell.
+ */
 void handle_status(app_state_t* state)
 {
     std::cout << "Wifi: " << connected_text(state->system_status.wifi_connected) << std::endl;
@@ -158,6 +275,11 @@ void handle_status(app_state_t* state)
     std::cout << "Update counter: " << state->system_status.update_counter << std::endl;
 }
 
+/**
+ * @brief Print current sensor values and timing state.
+ *
+ * @param[in,out] state Shared application state used by the shell.
+ */
 void handle_sensor(app_state_t *state)
 {
     std::cout << "Debug valid: " << state->sensor_data.valid << std::endl;
@@ -181,6 +303,11 @@ void handle_sensor(app_state_t *state)
     std::cout << "Humidity    - " << state->sensor_data.humidity << std::endl;
 }
 
+/**
+ * @brief Print the current runtime configuration values.
+ *
+ * @param[in,out] state Shared application state used by the shell.
+ */
 void print_config(app_state_t *state)
 {
     std::cout << "fetch_interval_minutes: " << state->config_data.fetch_interval_minutes << std::endl;
@@ -188,6 +315,12 @@ void print_config(app_state_t *state)
     std::cout << "test_mode: " << enabled_text(state->config_data.test_mode) << std::endl;
 }
 
+/**
+ * @brief Update runtime configuration from parsed shell tokens.
+ *
+ * @param[in] tokens Parsed command tokens.
+ * @param[in,out] state Shared application state used by the shell.
+ */
 void handle_config(std::vector<std::string> tokens, app_state_t *state)
 {
     std::string help_msg = "syntax: \"config <config_name> <value>\".\nFields (name) (value):\n \tfetch_interval_minutes uint32_t\n\ttest_mode bool\n";
@@ -250,6 +383,11 @@ void handle_config(std::vector<std::string> tokens, app_state_t *state)
     }
 }
 
+/**
+ * @brief Print the latest LEOP recommendation data.
+ *
+ * @param[in,out] app Shared application state used by the shell.
+ */
 void handle_leop(app_state_t *app)
 {
     if (app == NULL) {
@@ -268,6 +406,13 @@ void handle_leop(app_state_t *app)
 }
 
 // Diagnostics helper function - prints info about a task
+/**
+ * @brief Print basic FreeRTOS stack usage information for one task.
+ *
+ * @param[in] name Display name for the task.
+ * @param[in] handle Task handle to inspect.
+ * @param[in] stack_size Expected total stack size used for the calculation.
+ */
 void print_task_stack(const char* name, TaskHandle_t handle, uint32_t stack_size)
 {
     if (handle == NULL)
@@ -283,6 +428,11 @@ void print_task_stack(const char* name, TaskHandle_t handle, uint32_t stack_size
     std::cout << name << ": used " << used << "/" << stack_size << " {" << used_percent << "%), min free " << free << std::endl;
 }
 
+/**
+ * @brief Print runtime heap and task diagnostics.
+ *
+ * @param[in,out] app Shared application state used by the shell.
+ */
 void handle_diag(app_state_t *app)
 {
     // Mirkoseconds since boot, then converted to seconds and divide by matching type (unsigned long long)
@@ -310,6 +460,11 @@ void handle_diag(app_state_t *app)
 }
 
 // *** HELP helper functions ***
+/**
+ * @brief Print shell help text.
+ *
+ * @param[in] wait_for_enter When `true`, pauses between help lines.
+ */
 void handle_help(bool wait_for_enter)
 {
     if (wait_for_enter == true)
@@ -339,6 +494,13 @@ void handle_help(bool wait_for_enter)
     std::cout << "HELP - This command =)" << std::endl;
 }
 
+/**
+ * @brief Print a message and wait for Enter on UART.
+ *
+ * @param[in] message Message shown before blocking for input.
+ *
+ * @note Blocks in task context while waiting for UART input.
+ */
 void print_and_wait_for_enter(const std::string message)
 {
     uint8_t byte;

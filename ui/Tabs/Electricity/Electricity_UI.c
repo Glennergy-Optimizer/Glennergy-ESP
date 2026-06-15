@@ -1,3 +1,10 @@
+/**
+ * @file Electricity_UI.c
+ * @brief Implementation of the Electricity tab UI.
+ *
+ * @ingroup ELECTRICITY_UI
+ */
+
 #include "Electricity_UI.h"
 #include "lvgl_port.h"
 #include "../../screens/ui_Screen1.h"
@@ -15,6 +22,13 @@ static lv_coord_t electricity_chart_data[96];
 static lv_obj_t *time_container;
 static lv_obj_t *time_labels[24]; // max 24 hours
 
+/**
+ * @brief Handles chart draw events to color bars based on value.
+ *
+ * Called from the LVGL draw callback context. Avoid blocking work here.
+ *
+ * @param[in] e LVGL event object.
+ */
 static void chart_event_cb(lv_event_t *e)
 {
     lv_obj_t *chart = lv_event_get_target(e);
@@ -48,11 +62,24 @@ static void chart_event_cb(lv_event_t *e)
     }
 }
 
+/**
+ * @brief Extracts the hour from an ISO timestamp string.
+ *
+ * @param[in] iso ISO 8601 timestamp string with the hour at positions 11-12.
+ *
+ * @return Parsed hour value in the range 0-23.
+ */
 int get_hour(const char *iso)
 {
     return (iso[11] - '0') * 10 + (iso[12] - '0');
 }
 
+/**
+ * @brief Creates the time-axis label container under the chart.
+ *
+ * @note The container is aligned relative to the chart and creates 24 labels
+ *       for hourly markers.
+ */
 void create_time_axis_container()
 {
     time_container = lv_obj_create(ui_TabPage_Electricity);
@@ -75,6 +102,11 @@ void create_time_axis_container()
     }
 }
 
+/**
+ * @brief Updates the time-axis labels from fetched recommendation data.
+ *
+ * @param[in] data Recommendation data used to derive the first displayed hour.
+ */
 void Electricity_Update_TimeAxis(const RecommendationList *data)
 {
     int start_hour =
@@ -91,6 +123,11 @@ void Electricity_Update_TimeAxis(const RecommendationList *data)
     }
 }
 
+/**
+ * @brief Implementation of Electricity_UI_Initialize.
+ *
+ * See header for full contract documentation.
+ */
 void Electricity_UI_Initialize()
 {
     electricity_ui.ui_Chart_Electricity = lv_chart_create(ui_TabPage_Electricity);
@@ -123,6 +160,11 @@ void Electricity_UI_Initialize()
     lv_obj_add_event_cb(electricity_ui.ui_Chart_Electricity, chart_event_cb, LV_EVENT_DRAW_PART_BEGIN, NULL);
 }
 
+/**
+ * @brief Implementation of Electricity_UI_Update.
+ *
+ * See header for full contract documentation.
+ */
 void Electricity_UI_Update(void)
 {
     static RecommendationList rec_list;

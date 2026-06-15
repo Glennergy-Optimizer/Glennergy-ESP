@@ -38,6 +38,9 @@ jobs:
       MAX_FILES_PER_RUN: "20"
       MAX_CHARS_PER_FILE: "18000"
       OPENAI_MAX_OUTPUT_TOKENS: "150000"
+      OPENAI_INPUT_COST_PER_MILLION: "0.25"
+      OPENAI_OUTPUT_COST_PER_MILLION: "2.00"
+      OPENAI_USD_TO_SEK: "9.19981"
     steps:
       - name: Derive PR metadata
         run: |
@@ -84,6 +87,10 @@ jobs:
           success_count=0
           failure_count=0
           batch_index=0
+          total_input_tokens=0
+          total_output_tokens=0
+          total_cost_usd=0
+          total_cost_sek=0
 
           while IFS= read -r batch_line || [ -n "${batch_line}" ]; do
             batch_trimmed="$(printf '%s' "${batch_line}" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')"
@@ -124,6 +131,27 @@ jobs:
               failure_count=$((failure_count + 1))
               printf '%s|failed|%s\n' "${batch_index}" "${batch_trimmed}" >> "${results_file}"
             fi
+
+            if [ -f "${manifest_path}" ]; then
+              batch_totals="$(python -c 'import json, sys; payload=json.load(open(sys.argv[1], "r", encoding="utf-8")); input_tokens=sum(int(entry.get("input_tokens") or 0) for entry in payload.get("files", [])); output_tokens=sum(int(entry.get("output_tokens") or 0) for entry in payload.get("files", [])); print(f"{input_tokens}|{output_tokens}")' "${manifest_path}")"
+              batch_input_tokens="${batch_totals%%|*}"
+              batch_output_tokens="${batch_totals##*|}"
+
+              batch_costs="$(python -c 'import sys; input_tokens=int(sys.argv[1]); output_tokens=int(sys.argv[2]); input_cost_per_million=float(sys.argv[3]); output_cost_per_million=float(sys.argv[4]); usd_to_sek=float(sys.argv[5]); cost_usd=((input_tokens / 1_000_000) * input_cost_per_million) + ((output_tokens / 1_000_000) * output_cost_per_million); cost_sek=cost_usd * usd_to_sek; print(f"{cost_usd:.6f}|{cost_sek:.6f}")' "${batch_input_tokens}" "${batch_output_tokens}" "${OPENAI_INPUT_COST_PER_MILLION}" "${OPENAI_OUTPUT_COST_PER_MILLION}" "${OPENAI_USD_TO_SEK}")"
+              batch_cost_usd="${batch_costs%%|*}"
+              batch_cost_sek="${batch_costs##*|}"
+
+              total_input_tokens=$((total_input_tokens + batch_input_tokens))
+              total_output_tokens=$((total_output_tokens + batch_output_tokens))
+              total_cost_usd="$(python -c 'import sys; print(f"{float(sys.argv[1]) + float(sys.argv[2]):.6f}")' "${total_cost_usd}" "${batch_cost_usd}")"
+              total_cost_sek="$(python -c 'import sys; print(f"{float(sys.argv[1]) + float(sys.argv[2]):.6f}")' "${total_cost_sek}" "${batch_cost_sek}")"
+
+              {
+                echo "- Batch ${batch_index} estimated tokens: input=${batch_input_tokens}, output=${batch_output_tokens}"
+                echo "- Batch ${batch_index} estimated cost: \$${batch_cost_usd} / ${batch_cost_sek} kr"
+                echo
+              } >> "$GITHUB_STEP_SUMMARY"
+            fi
           done < "${BATCH_FILE}"
 
           {
@@ -134,6 +162,10 @@ jobs:
             echo "- Batch file: \`${BATCH_FILE}\`"
             echo "- Successful batches: ${success_count}"
             echo "- Failed batches: ${failure_count}"
+            echo "- Total input tokens: ${total_input_tokens}"
+            echo "- Total output tokens: ${total_output_tokens}"
+            echo "- Estimated total cost (USD): \$${total_cost_usd}"
+            echo "- Estimated total cost (SEK): ${total_cost_sek} kr"
             echo
             echo "### Batch Results"
             while IFS='|' read -r idx status batch; do
@@ -144,6 +176,10 @@ jobs:
           echo "success_count=${success_count}" >> "$GITHUB_OUTPUT"
           echo "failure_count=${failure_count}" >> "$GITHUB_OUTPUT"
           echo "results_file=${results_file}" >> "$GITHUB_OUTPUT"
+          echo "total_input_tokens=${total_input_tokens}" >> "$GITHUB_OUTPUT"
+          echo "total_output_tokens=${total_output_tokens}" >> "$GITHUB_OUTPUT"
+          echo "total_cost_usd=${total_cost_usd}" >> "$GITHUB_OUTPUT"
+          echo "total_cost_sek=${total_cost_sek}" >> "$GITHUB_OUTPUT"
 
       - name: Upload rejected outputs
         if: always()
@@ -179,6 +215,10 @@ jobs:
             Batch file: `${{ env.BATCH_FILE }}`
             Successful batches: `${{ steps.campaign.outputs.success_count }}`
             Failed batches: `${{ steps.campaign.outputs.failure_count }}`
+            Total input tokens: `${{ steps.campaign.outputs.total_input_tokens }}`
+            Total output tokens: `${{ steps.campaign.outputs.total_output_tokens }}`
+            Estimated total cost (USD): `${{ steps.campaign.outputs.total_cost_usd }}`
+            Estimated total cost (SEK): `${{ steps.campaign.outputs.total_cost_sek }} kr`
 
             Notes:
             - successful batches are included in this PR

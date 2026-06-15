@@ -10,7 +10,9 @@
  *
  * Provides helpers for issuing HTTP GET requests and storing the response
  * payload in a dynamically allocated buffer.
- *
+ */
+
+/**
  * @defgroup HTTP HTTP
  * @brief HTTP client helpers for fetching response data.
  *

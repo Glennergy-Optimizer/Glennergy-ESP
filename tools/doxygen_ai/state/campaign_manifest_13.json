@@ -1,0 +1,61 @@
+{
+  "requested_model": "gpt-5.4-mini",
+  "test_label": "campaign-27557482650-batch-13",
+  "files": [
+    {
+      "path": "ui/images/icons8-cloud-lightning-50.c",
+      "status": "skipped",
+      "model": "",
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0,
+      "estimated_cost_usd": 0.0,
+      "estimated_cost_sek": 0.0,
+      "details": "File exceeds MAX_CHARS_PER_FILE"
+    },
+    {
+      "path": "ui/images/icons8-fog-50.c",
+      "status": "skipped",
+      "model": "",
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0,
+      "estimated_cost_usd": 0.0,
+      "estimated_cost_sek": 0.0,
+      "details": "File exceeds MAX_CHARS_PER_FILE"
+    },
+    {
+      "path": "ui/images/icons8-clouds-50.c",
+      "status": "skipped",
+      "model": "",
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0,
+      "estimated_cost_usd": 0.0,
+      "estimated_cost_sek": 0.0,
+      "details": "File exceeds MAX_CHARS_PER_FILE"
+    },
+    {
+      "path": "ui/images/icons8-heavy-rain-50.c",
+      "status": "skipped",
+      "model": "",
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0,
+      "estimated_cost_usd": 0.0,
+      "estimated_cost_sek": 0.0,
+      "details": "File exceeds MAX_CHARS_PER_FILE"
+    },
+    {
+      "path": "ui/images/icons8-partly-cloudy-day-50.c",
+      "status": "skipped",
+      "model": "",
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0,
+      "estimated_cost_usd": 0.0,
+      "estimated_cost_sek": 0.0,
+      "details": "File exceeds MAX_CHARS_PER_FILE"
+    }
+  ]
+}

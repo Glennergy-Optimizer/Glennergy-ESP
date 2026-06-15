@@ -1,3 +1,10 @@
+/**
+ * @file Sensor_UI.c
+ * @brief Implementation of the sensor UI tab.
+ *
+ * @ingroup SENSOR_UI
+ */
+
 #include "Sensor_UI.h"
 #include "lvgl_port.h"
 #include "../../screens/ui_Screen1.h"
@@ -18,6 +25,11 @@ static Sensor_UI sensor_ui = {
 
 const static char* TAG = "Sensor_UI";
 
+/**
+ * @brief Creates the Home tab sensor widgets.
+ *
+ * Initializes the LVGL objects used by the sensor display.
+ */
 void Sensor_UI_Initialize()
 {
     sensor_ui.temperature_label_dyn = lv_label_create(ui_TabPage_Home);
@@ -88,6 +100,11 @@ void Sensor_UI_Initialize()
     lv_arc_set_value(sensor_ui.arc_pressure_dyn, 50);
 }
 
+/**
+ * @brief Implementation of Sensor_UI_Update.
+ *
+ * See header for full contract documentation.
+ */
 void Sensor_UI_Update(void)
 {    
     //hal::TemperatureReading temp_reading;

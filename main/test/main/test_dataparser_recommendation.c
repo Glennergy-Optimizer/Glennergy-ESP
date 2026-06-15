@@ -1,3 +1,10 @@
+/**
+ * @file test_dataparser_recommendation.c
+ * @brief Unit tests for DataParser recommendation parsing.
+ *
+ * @ingroup DataParser
+ */
+
 #include "unity.h"
 #include "../../JSONParser/DataParser.h"
 
@@ -13,11 +20,17 @@ static const char *not_array_json = "{\"id\":1}";
 
 static const char *empty_array_json = "[]";
 
+/**
+ * @brief Keeps the translation unit linked for test discovery.
+ */
 void force_link_dataparser_recommendation(void)
 {
 
 }
 
+/**
+ * @brief Verifies that valid recommendation JSON is parsed into a list.
+ */
 TEST_CASE("DataParser recommendation valid", "[DataParser]")
 {
     RecommendationList list = {0};
@@ -37,6 +50,9 @@ TEST_CASE("DataParser recommendation valid", "[DataParser]")
 }
 
 
+/**
+ * @brief Verifies that invalid JSON is rejected.
+ */
 TEST_CASE("DataParser recommendation invalid", "[DataParser]")
 {
     RecommendationList list = {0};
@@ -46,6 +62,9 @@ TEST_CASE("DataParser recommendation invalid", "[DataParser]")
     TEST_ASSERT_EQUAL_INT(1, result);
 }
 
+/**
+ * @brief Verifies that non-array JSON is rejected.
+ */
 TEST_CASE("DataParser recommendation bot array", "[DataParser]")
 {
     RecommendationList list = {0};
@@ -55,6 +74,9 @@ TEST_CASE("DataParser recommendation bot array", "[DataParser]")
     TEST_ASSERT_EQUAL_INT(2, result);
 }
 
+/**
+ * @brief Verifies that an empty array is rejected.
+ */
 TEST_CASE("DataParser recommendation empty array", "[DataParser]")
 {
     RecommendationList list = {0};

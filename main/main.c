@@ -1,15 +1,17 @@
-/*****************************************************************************
- * | File       :   main.c
- * | Author     :   Waveshare team
- * | Function   :   Main function
- * | Info       :
- * |                Create a button using LVGL to control an external LED
- *----------------
- * | Version    :   V1.0
- * | Date       :   2024-12-06
- * | Info       :   Basic version
+/**
+ * @file main.c
+ * @brief Application entry point for system bring-up and task startup.
  *
- ******************************************************************************/
+ * Initializes board peripherals, LVGL, storage, Wi-Fi, and background tasks.
+ * Startup order matters because several modules depend on earlier
+ * initialization and on the shared application state.
+ *
+ * @ingroup main
+ *
+ * @note Intended as system orchestration rather than reusable API logic.
+ * @warning Some initialization steps block briefly during hardware bring-up and
+ * task startup.
+ */
 #define LV_CONF_INCLUDE_SIMPLE 1
 
 #include "rgb_lcd_port.h" // Header for Waveshare RGB LCD driver
@@ -50,7 +52,13 @@ static TaskHandle_t leop_task_handle = NULL;
 #define LEOP_STACK_SIZE     4096
 
 
-// 
+/**
+ * @brief Initializes the application task metadata.
+ *
+ * Populates task names and stack sizes in the shared application state.
+ *
+ * @param app Pointer to the application state to update.
+ */
 void init_app_system_task_handlers(app_state_t* app) {
     app->system_task_handlers.wifi_task.name = "WIFI_Work";
     app->system_task_handlers.ui_task.name = "UI_Update";
@@ -80,7 +88,15 @@ const char *data =
 "\"datum\": \"2026-06-02\""
 "}";
 
-// Main application function
+/**
+ * @brief Application entry point.
+ *
+ * Initializes time zone settings, loads fallback configuration, brings up
+ * peripherals, and starts the worker tasks used by the application.
+ *
+ * @note Runs in task context and performs several blocking initialization
+ * steps before launching background work.
+ */
 void app_main()
 {
     // Time stuff

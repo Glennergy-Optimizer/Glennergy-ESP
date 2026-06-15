@@ -1,8 +1,20 @@
+/**
+ * @file fake_system_status.cpp
+ * @brief Implementation of fake system status helpers for test and simulation builds.
+ *
+ * @ingroup FAKE
+ */
+
 #include "fake_system_status.hpp"
 
 
 static int counter = 0;
 
+/**
+ * @brief Implementation of fake_system_status_fill.
+ *
+ * See header for full contract documentation.
+ */
 void fake_system_status_fill(system_status_t* system) {
     system->wifi_connected = false;
     system->leop_connected = true;
@@ -10,6 +22,11 @@ void fake_system_status_fill(system_status_t* system) {
     system->sensor_ok = true;
 }
 
+/**
+ * @brief Implementation of fake_system_status_update.
+ *
+ * See header for full contract documentation.
+ */
 void fake_system_status_update(system_status_t* system) {
     counter += 1;
     system->update_counter += 1;

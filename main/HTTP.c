@@ -71,12 +71,9 @@ esp_err_t HTTPClient_EventHandler(esp_http_client_event_handle_t event)
 }
 
 /**
- * @brief Performs an HTTP GET request when Wi-Fi is connected.
+ * @brief Implementation of HTTPClient_GET.
  *
  * See header for full contract documentation.
- *
- * @param[in] url Request URL.
- * @param[out] http_response Response storage used by the HTTP client.
  */
 void HTTPClient_GET(const char *url, HTTPResponse *http_response)
 {

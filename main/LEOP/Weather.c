@@ -1,3 +1,10 @@
+/**
+ * @file Weather.c
+ * @brief Implementation of the WEATHER module.
+ *
+ * @ingroup WEATHER
+ */
+
 #include "Weather.h"
 #include "../HTTP.h"
 #include "../JSONParser/DataParser.h"
@@ -5,6 +12,11 @@
 
 static const char *TAG = "Weather";
 
+/**
+ * @brief Implementation of Weather_Initialize.
+ *
+ * See header for full contract documentation.
+ */
 int Weather_Initialize(WeatherList *w_list)
 {
     w_list->count = 0;
@@ -20,6 +32,11 @@ int Weather_Initialize(WeatherList *w_list)
     return 0;
 }
 
+/**
+ * @brief Implementation of Weather_Fetch.
+ *
+ * See header for full contract documentation.
+ */
 int Weather_Fetch(const char *url, WeatherList *w_list)
 {
     HTTPResponse http_response = {0};
@@ -56,6 +73,11 @@ int Weather_Fetch(const char *url, WeatherList *w_list)
     return 0;
 }
 
+/**
+ * @brief Implementation of Weather_FetchCache.
+ *
+ * See header for full contract documentation.
+ */
 int Weather_FetchCache(WeatherList *w_list)
 {
     int res = Cache_LoadFileJSON(&w_list->cache, "Weather.json");
@@ -79,6 +101,11 @@ int Weather_FetchCache(WeatherList *w_list)
     return 0;
 }
 
+/**
+ * @brief Implementation of Weather_Dispose.
+ *
+ * See header for full contract documentation.
+ */
 void Weather_Dispose(WeatherList *w_list)
 {
     w_list->count = 0;
