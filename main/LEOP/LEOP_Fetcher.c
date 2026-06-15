@@ -106,7 +106,7 @@ void LEOPFetcher_Work(void *arg)
             if (xQueueSend(price_queue, &leop_data->price_list, 0) != pdPASS)
                 ESP_LOGW(TAG, "Failed to send data to price queue");
 
-            vTaskDelay(pdMS_TO_TICKS(3000));
+            vTaskDelay(pdMS_TO_TICKS(60000));
             continue;
         }
 
