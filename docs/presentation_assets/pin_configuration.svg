@@ -79,7 +79,7 @@
 
   <rect class="card tagLocal" x="70" y="590" width="405" height="130" rx="10"/>
   <text class="cardTitle" x="100" y="635">Local GPIO</text>
-  <text class="text" x="100" y="676">GPIO4  -> touch interrupt</text>
+  <text class="text" x="100" y="676">GPIO4  -> GT911 INT pin</text>
   <text class="text" x="100" y="706">GPIO6  -> project LED define</text>
 
   <rect class="card tagRgb" x="1125" y="142" width="405" height="300" rx="10"/>
