@@ -1,3 +1,10 @@
+/**
+ * @file bme280_sensor.cpp
+ * @brief Implementation of the BME280 sensor HAL wrapper.
+ *
+ * @ingroup BME280_SENSOR
+ */
+
 #include "bme280_sensor.hpp"
 #include "driver/gpio.h"
 #include "freertos/task.h"
@@ -23,15 +30,27 @@ static constexpr char* TAG = "bme280_sensor.cpp";
 static bool fake_mode = false;
 
 
+/**
+ * @brief Reports whether the BME280 is present.
+ *
+ * @return False.
+ */
 bool hal::BME280Sensor::is_present () {
     return 0;
 }
 
+/**
+ * @brief Increments the internal BME280 read failure counter.
+ */
 void hal::BME280Sensor::increment_read_failure() {
     this->bme280_read_failures++;
 }
 
-
+/**
+ * @brief Returns the current UNIX time.
+ *
+ * @return Current UNIX time value from the system clock.
+ */
 static time_t clock_unix_time() {
     time_t now;
     time(&now);
@@ -39,6 +58,11 @@ static time_t clock_unix_time() {
     return now;
 }
 
+/**
+ * @brief Implementation of read(TemperatureReading).
+ *
+ * See header for full contract documentation.
+ */
 hal::SensorError hal::BME280Sensor::read(hal::TemperatureReading& reading) {
 
     if (!this->bme280_ready || this->bme280 == NULL) {
@@ -82,6 +106,11 @@ hal::SensorError hal::BME280Sensor::read(hal::TemperatureReading& reading) {
 }
 
 
+/**
+ * @brief Implementation of read(HumidityReading).
+ *
+ * See header for full contract documentation.
+ */
 hal::SensorError hal::BME280Sensor::read(hal::HumidityReading& reading) {
 
     if (!this->bme280_ready || this->bme280 == NULL) {
@@ -124,6 +153,11 @@ hal::SensorError hal::BME280Sensor::read(hal::HumidityReading& reading) {
 }
 
 
+/**
+ * @brief Implementation of read(PressureReading).
+ *
+ * See header for full contract documentation.
+ */
 hal::SensorError hal::BME280Sensor::read(hal::PressureReading& reading) {
 
     if (!this->bme280_ready || this->bme280 == NULL) {
@@ -169,11 +203,21 @@ hal::SensorError hal::BME280Sensor::read(hal::PressureReading& reading) {
 
 
 
+/**
+ * @brief Creates a BME280 sensor wrapper.
+ */
 hal::BME280Sensor::BME280Sensor()
 {
     BME280Sensor_init_i2c_config();
 }
 
+/**
+ * @brief Initializes the BME280 device at a specific I2C address.
+ *
+ * @param address I2C address to probe.
+ *
+ * @return True on success.
+ */
 bool hal::BME280Sensor::bme280_init_at_address(uint8_t address)
 {
     // Connect the driver object to the I2C buss at the specific adress
@@ -195,6 +239,9 @@ bool hal::BME280Sensor::bme280_init_at_address(uint8_t address)
     return true;
 }
 
+/**
+ * @brief Configures the I2C settings used by the BME280 sensor.
+ */
 void hal::BME280Sensor::BME280Sensor_init_i2c_config()
 {
     this->i2c_config.mode = I2C_MODE_MASTER; // ESP I2C buss is master
@@ -206,6 +253,13 @@ void hal::BME280Sensor::BME280Sensor_init_i2c_config()
     this->i2c_config.master.clk_speed = BME280_I2C_FREQ_HZ; // sets clock speed to previously defined clock speed
 }
 
+/**
+ * @brief Initializes or reconnects the BME280 device.
+ *
+ * The I2C bus is created once and reused for reconnect attempts.
+ *
+ * @return True on success.
+ */
 bool hal::BME280Sensor::bme280_sensor_init() {
     // This scans for devices, logs adresses. Mainly used for debugging so we can see if the 0x77 appears, or the fallback 0x76
     // If bme280 bus is set it means we're trying to attempting to reconnect, so don't create duplicated bus.
@@ -226,4 +280,3 @@ bool hal::BME280Sensor::bme280_sensor_init() {
     // If ADDR is connected to GND, the address is 0x76.
     return bme280_init_at_address(BME280_I2C_ADDRESS_DEFAULT);
 }
-

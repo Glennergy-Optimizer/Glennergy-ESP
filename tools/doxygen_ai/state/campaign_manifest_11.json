@@ -1,0 +1,94 @@
+{
+  "requested_model": "gpt-5.4-mini",
+  "test_label": "campaign-27557482650-batch-11",
+  "files": [
+    {
+      "path": "ui/screens/Main_UI.h",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 6344,
+      "output_tokens": 274,
+      "total_tokens": 6618,
+      "estimated_cost_usd": 0.002134,
+      "estimated_cost_sek": 0.01963239454,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "ui/screens/Main_UI.c",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 6573,
+      "output_tokens": 1931,
+      "total_tokens": 8504,
+      "estimated_cost_usd": 0.00550525,
+      "estimated_cost_sek": 0.050647254002499996,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "ui/screens/ui_Screen1.h",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 8482,
+      "output_tokens": 195,
+      "total_tokens": 8677,
+      "estimated_cost_usd": 0.0025105,
+      "estimated_cost_sek": 0.023096123005,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "ui/screens/ui_Screen1.c",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 8641,
+      "output_tokens": 4186,
+      "total_tokens": 12827,
+      "estimated_cost_usd": 0.01053225,
+      "estimated_cost_sek": 0.09689469887249999,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "ui/Tabs/Weather/Weather_UI.h",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 7456,
+      "output_tokens": 608,
+      "total_tokens": 8064,
+      "estimated_cost_usd": 0.0030800000000000003,
+      "estimated_cost_sek": 0.0283354148,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "ui/Tabs/Weather/Weather_UI.c",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 7934,
+      "output_tokens": 3161,
+      "total_tokens": 11095,
+      "estimated_cost_usd": 0.0083055,
+      "estimated_cost_sek": 0.076409021955,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "ui/Tabs/Home/Sensor_UI.h",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 6594,
+      "output_tokens": 314,
+      "total_tokens": 6908,
+      "estimated_cost_usd": 0.0022765,
+      "estimated_cost_sek": 0.020943367464999998,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "ui/Tabs/Home/Sensor_UI.c",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 6917,
+      "output_tokens": 2253,
+      "total_tokens": 9170,
+      "estimated_cost_usd": 0.0062352499999999995,
+      "estimated_cost_sek": 0.05736311530249999,
+      "details": "Documentation updated"
+    }
+  ]
+}

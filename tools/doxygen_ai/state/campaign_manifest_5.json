@@ -1,0 +1,72 @@
+{
+  "requested_model": "gpt-5.4-mini",
+  "test_label": "campaign-27557482650-batch-5",
+  "files": [
+    {
+      "path": "main/hal/hal_classes.h",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 4350,
+      "output_tokens": 141,
+      "total_tokens": 4491,
+      "estimated_cost_usd": 0.0013695,
+      "estimated_cost_sek": 0.012599139795,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "main/hal/humidity_sensor.hpp",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 4428,
+      "output_tokens": 334,
+      "total_tokens": 4762,
+      "estimated_cost_usd": 0.0017749999999999999,
+      "estimated_cost_sek": 0.016329662749999998,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "main/hal/pressure_sensor.hpp",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 4409,
+      "output_tokens": 349,
+      "total_tokens": 4758,
+      "estimated_cost_usd": 0.00180025,
+      "estimated_cost_sek": 0.016561957952499998,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "main/hal/temperature_sensor.hpp",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 4455,
+      "output_tokens": 294,
+      "total_tokens": 4749,
+      "estimated_cost_usd": 0.00170175,
+      "estimated_cost_sek": 0.0156557766675,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "main/hal/bme280_sensor.hpp",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 6858,
+      "output_tokens": 777,
+      "total_tokens": 7635,
+      "estimated_cost_usd": 0.0032685,
+      "estimated_cost_sek": 0.030069578984999998,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "main/hal/bme280_sensor.cpp",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 7430,
+      "output_tokens": 2502,
+      "total_tokens": 9932,
+      "estimated_cost_usd": 0.0068614999999999995,
+      "estimated_cost_sek": 0.06312449631499999,
+      "details": "Documentation updated"
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "requested_model": "gpt-5.4-mini",
+  "test_label": "campaign-27557482650-batch-15",
+  "files": [
+    {
+      "path": "main/test/main/test.c",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 4170,
+      "output_tokens": 124,
+      "total_tokens": 4294,
+      "estimated_cost_usd": 0.0012905,
+      "estimated_cost_sek": 0.011872354804999999,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "main/test/main/test_probe.c",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 4488,
+      "output_tokens": 207,
+      "total_tokens": 4695,
+      "estimated_cost_usd": 0.001536,
+      "estimated_cost_sek": 0.014130908159999999,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "main/test/main/test_recommendation.c",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 4439,
+      "output_tokens": 98,
+      "total_tokens": 4537,
+      "estimated_cost_usd": 0.00130575,
+      "estimated_cost_sek": 0.0120126519075,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "main/test/main/test_dataparser_price.c",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 4747,
+      "output_tokens": 432,
+      "total_tokens": 5179,
+      "estimated_cost_usd": 0.00205075,
+      "estimated_cost_sek": 0.018866510357499998,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "main/test/main/test_dataparser_recommendation.c",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 4842,
+      "output_tokens": 541,
+      "total_tokens": 5383,
+      "estimated_cost_usd": 0.0022925000000000003,
+      "estimated_cost_sek": 0.021090564425,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "main/test/main/test_dataparser_weather.c",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 4807,
+      "output_tokens": 516,
+      "total_tokens": 5323,
+      "estimated_cost_usd": 0.0022337499999999996,
+      "estimated_cost_sek": 0.020550075587499994,
+      "details": "Documentation updated"
+    }
+  ]
+}

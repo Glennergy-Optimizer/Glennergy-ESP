@@ -1,0 +1,72 @@
+{
+  "requested_model": "gpt-5.4-mini",
+  "test_label": "campaign-27557482650-batch-3",
+  "files": [
+    {
+      "path": "main/Memory/NVS.h",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 4332,
+      "output_tokens": 102,
+      "total_tokens": 4434,
+      "estimated_cost_usd": 0.001287,
+      "estimated_cost_sek": 0.011840155469999999,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "main/Memory/NVS.c",
+      "status": "rejected",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 4671,
+      "output_tokens": 100,
+      "total_tokens": 4771,
+      "estimated_cost_usd": 0.0,
+      "estimated_cost_sek": 0.0,
+      "details": "Non-comment code changed after retry=True; saved to tools/doxygen_ai/rejected/main__Memory__NVS.c.rejected.txt"
+    },
+    {
+      "path": "main/Memory/Spiffs.h",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 5139,
+      "output_tokens": 537,
+      "total_tokens": 5676,
+      "estimated_cost_usd": 0.00235875,
+      "estimated_cost_sek": 0.0217000518375,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "main/Memory/Spiffs.c",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 5674,
+      "output_tokens": 859,
+      "total_tokens": 6533,
+      "estimated_cost_usd": 0.0031365,
+      "estimated_cost_sek": 0.028855204064999997,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "main/Cache/Cache.h",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 4676,
+      "output_tokens": 410,
+      "total_tokens": 5086,
+      "estimated_cost_usd": 0.001989,
+      "estimated_cost_sek": 0.01829842209,
+      "details": "Documentation updated"
+    },
+    {
+      "path": "main/Cache/Cache.c",
+      "status": "updated",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "input_tokens": 5103,
+      "output_tokens": 380,
+      "total_tokens": 5483,
+      "estimated_cost_usd": 0.0020357500000000002,
+      "estimated_cost_sek": 0.018728513207500002,
+      "details": "Documentation updated"
+    }
+  ]
+}
