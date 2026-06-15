@@ -36,6 +36,7 @@ DEV_I2C_Port DEV_I2C_Init()
         .scl_io_num = EXAMPLE_I2C_MASTER_SCL, // I2C SCL (clock) pin
         .sda_io_num = EXAMPLE_I2C_MASTER_SDA, // I2C SDA (data) pin
         .glitch_ignore_cnt = 7,               // Ignore glitches in the I2C signal
+        .flags.enable_internal_pullup = true
     };
 
     // Create a new I2C master bus with the above configuration

@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="820" viewBox="0 0 1400 820">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#263238"/>
+    </marker>
+    <style>
+      .title{font:700 34px Arial,sans-serif;fill:#1f2933}
+      .box{fill:#f8fafc;stroke:#263238;stroke-width:2.4;rx:12}
+      .task{fill:#e3f2fd;stroke:#1565c0;stroke-width:2.6;rx:12}
+      .state{fill:#fff8e1;stroke:#f57f17;stroke-width:2.6;rx:12}
+      .ui{fill:#f3e5f5;stroke:#6a1b9a;stroke-width:2.6;rx:12}
+      .label{font:700 21px Arial,sans-serif;fill:#1f2933}
+      .sub{font:15px Arial,sans-serif;fill:#455a64}
+      .line{stroke:#263238;stroke-width:2.4;fill:none;marker-end:url(#arrow)}
+      .bi{stroke:#263238;stroke-width:2.4;fill:none;marker-start:url(#arrow);marker-end:url(#arrow)}
+      .small{font:14px Arial,sans-serif;fill:#37474f}
+    </style>
+  </defs>
+
+  <rect width="1400" height="820" fill="#fff"/>
+  <text x="60" y="60" class="title">Runtime Signal Flow</text>
+
+  <rect x="70" y="110" width="190" height="80" class="box"/>
+  <text x="165" y="146" text-anchor="middle" class="label">Touch input</text>
+  <rect x="350" y="110" width="190" height="80" class="ui"/>
+  <text x="445" y="146" text-anchor="middle" class="label">WiFi UI</text>
+  <rect x="640" y="110" width="190" height="80" class="task"/>
+  <text x="735" y="146" text-anchor="middle" class="label">WiFi task</text>
+  <rect x="940" y="110" width="190" height="80" class="box"/>
+  <text x="1035" y="146" text-anchor="middle" class="label">WiFi AP</text>
+  <rect x="1160" y="110" width="190" height="80" class="box"/>
+  <text x="1255" y="146" text-anchor="middle" class="label">SNTP</text>
+  <text x="1255" y="171" text-anchor="middle" class="sub">time sync</text>
+
+  <rect x="70" y="300" width="190" height="80" class="box"/>
+  <text x="165" y="346" text-anchor="middle" class="label">BME280</text>
+  <rect x="350" y="300" width="190" height="80" class="task"/>
+  <text x="445" y="346" text-anchor="middle" class="label">Sensor task</text>
+  <rect x="640" y="300" width="190" height="80" class="state"/>
+  <text x="735" y="346" text-anchor="middle" class="label">app_state_t</text>
+  <rect x="940" y="300" width="190" height="80" class="ui"/>
+  <text x="1035" y="346" text-anchor="middle" class="label">Home UI</text>
+
+  <rect x="70" y="500" width="190" height="80" class="box"/>
+  <text x="165" y="536" text-anchor="middle" class="label">LEOP server</text>
+  <text x="165" y="561" text-anchor="middle" class="sub">JSON</text>
+  <rect x="350" y="500" width="190" height="80" class="task"/>
+  <text x="445" y="536" text-anchor="middle" class="label">LEOP fetcher</text>
+  <rect x="640" y="540" width="190" height="70" class="state"/>
+  <text x="735" y="582" text-anchor="middle" class="label">SPIFFS cache</text>
+  <rect x="940" y="455" width="190" height="62" class="ui"/>
+  <text x="1035" y="494" text-anchor="middle" class="label">Electricity UI</text>
+  <rect x="940" y="535" width="190" height="62" class="ui"/>
+  <text x="1035" y="574" text-anchor="middle" class="label">Weather UI</text>
+  <rect x="940" y="615" width="190" height="62" class="ui"/>
+  <text x="1035" y="654" text-anchor="middle" class="label">Price UI</text>
+
+  <rect x="70" y="690" width="190" height="70" class="box"/>
+  <text x="165" y="733" text-anchor="middle" class="label">UART terminal</text>
+  <rect x="350" y="690" width="190" height="70" class="task"/>
+  <text x="445" y="733" text-anchor="middle" class="label">UART diagnostics</text>
+
+  <path d="M260 150 L350 150" class="line"/>
+  <path d="M540 150 L640 150" class="line"/>
+  <path d="M830 150 L940 150" class="bi"/>
+  <path d="M830 140 C925 80 1135 80 1160 140" class="line"/>
+  <path d="M640 170 C575 230 545 170 540 160" class="line"/>
+  <text x="574" y="218" class="small">result</text>
+
+  <path d="M260 340 L350 340" class="line"/>
+  <path d="M540 340 L640 340" class="line"/>
+  <path d="M830 340 L940 340" class="line"/>
+
+  <path d="M260 540 L350 540" class="line"/>
+  <path d="M540 552 L640 570" class="bi"/>
+  <path d="M540 520 C665 455 800 440 940 486" class="line"/>
+  <path d="M540 545 C675 540 805 548 940 566" class="line"/>
+  <path d="M540 570 C675 645 805 660 940 646" class="line"/>
+  <path d="M540 505 C575 430 620 388 670 380" class="line"/>
+
+  <path d="M260 725 L350 725" class="line"/>
+  <path d="M640 365 C585 455 535 620 480 690" class="line"/>
+</svg>

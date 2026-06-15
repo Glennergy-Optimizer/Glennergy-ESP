@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1250" height="720" viewBox="0 0 1250 720">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#263238"/>
+    </marker>
+    <style>
+      .title{font:700 34px Arial,sans-serif;fill:#1f2933}
+      .producer{fill:#e3f2fd;stroke:#1565c0;stroke-width:2.5;rx:12}
+      .queue{fill:#fff8e1;stroke:#f57f17;stroke-width:2.5;rx:10}
+      .consumer{fill:#f3e5f5;stroke:#6a1b9a;stroke-width:2.5;rx:12}
+      .label{font:700 20px Arial,sans-serif;fill:#1f2933}
+      .small{font:14px Arial,sans-serif;fill:#455a64}
+      .line{stroke:#263238;stroke-width:2.3;fill:none;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect width="1250" height="720" fill="#fff"/>
+  <text x="60" y="60" class="title">Internal Queue Interfaces</text>
+
+  <rect x="70" y="115" width="210" height="70" class="consumer"/><text x="175" y="158" text-anchor="middle" class="label">WiFi UI</text>
+  <rect x="390" y="115" width="310" height="70" class="queue"/><text x="545" y="144" text-anchor="middle" class="label">wifi_cmd_queue</text><text x="545" y="168" text-anchor="middle" class="small">wifi_data, capacity 1</text>
+  <rect x="810" y="115" width="210" height="70" class="producer"/><text x="915" y="158" text-anchor="middle" class="label">WiFi_Work</text>
+
+  <rect x="390" y="220" width="310" height="70" class="queue"/><text x="545" y="249" text-anchor="middle" class="label">wifi_result_queue</text><text x="545" y="273" text-anchor="middle" class="small">wifi_data, capacity 1</text>
+
+  <rect x="70" y="355" width="210" height="70" class="producer"/><text x="175" y="398" text-anchor="middle" class="label">Sensor_Work</text>
+  <rect x="390" y="355" width="310" height="70" class="queue"/><text x="545" y="384" text-anchor="middle" class="label">Sensor_Queue</text><text x="545" y="408" text-anchor="middle" class="small">sensor_data_t, overwrite</text>
+  <rect x="810" y="355" width="210" height="70" class="consumer"/><text x="915" y="398" text-anchor="middle" class="label">Home UI</text>
+
+  <rect x="70" y="520" width="210" height="70" class="producer"/><text x="175" y="563" text-anchor="middle" class="label">LEOP fetcher</text>
+  <rect x="390" y="485" width="310" height="55" class="queue"/><text x="545" y="509" text-anchor="middle" class="label">recommendation_queue</text><text x="545" y="532" text-anchor="middle" class="small">capacity 1</text>
+  <rect x="390" y="555" width="310" height="55" class="queue"/><text x="545" y="579" text-anchor="middle" class="label">weather_queue</text><text x="545" y="602" text-anchor="middle" class="small">capacity 1</text>
+  <rect x="390" y="625" width="310" height="55" class="queue"/><text x="545" y="649" text-anchor="middle" class="label">price_queue</text><text x="545" y="672" text-anchor="middle" class="small">capacity 1</text>
+  <rect x="810" y="470" width="210" height="55" class="consumer"/><text x="915" y="504" text-anchor="middle" class="label">Electricity UI</text>
+  <rect x="810" y="555" width="210" height="55" class="consumer"/><text x="915" y="589" text-anchor="middle" class="label">Weather UI</text>
+  <rect x="810" y="640" width="210" height="55" class="consumer"/><text x="915" y="674" text-anchor="middle" class="label">Price UI</text>
+
+  <path d="M280 150 L390 150" class="line"/>
+  <path d="M700 150 L810 150" class="line"/>
+  <path d="M810 255 L700 255" class="line"/>
+  <path d="M390 255 L280 180" class="line"/>
+
+  <path d="M280 390 L390 390" class="line"/>
+  <path d="M700 390 L810 390" class="line"/>
+
+  <path d="M280 555 L390 512" class="line"/>
+  <path d="M700 512 L810 497" class="line"/>
+  <path d="M280 555 L390 582" class="line"/>
+  <path d="M700 582 L810 582" class="line"/>
+  <path d="M280 555 L390 652" class="line"/>
+  <path d="M700 652 L810 667" class="line"/>
+</svg>

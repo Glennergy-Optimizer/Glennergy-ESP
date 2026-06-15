@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Glennergy ESP32 Pin Configuration</title>
+  <desc id="desc">Presentation diagram showing ESP32-S3 pin configuration for RGB LCD, I2C devices, touch interrupt and UART diagnostics.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f7f8fb; }
+      .panel { fill: #ffffff; stroke: #cfd6e3; stroke-width: 2; }
+      .chip { fill: #172033; }
+      .chipText { fill: #ffffff; font: 700 38px Arial, sans-serif; }
+      .subtitle { fill: #d7e0f2; font: 500 18px Arial, sans-serif; }
+      .title { fill: #152033; font: 700 44px Arial, sans-serif; }
+      .small { fill: #5c667a; font: 500 20px Arial, sans-serif; }
+      .sectionTitle { fill: #152033; font: 700 28px Arial, sans-serif; }
+      .label { fill: #1d2637; font: 700 22px Arial, sans-serif; }
+      .text { fill: #334155; font: 500 20px Arial, sans-serif; }
+      .muted { fill: #64748b; font: 500 17px Arial, sans-serif; }
+      .pin { fill: #eef2f8; stroke: #c7d0dd; stroke-width: 1.5; }
+      .pinText { fill: #1d2637; font: 700 18px Arial, sans-serif; }
+      .busBlue { stroke: #2563eb; }
+      .busGreen { stroke: #059669; }
+      .busRed { stroke: #dc2626; }
+      .busAmber { stroke: #d97706; }
+      .busSlate { stroke: #475569; }
+      .line { fill: none; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+      .thin { fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+      .boxBlue { fill: #eff6ff; stroke: #93c5fd; stroke-width: 2; }
+      .boxGreen { fill: #ecfdf5; stroke: #86efac; stroke-width: 2; }
+      .boxRed { fill: #fef2f2; stroke: #fca5a5; stroke-width: 2; }
+      .boxAmber { fill: #fffbeb; stroke: #fcd34d; stroke-width: 2; }
+      .boxSlate { fill: #f8fafc; stroke: #cbd5e1; stroke-width: 2; }
+      .mono { fill: #334155; font: 700 18px Consolas, monospace; }
+    </style>
+    <marker id="arrowBlue" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#059669"/>
+    </marker>
+    <marker id="arrowRed" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#dc2626"/>
+    </marker>
+    <marker id="arrowAmber" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#d97706"/>
+    </marker>
+    <marker id="arrowSlate" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#475569"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1600" height="900"/>
+  <text class="title" x="80" y="78">Pin Configuration</text>
+  <text class="small" x="80" y="112">Glennergy ESP32-S3 terminal, based on project GPIO definitions</text>
+
+  <rect class="chip" x="585" y="185" width="430" height="530" rx="22"/>
+  <text class="chipText" x="704" y="295">ESP32-S3</text>
+  <text class="subtitle" x="671" y="330">Glennergy Terminal</text>
+
+  <rect class="pin" x="610" y="385" width="185" height="36" rx="8"/>
+  <text class="pinText" x="633" y="409">I2C0 SDA GPIO8</text>
+  <rect class="pin" x="610" y="431" width="185" height="36" rx="8"/>
+  <text class="pinText" x="635" y="455">I2C0 SCL GPIO9</text>
+  <rect class="pin" x="610" y="477" width="185" height="36" rx="8"/>
+  <text class="pinText" x="636" y="501">Touch INT GPIO4</text>
+
+  <rect class="pin" x="805" y="385" width="185" height="36" rx="8"/>
+  <text class="pinText" x="828" y="409">RGB control pins</text>
+  <rect class="pin" x="805" y="431" width="185" height="36" rx="8"/>
+  <text class="pinText" x="836" y="455">RGB data pins</text>
+  <rect class="pin" x="805" y="477" width="185" height="36" rx="8"/>
+  <text class="pinText" x="833" y="501">UART0 default</text>
+
+  <rect class="boxGreen" x="80" y="190" width="400" height="188" rx="12"/>
+  <text class="sectionTitle" x="112" y="236">Shared I2C Bus</text>
+  <text class="text" x="112" y="278">SDA: GPIO8</text>
+  <text class="text" x="112" y="310">SCL: GPIO9</text>
+  <text class="muted" x="112" y="346">I2C0 at 100 kHz</text>
+
+  <rect class="boxGreen" x="80" y="410" width="400" height="215" rx="12"/>
+  <text class="sectionTitle" x="112" y="456">I2C Devices</text>
+  <text class="text" x="112" y="499">BME280 environment sensor</text>
+  <text class="mono" x="112" y="530">address 0x77</text>
+  <text class="text" x="112" y="568">GT911 touch controller</text>
+  <text class="mono" x="112" y="599">address 0x5D, backup 0x14</text>
+
+  <rect class="boxAmber" x="80" y="655" width="400" height="142" rx="12"/>
+  <text class="sectionTitle" x="112" y="701">IO Expander</text>
+  <text class="text" x="112" y="742">I2C address 0x24</text>
+  <text class="muted" x="112" y="773">Backlight, LCD reset, touch reset</text>
+
+  <rect class="boxBlue" x="1120" y="165" width="400" height="350" rx="12"/>
+  <text class="sectionTitle" x="1152" y="211">RGB LCD, 1024 x 600</text>
+  <text class="label" x="1152" y="253">Control</text>
+  <text class="mono" x="1152" y="285">VSYNC GPIO3   HSYNC GPIO46</text>
+  <text class="mono" x="1152" y="316">DE    GPIO5   PCLK  GPIO7</text>
+  <text class="label" x="1152" y="365">Color Data</text>
+  <text class="mono" x="1152" y="397">B3-B7: GPIO14,38,18,17,10</text>
+  <text class="mono" x="1152" y="428">G2-G7: GPIO39,0,45,48,47,21</text>
+  <text class="mono" x="1152" y="459">R3-R7: GPIO1,2,42,41,40</text>
+
+  <rect class="boxRed" x="1120" y="555" width="400" height="116" rx="12"/>
+  <text class="sectionTitle" x="1152" y="601">Touch Interrupt</text>
+  <text class="mono" x="1152" y="637">GT911 INT: GPIO4</text>
+
+  <rect class="boxSlate" x="1120" y="710" width="400" height="96" rx="12"/>
+  <text class="sectionTitle" x="1152" y="751">UART Diagnostics</text>
+  <text class="mono" x="1152" y="782">UART0, 115200 baud, default pins</text>
+
+  <path class="line busGreen" d="M480 284 C520 284 540 403 610 403" marker-end="url(#arrowGreen)"/>
+  <path class="line busGreen" d="M480 520 C540 520 552 449 610 449" marker-end="url(#arrowGreen)"/>
+  <path class="line busAmber" d="M480 725 C552 725 552 449 610 449" marker-end="url(#arrowAmber)"/>
+  <path class="line busBlue" d="M990 403 C1050 403 1050 285 1120 285" marker-end="url(#arrowBlue)"/>
+  <path class="line busBlue" d="M990 449 C1050 449 1050 415 1120 415" marker-end="url(#arrowBlue)"/>
+  <path class="line busRed" d="M990 495 C1050 495 1050 628 1120 628" marker-end="url(#arrowRed)"/>
+  <path class="line busSlate" d="M990 495 C1050 495 1050 772 1120 772" marker-end="url(#arrowSlate)"/>
+
+  <line class="thin busGreen" x1="92" y1="840" x2="148" y2="840"/>
+  <text class="muted" x="160" y="846">I2C</text>
+  <line class="thin busBlue" x1="230" y1="840" x2="286" y2="840"/>
+  <text class="muted" x="298" y="846">RGB LCD</text>
+  <line class="thin busRed" x1="430" y1="840" x2="486" y2="840"/>
+  <text class="muted" x="498" y="846">Interrupt</text>
+  <line class="thin busSlate" x1="650" y1="840" x2="706" y2="840"/>
+  <text class="muted" x="718" y="846">UART</text>
+</svg>

@@ -4,487 +4,60 @@
 // Project name: SquareLine_Project
 
 #include "../ui.h"
+#include "../Tabs/Settings/WiFi_UI.h"
+#include "../Tabs/Home/Sensor_UI.h"
+#include "../Tabs/Electricity/Electricity_UI.h"
+#include "../Tabs/Electricity/Price_UI.h"
+#include "../Tabs/Weather/Weather_UI.h"
 
-lv_obj_t *uic_WiFi;
-lv_obj_t *ui_Screen1 = NULL;
-lv_obj_t *ui_Label1 = NULL;
-lv_obj_t *ui_TabView1 = NULL;
-lv_obj_t *ui_TabPage1 = NULL;
-lv_obj_t *ui_Label3 = NULL;
-lv_obj_t *ui_Label5 = NULL;
-lv_obj_t *ui_Label4 = NULL;
-lv_obj_t *ui_Arc3 = NULL;
-lv_obj_t *ui_Arc2 = NULL;
-lv_obj_t *ui_Arc1 = NULL;
-lv_obj_t *ui_TabPage2 = NULL;
-lv_obj_t *ui_Chart1 = NULL;
-lv_obj_t *ui_TabPage3 = NULL;
-lv_obj_t *ui_Chart2 = NULL;
-lv_obj_t *ui_Image2 = NULL;
-lv_obj_t *ui_TabPage4 = NULL;
-lv_obj_t *ui_TabView2 = NULL;
-lv_obj_t *ui_TabPage5 = NULL;
-lv_obj_t *ui_Switch2 = NULL;
-lv_obj_t *ui_Label2 = NULL;
-lv_obj_t *ui_WiFi = NULL;
-lv_obj_t *ui_TextArea1 = NULL;
-lv_obj_t *ui_Label6 = NULL;
-lv_obj_t *ui_Label7 = NULL;
-lv_obj_t *ui_Button3 = NULL;
-lv_obj_t *ui_Label8 = NULL;
-lv_obj_t *ui_Bar1 = NULL;
-lv_obj_t *ui_Chart3 = NULL;
-lv_obj_t *ui_Label9 = NULL;
-lv_obj_t *ui_Label10 = NULL;
+
 // event funtions
+
 
 // build funtions
 
 static const char *TAG = "UI";
 
-char selected_ssid[64];
-
-void wifi_connect_cb(lv_event_t *event)
+void ui_update_task(void)
 {
-}
-
-void wifi_scan_cb(lv_event_t *event)
-{
-    wifi_data w_data;
-    w_data.cmd = WIFI_CMD_SCAN;
-    xQueueSend(wifi_queue, &w_data, portMAX_DELAY);
-}
-
-void kb_event_cb(lv_event_t *e)
-{
-    lv_event_code_t code = lv_event_get_code(e);
-    lv_obj_t *kb = lv_event_get_target(e);
-    lv_obj_t *ta = lv_event_get_user_data(e);
-    wifi_data w_data;
-    w_data.cmd = WIFI_CMD_CONNECT;
-
-    if (code == LV_EVENT_READY) // user pressed OK
-    {
-        const char *pass = lv_textarea_get_text(ta);
-
-        w_data.wifi_info.password = pass;
-        w_data.wifi_info.ssid = selected_ssid;
-
-        xQueueSend(wifi_queue, &w_data, portMAX_DELAY);
-
-        lv_obj_del(kb);
-    }
-
-    if (code == LV_EVENT_CANCEL)
-    {
-        lv_obj_del(kb);
-    }
-}
-
-void textarea_cb(lv_event_t *event)
-{
-    lv_obj_t *ta = lv_event_get_target(event);
-    lv_obj_t *kb = lv_keyboard_create(lv_scr_act());
-    lv_obj_set_size(kb, LV_HOR_RES, 120);
-    lv_obj_align(kb, LV_ALIGN_BOTTOM_MID, 0, 0);
-
-    lv_keyboard_set_textarea(kb, ta);
-
-    lv_obj_add_event_cb(kb, kb_event_cb, LV_EVENT_ALL, ta);
-}
-
-void wifi_dropdown_cb(lv_event_t *event)
-{
-
-    lv_obj_t *obj = lv_event_get_target(event);
-
-    lv_dropdown_get_selected_str(obj, selected_ssid, sizeof(selected_ssid));
-}
-
-void ui_update_task(void *arg)
-{
-    wifi_data wifi;
-    sensor_data_t sensor_data;
     while (1)
     {
-        if (wifi_queue != NULL && xQueueReceive(wifi_queue, &wifi, 0) == pdPASS)
+        WiFi_UI_Update();
+        if (lvgl_port_lock(pdMS_TO_TICKS(100)))
         {
-            if (wifi.status == WIFI_STATUS_SCAN_DONE)
-            {
-                ESP_LOGI(TAG, "Scan finished!");
-                if (lvgl_port_lock(-1))
-                {
-                    lv_dropdown_clear_options(ui_WiFi);
-                    for (int i = 0; i < wifi.number; i++)
-                    {
-                        lv_dropdown_add_option(ui_WiFi, (char *)wifi.ap_info[i].ssid, LV_DROPDOWN_POS_LAST);
-                    }
-                    lvgl_port_unlock();
-                }
-            }
-            if (wifi.status == WIFI_STATUS_CONNECTED)
-            {
-                ESP_LOGI(TAG, "Connection finished!");
-                lv_label_set_text(ui_Label7, "Connected");
-                lv_obj_set_style_text_color(ui_Label7, lv_color_hex(0x66FF00), LV_PART_MAIN | LV_STATE_DEFAULT);
-            }
-        }
+            Sensor_UI_Update();
+            Electricity_UI_Update();
+            //Weather_UI_Update();
+            Weather_UI_Update_test();
+            Price_UI_Update();
 
-        if (Sensor_Queue != NULL && xQueueReceive(Sensor_Queue, &sensor_data, 0) == pdPASS)
-        {
-            char temp[50];
-            snprintf(temp, sizeof(temp), "%2.f", sensor_data.temperature);
-            if (lvgl_port_lock(-1))
-            {
-                lv_label_set_text(ui_Label3, temp);
-                lvgl_port_unlock();
-            }
+            lvgl_port_unlock();
         }
-        vTaskDelay(pdMS_TO_TICKS(10));
+        vTaskDelay(pdMS_TO_TICKS(50));
     }
 }
 
 void ui_Screen1_screen_init(void)
 {
-    ui_Screen1 = lv_obj_create(NULL);
-    lv_obj_clear_flag(ui_Screen1, LV_OBJ_FLAG_SCROLLABLE); /// Flags
 
-    ui_Label1 = lv_label_create(ui_Screen1);
-    lv_obj_set_width(ui_Label1, LV_SIZE_CONTENT);  /// 1
-    lv_obj_set_height(ui_Label1, LV_SIZE_CONTENT); /// 1
-    lv_obj_set_x(ui_Label1, -6);
-    lv_obj_set_y(ui_Label1, -233);
-    lv_obj_set_align(ui_Label1, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_Label1, "GLENNERGY");
-    lv_obj_set_style_text_letter_space(ui_Label1, 50, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_line_space(ui_Label1, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(ui_Label1, LV_TEXT_ALIGN_AUTO, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui_Label1, &lv_font_montserrat_24, LV_PART_MAIN | LV_STATE_DEFAULT);
+    Main_UI_Initialize();
 
-    ui_TabView1 = lv_tabview_create(ui_Screen1, LV_DIR_TOP, 50);
-    lv_obj_set_width(ui_TabView1, 959);
-    lv_obj_set_height(ui_TabView1, 470);
-    lv_obj_set_x(ui_TabView1, 0);
-    lv_obj_set_y(ui_TabView1, 36);
-    lv_obj_set_align(ui_TabView1, LV_ALIGN_CENTER);
-    lv_obj_clear_flag(ui_TabView1, LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_MOMENTUM); /// Flags
-    lv_obj_set_style_bg_color(ui_TabView1, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_FOCUSED);
-    lv_obj_set_style_bg_opa(ui_TabView1, 255, LV_PART_MAIN | LV_STATE_FOCUSED);
+    WiFi_UI_Initialize();
 
-    lv_obj_set_style_bg_color(lv_tabview_get_tab_btns(ui_TabView1), lv_color_hex(0x975EED),
-                              LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(lv_tabview_get_tab_btns(ui_TabView1), 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_grad_color(lv_tabview_get_tab_btns(ui_TabView1), lv_color_hex(0x4B3B5E),
-                                   LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_grad_dir(lv_tabview_get_tab_btns(ui_TabView1), LV_GRAD_DIR_VER, LV_PART_MAIN | LV_STATE_DEFAULT);
+    Sensor_UI_Initialize();
 
-    lv_obj_set_style_bg_color(lv_tabview_get_tab_btns(ui_TabView1), lv_color_hex(0x6D2AB2),
-                              LV_PART_ITEMS | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(lv_tabview_get_tab_btns(ui_TabView1), 255, LV_PART_ITEMS | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_grad_color(lv_tabview_get_tab_btns(ui_TabView1), lv_color_hex(0x000000),
-                                   LV_PART_ITEMS | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_grad_dir(lv_tabview_get_tab_btns(ui_TabView1), LV_GRAD_DIR_VER, LV_PART_ITEMS | LV_STATE_DEFAULT);
+    Electricity_UI_Initialize();
 
-    ui_TabPage1 = lv_tabview_add_tab(ui_TabView1, "HOME");
-    lv_obj_set_style_bg_color(ui_TabPage1, lv_color_hex(0x1E1425), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(ui_TabPage1, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_grad_color(ui_TabPage1, lv_color_hex(0x301E4D), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_main_stop(ui_TabPage1, 254, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_grad_stop(ui_TabPage1, 999, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_grad_dir(ui_TabPage1, LV_GRAD_DIR_VER, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_border_color(ui_TabPage1, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_border_opa(ui_TabPage1, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_border_width(ui_TabPage1, 5, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_border_side(ui_TabPage1, LV_BORDER_SIDE_TOP, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_outline_color(ui_TabPage1, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_outline_opa(ui_TabPage1, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    Price_UI_Initialize();
 
-    ui_Label3 = lv_label_create(ui_TabPage1);
-    lv_obj_set_width(ui_Label3, LV_SIZE_CONTENT);  /// 1
-    lv_obj_set_height(ui_Label3, LV_SIZE_CONTENT); /// 1
-    lv_obj_set_x(ui_Label3, -321);
-    lv_obj_set_y(ui_Label3, -79);
-    lv_obj_set_align(ui_Label3, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_Label3, "23.7°");
-    lv_obj_set_style_text_font(ui_Label3, &lv_font_montserrat_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    //Weather_UI_Initialize();
+    weather_dashboard_create();
 
-    ui_Label5 = lv_label_create(ui_TabPage1);
-    lv_obj_set_width(ui_Label5, LV_SIZE_CONTENT);  /// 1
-    lv_obj_set_height(ui_Label5, LV_SIZE_CONTENT); /// 1
-    lv_obj_set_x(ui_Label5, 315);
-    lv_obj_set_y(ui_Label5, -77);
-    lv_obj_set_align(ui_Label5, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_Label5, "1013 hPa");
-    lv_obj_set_style_text_font(ui_Label5, &lv_font_montserrat_14, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    ui_Label4 = lv_label_create(ui_TabPage1);
-    lv_obj_set_width(ui_Label4, LV_SIZE_CONTENT);  /// 1
-    lv_obj_set_height(ui_Label4, LV_SIZE_CONTENT); /// 1
-    lv_obj_set_x(ui_Label4, 5);
-    lv_obj_set_y(ui_Label4, -83);
-    lv_obj_set_align(ui_Label4, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_Label4, "13.7%");
-    lv_obj_set_style_text_font(ui_Label4, &lv_font_montserrat_16, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    ui_Arc3 = lv_arc_create(ui_TabPage1);
-    lv_obj_set_width(ui_Arc3, 226);
-    lv_obj_set_height(ui_Arc3, 214);
-    lv_obj_set_x(ui_Arc3, 34);
-    lv_obj_set_y(ui_Arc3, -66);
-    lv_obj_set_align(ui_Arc3, LV_ALIGN_LEFT_MID);
-    lv_arc_set_value(ui_Arc3, 50);
-    lv_obj_set_style_border_color(ui_Arc3, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_border_opa(ui_Arc3, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_shadow_color(ui_Arc3, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_shadow_opa(ui_Arc3, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    lv_obj_set_style_arc_color(ui_Arc3, lv_color_hex(0xC86868), LV_PART_INDICATOR | LV_STATE_DEFAULT);
-    lv_obj_set_style_arc_opa(ui_Arc3, 255, LV_PART_INDICATOR | LV_STATE_DEFAULT);
-
-    lv_obj_set_style_bg_color(ui_Arc3, lv_color_hex(0xC36A6A), LV_PART_KNOB | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(ui_Arc3, 255, LV_PART_KNOB | LV_STATE_DEFAULT);
-
-    ui_Arc2 = lv_arc_create(ui_TabPage1);
-    lv_obj_set_width(ui_Arc2, 226);
-    lv_obj_set_height(ui_Arc2, 214);
-    lv_obj_set_x(ui_Arc2, 323);
-    lv_obj_set_y(ui_Arc2, -63);
-    lv_obj_set_align(ui_Arc2, LV_ALIGN_CENTER);
-    lv_arc_set_value(ui_Arc2, 50);
-
-    lv_obj_set_style_arc_color(ui_Arc2, lv_color_hex(0x95C08B), LV_PART_INDICATOR | LV_STATE_DEFAULT);
-    lv_obj_set_style_arc_opa(ui_Arc2, 255, LV_PART_INDICATOR | LV_STATE_DEFAULT);
-
-    lv_obj_set_style_bg_color(ui_Arc2, lv_color_hex(0x95C08B), LV_PART_KNOB | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(ui_Arc2, 255, LV_PART_KNOB | LV_STATE_DEFAULT);
-
-    ui_Arc1 = lv_arc_create(ui_TabPage1);
-    lv_obj_set_width(ui_Arc1, 226);
-    lv_obj_set_height(ui_Arc1, 214);
-    lv_obj_set_x(ui_Arc1, -339);
-    lv_obj_set_y(ui_Arc1, -64);
-    lv_obj_set_align(ui_Arc1, LV_ALIGN_RIGHT_MID);
-    lv_arc_set_value(ui_Arc1, 50);
-
-    ui_TabPage2 = lv_tabview_add_tab(ui_TabView1, "ELECTRICITY");
-    lv_obj_set_style_bg_color(ui_TabPage2, lv_color_hex(0x1E1425), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(ui_TabPage2, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_recolor(ui_TabPage2, lv_color_hex(0x1E1425), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_recolor_opa(ui_TabPage2, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    ui_Chart1 = lv_chart_create(ui_TabPage2);
-    lv_obj_set_width(ui_Chart1, 689);
-    lv_obj_set_height(ui_Chart1, 285);
-    lv_obj_set_x(ui_Chart1, 3);
-    lv_obj_set_y(ui_Chart1, 20);
-    lv_obj_set_align(ui_Chart1, LV_ALIGN_CENTER);
-    lv_chart_set_type(ui_Chart1, LV_CHART_TYPE_BAR);
-    lv_chart_set_point_count(ui_Chart1, 24);
-    lv_chart_set_axis_tick(ui_Chart1, LV_CHART_AXIS_PRIMARY_X, 10, 5, 5, 2, true, 50);
-    lv_chart_set_axis_tick(ui_Chart1, LV_CHART_AXIS_PRIMARY_Y, 10, 5, 5, 2, true, 50);
-    lv_chart_set_axis_tick(ui_Chart1, LV_CHART_AXIS_SECONDARY_Y, 10, 5, 5, 2, true, 25);
-    lv_chart_series_t *ui_Chart1_series_1 = lv_chart_add_series(ui_Chart1, lv_color_hex(0x808080),
-                                                                LV_CHART_AXIS_PRIMARY_Y);
-    static lv_coord_t ui_Chart1_series_1_array[] = {0, 10, 20, 40, 80, 80, 40, 20, 10, 0};
-    lv_chart_set_ext_y_array(ui_Chart1, ui_Chart1_series_1, ui_Chart1_series_1_array);
-    lv_obj_set_style_bg_color(ui_Chart1, lv_color_hex(0x20142F), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(ui_Chart1, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_grad_color(ui_Chart1, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_line_color(ui_Chart1, lv_color_hex(0x9240FF), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_line_opa(ui_Chart1, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    lv_obj_set_style_text_color(ui_Chart1, lv_color_hex(0xFFFFFF), LV_PART_TICKS | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_opa(ui_Chart1, 255, LV_PART_TICKS | LV_STATE_DEFAULT);
-
-    ui_TabPage3 = lv_tabview_add_tab(ui_TabView1, "WEATHER");
-    lv_obj_set_style_bg_color(ui_TabPage3, lv_color_hex(0x1E1425), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(ui_TabPage3, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    ui_Chart3 = lv_chart_create(ui_TabPage3);
-    lv_obj_set_width(ui_Chart3, 689);
-    lv_obj_set_height(ui_Chart3, 285);
-    lv_obj_set_x(ui_Chart3, 3);
-    lv_obj_set_y(ui_Chart3, 200);
-    lv_obj_set_align(ui_Chart3, LV_ALIGN_CENTER);
-    lv_chart_set_type(ui_Chart3, LV_CHART_TYPE_BAR);
-    lv_chart_set_point_count(ui_Chart3, 24);
-    lv_chart_set_axis_tick(ui_Chart3, LV_CHART_AXIS_PRIMARY_X, 10, 5, 5, 2, true, 50);
-    lv_chart_set_axis_tick(ui_Chart3, LV_CHART_AXIS_PRIMARY_Y, 10, 5, 5, 2, true, 50);
-    lv_chart_set_axis_tick(ui_Chart3, LV_CHART_AXIS_SECONDARY_Y, 10, 5, 5, 2, true, 25);
-    lv_chart_series_t *ui_Chart3_series_1 = lv_chart_add_series(ui_Chart3, lv_color_hex(0x808080),
-                                                                LV_CHART_AXIS_PRIMARY_Y);
-    static lv_coord_t ui_Chart3_series_1_array[] = {0, 10, 20, 40, 80, 80, 40, 20, 10, 0};
-    lv_chart_set_ext_y_array(ui_Chart3, ui_Chart3_series_1, ui_Chart3_series_1_array);
-    lv_obj_set_style_bg_color(ui_Chart3, lv_color_hex(0x20142F), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(ui_Chart3, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_grad_color(ui_Chart3, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_line_color(ui_Chart3, lv_color_hex(0x9240FF), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_line_opa(ui_Chart3, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    ui_TabPage4 = lv_tabview_add_tab(ui_TabView1, "SETTINGS");
-    lv_obj_set_style_bg_color(ui_TabPage4, lv_color_hex(0x1E1425), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(ui_TabPage4, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    ui_TabView2 = lv_tabview_create(ui_TabPage4, LV_DIR_TOP, 50);
-    lv_obj_set_width(ui_TabView2, 404);
-    lv_obj_set_height(ui_TabView2, 380);
-    lv_obj_set_x(ui_TabView2, -263);
-    lv_obj_set_y(ui_TabView2, -5);
-    lv_obj_set_align(ui_TabView2, LV_ALIGN_CENTER);
-    lv_obj_clear_flag(ui_TabView2, LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM |
-                                       LV_OBJ_FLAG_SCROLL_CHAIN); /// Flags
-
-    lv_obj_set_style_bg_color(lv_tabview_get_tab_btns(ui_TabView2), lv_color_hex(0x6E10CE),
-                              LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(lv_tabview_get_tab_btns(ui_TabView2), 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_grad_color(lv_tabview_get_tab_btns(ui_TabView2), lv_color_hex(0x000000),
-                                   LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_grad_dir(lv_tabview_get_tab_btns(ui_TabView2), LV_GRAD_DIR_VER, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    ui_TabPage5 = lv_tabview_add_tab(ui_TabView2, "WiFi");
-
-    ui_Label2 = lv_label_create(ui_TabPage5);
-    lv_obj_set_width(ui_Label2, LV_SIZE_CONTENT);  /// 1
-    lv_obj_set_height(ui_Label2, LV_SIZE_CONTENT); /// 1
-    lv_obj_set_x(ui_Label2, -163);
-    lv_obj_set_y(ui_Label2, -131);
-    lv_obj_set_align(ui_Label2, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_Label2, "WiFi");
-
-    ui_WiFi = lv_dropdown_create(ui_TabPage5);
-    lv_obj_set_width(ui_WiFi, 364);
-    lv_obj_set_height(ui_WiFi, LV_SIZE_CONTENT); /// 1
-    lv_obj_set_x(ui_WiFi, -4);
-    lv_obj_set_y(ui_WiFi, -83);
-    lv_obj_set_align(ui_WiFi, LV_ALIGN_CENTER);
-    lv_obj_add_flag(ui_WiFi, LV_OBJ_FLAG_SCROLL_ON_FOCUS); /// Flags
-
-    lv_obj_add_event_cb(ui_WiFi, wifi_dropdown_cb, LV_EVENT_VALUE_CHANGED, NULL);
-
-    ui_TextArea1 = lv_textarea_create(ui_TabPage5);
-    lv_obj_set_width(ui_TextArea1, 368);
-    lv_obj_set_height(ui_TextArea1, LV_SIZE_CONTENT); /// 1
-    lv_obj_set_x(ui_TextArea1, -4);
-    lv_obj_set_y(ui_TextArea1, -26);
-    lv_obj_set_align(ui_TextArea1, LV_ALIGN_CENTER);
-    lv_textarea_set_placeholder_text(ui_TextArea1, "Password");
-    lv_textarea_set_one_line(ui_TextArea1, true);
-    lv_textarea_set_password_mode(ui_TextArea1, true);
-
-    lv_obj_add_event_cb(ui_TextArea1, textarea_cb, LV_EVENT_CLICKED, NULL);
-
-    ui_Label6 = lv_label_create(ui_TabPage5);
-    lv_obj_set_width(ui_Label6, LV_SIZE_CONTENT);  /// 1
-    lv_obj_set_height(ui_Label6, LV_SIZE_CONTENT); /// 1
-    lv_obj_set_x(ui_Label6, -308);
-    lv_obj_set_y(ui_Label6, -107);
-    lv_obj_set_align(ui_Label6, LV_ALIGN_BOTTOM_RIGHT);
-    lv_label_set_text(ui_Label6, "Status: ");
-
-    ui_Label7 = lv_label_create(ui_TabPage5);
-    lv_obj_set_width(ui_Label7, LV_SIZE_CONTENT);  /// 1
-    lv_obj_set_height(ui_Label7, LV_SIZE_CONTENT); /// 1
-    lv_obj_set_x(ui_Label7, -200);
-    lv_obj_set_y(ui_Label7, -107);
-    lv_obj_set_align(ui_Label7, LV_ALIGN_BOTTOM_RIGHT);
-    lv_label_set_text(ui_Label7, "Disconnected");
-    lv_label_set_recolor(ui_Label7, "true");
-    lv_obj_set_style_text_color(ui_Label7, lv_color_hex(0xFF0000), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_opa(ui_Label7, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    ui_Button3 = lv_btn_create(ui_TabPage5);
-    lv_obj_set_width(ui_Button3, 50);
-    lv_obj_set_height(ui_Button3, 25);
-    lv_obj_set_x(ui_Button3, -109);
-    lv_obj_set_y(ui_Button3, -131);
-    lv_obj_set_align(ui_Button3, LV_ALIGN_CENTER);
-    lv_obj_add_flag(ui_Button3, LV_OBJ_FLAG_SCROLL_ON_FOCUS); /// Flags
-    lv_obj_clear_flag(ui_Button3, LV_OBJ_FLAG_SCROLLABLE);    /// Flags
-    lv_obj_set_style_bg_color(ui_Button3, lv_color_hex(0x370859), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(ui_Button3, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_grad_color(ui_Button3, lv_color_hex(0x5F06CF), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_grad_dir(ui_Button3, LV_GRAD_DIR_VER, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    lv_obj_add_event_cb(ui_Button3, wifi_scan_cb, LV_EVENT_PRESSED, NULL);
-
-    ui_Label8 = lv_label_create(ui_TabPage5);
-    lv_obj_set_width(ui_Label8, LV_SIZE_CONTENT);  /// 1
-    lv_obj_set_height(ui_Label8, LV_SIZE_CONTENT); /// 1
-    lv_obj_set_x(ui_Label8, -109);
-    lv_obj_set_y(ui_Label8, -131);
-    lv_obj_set_align(ui_Label8, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_Label8, "SCAN");
-
-    ui_Bar1 = lv_bar_create(ui_TabPage5);
-    lv_bar_set_value(ui_Bar1, 25, LV_ANIM_OFF);
-    lv_bar_set_start_value(ui_Bar1, 0, LV_ANIM_OFF);
-    lv_obj_set_width(ui_Bar1, 150);
-    lv_obj_set_height(ui_Bar1, 10);
-    lv_obj_set_x(ui_Bar1, 69);
-    lv_obj_set_y(ui_Bar1, -133);
-    lv_obj_set_align(ui_Bar1, LV_ALIGN_CENTER);
-
-    ui_Label9 = lv_label_create(ui_Screen1);
-    lv_obj_set_width(ui_Label9, LV_SIZE_CONTENT);  /// 1
-    lv_obj_set_height(ui_Label9, LV_SIZE_CONTENT); /// 1
-    lv_obj_set_x(ui_Label9, 408);
-    lv_obj_set_y(ui_Label9, -258);
-    lv_obj_set_align(ui_Label9, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_Label9, "WiFi");
-    lv_obj_set_style_text_letter_space(ui_Label9, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_line_space(ui_Label9, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(ui_Label9, LV_TEXT_ALIGN_AUTO, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    ui_Label10 = lv_label_create(ui_Screen1);
-    lv_obj_set_width(ui_Label10, LV_SIZE_CONTENT);  /// 1
-    lv_obj_set_height(ui_Label10, LV_SIZE_CONTENT); /// 1
-    lv_obj_set_x(ui_Label10, 410);
-    lv_obj_set_y(ui_Label10, -233);
-    lv_obj_set_align(ui_Label10, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_Label10, "NetGear");
-    lv_obj_set_style_text_color(ui_Label10, lv_color_hex(0x00FF07), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_opa(ui_Label10, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    uic_WiFi = ui_WiFi;
 }
 
 void ui_Screen1_screen_destroy(void)
 {
-    if (ui_Screen1)
-        lv_obj_del(ui_Screen1);
 
-    // NULL screen variables
-    ui_Screen1 = NULL;
-    ui_Label1 = NULL;
-    ui_TabView1 = NULL;
-    ui_TabPage1 = NULL;
-    ui_Label3 = NULL;
-    ui_Label5 = NULL;
-    ui_Label4 = NULL;
-    ui_Arc3 = NULL;
-    ui_Arc2 = NULL;
-    ui_Arc1 = NULL;
-    ui_TabPage2 = NULL;
-    ui_Chart1 = NULL;
-    ui_TabPage3 = NULL;
-    ui_Chart2 = NULL;
-    ui_Image2 = NULL;
-    ui_TabPage4 = NULL;
-    ui_TabView2 = NULL;
-    ui_TabPage5 = NULL;
-    ui_Switch2 = NULL;
-    ui_Label2 = NULL;
-    uic_WiFi = NULL;
-    ui_WiFi = NULL;
-    ui_TextArea1 = NULL;
-    ui_Label6 = NULL;
-    ui_Label7 = NULL;
-    ui_Button3 = NULL;
-    ui_Label8 = NULL;
-    ui_Bar1 = NULL;
-    ui_Chart3 = NULL;
-    ui_Label9 = NULL;
-    ui_Label10 = NULL;
 }
 
 /*void ui_Screen1_screen_init()
