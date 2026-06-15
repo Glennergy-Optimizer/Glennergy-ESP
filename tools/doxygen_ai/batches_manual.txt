@@ -1,0 +1,18 @@
+# One comma-separated batch per line for manual or campaign runs.
+# Components/* is intentionally excluded.
+
+main/HTTP.h, main/HTTP.c, main/WiFi.h, main/WiFi.c
+main/SNTP/time_sync.h, main/SNTP/time_sync.c, main/JSONParser/DataParser.h, main/JSONParser/DataParser.c
+main/Memory/NVS.h, main/Memory/NVS.c, main/Memory/Spiffs.h, main/Memory/Spiffs.c, main/Cache/Cache.h, main/Cache/Cache.c
+main/fake/fake_config.hpp, main/fake/fake_config.cpp, main/fake/fake_system_status.hpp, main/fake/fake_system_status.cpp, main/app_types.h, main/app_queues.h
+main/hal/hal_classes.h, main/hal/humidity_sensor.hpp, main/hal/pressure_sensor.hpp, main/hal/temperature_sensor.hpp, main/hal/bme280_sensor.hpp
+main/hal/bme280_sensor.cpp, main/sensor/sensor.h, main/sensor/sensor.cpp, main/sensor/fake_sensor.hpp, main/sensor/fake_sensor.cpp
+main/UART/UART.hpp, main/UART/UART.cpp, main/UART/uart_diag_shell.hpp, main/UART/uart_diag_shell.cpp
+main/LEOP/LEOP_Fetcher.h, main/LEOP/LEOP_Fetcher.c, main/LEOP/leop.h, main/LEOP/leop.cpp, main/LEOP/fake_leop.hpp, main/LEOP/fake_leop.cpp
+main/LEOP/Price.h, main/LEOP/Price.c, main/LEOP/Weather.h, main/LEOP/Weather.c, main/LEOP/Recommendation.h, main/LEOP/Recommendation.c
+main/main.c, main/lvgl_demo.h, main/lvgl_demo.c, ui/ui.h, ui/ui.c, ui/ui_events.h, ui/ui_helpers.h, ui/ui_helpers.c
+ui/screens/Main_UI.h, ui/screens/Main_UI.c, ui/screens/ui_Screen1.h, ui/screens/ui_Screen1.c, ui/Tabs/Weather/Weather_UI.h, ui/Tabs/Weather/Weather_UI.c, ui/Tabs/Home/Sensor_UI.h, ui/Tabs/Home/Sensor_UI.c
+ui/Tabs/Electricity/Electricity_UI.h, ui/Tabs/Electricity/Electricity_UI.c, ui/Tabs/Electricity/Price_UI.h, ui/Tabs/Electricity/Price_UI.c, ui/Tabs/Settings/WiFi_UI.h, ui/Tabs/Settings/WiFi_UI.c, ui/components/ui_comp_hook.c
+ui/images/icons8-cloud-lightning-50.c, ui/images/icons8-fog-50.c, ui/images/icons8-clouds-50.c, ui/images/icons8-heavy-rain-50.c, ui/images/icons8-partly-cloudy-day-50.c
+ui/images/icons8-snow-50.c, ui/images/icons8-rain-50.c, ui/images/icons8-summer-50.c, ui/images/icons8-thermometer-50.c
+main/test/main/test.c, main/test/main/test_probe.c, main/test/main/test_recommendation.c, main/test/main/test_dataparser_price.c, main/test/main/test_dataparser_recommendation.c, main/test/main/test_dataparser_weather.c
